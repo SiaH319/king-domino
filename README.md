@@ -1,5 +1,7 @@
 # Kingdomino
 
+Check out our [wiki page](https://github.com/McGill-ECSE223-Winter2020/ecse223-group-project-04/wiki)!
+
 ## Project Overview
 Create the Kingdomino application for the well-known board game Kingdomino.
 
@@ -35,4 +37,4 @@ your domain model in a controlled natural language.
 document it in the wiki of your Github repository.
 
 - Generate code from the domain model and commit the code to your group’s repository in the
-GitHub organization of the course (https://github.com/McGill-ECSE223-Winter2020/). F
+GitHub organization of the course (https://github.com/McGill-ECSE223-Winter2020/). 
