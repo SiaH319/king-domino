@@ -21,7 +21,12 @@ forest without a crown (thus the default value of crowns is 0 if not indicated o
 | ------------- |:-------------:| -----:|
 | Violet Wei    | Software Eng. |  U2   |
 | Sia Ham       | Software Eng. |  U1   |
-| Mohamad Dimassi | Computer Eng.   |  U1     |
+| Mohmad Dimassi| Computer Eng. |  U1   |
+<<<<<<< HEAD
+
+=======
+| Cecilia Jiang | Software Eng. |  U2   |
+>>>>>>> b51fcace9b6eeb8bf8979b7a63924ecf4a3ec162
 
 ## Deliverable 1
 
