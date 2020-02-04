@@ -24,6 +24,7 @@ forest without a crown (thus the default value of crowns is 0 if not indicated o
 | Mohmad Dimassi| Computer Eng. |  U1   |
 | Cecilia Jiang | Software Eng. |  U2   |
 | Yuta Youness Bellali | Software Eng.  |  U1   |
+| Ezer Berdugo | Computer Eng. |  U2   |
 
 
 ## Deliverable 1
