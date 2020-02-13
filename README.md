@@ -44,3 +44,23 @@ document it in the wiki of your Github repository.
 GitHub organization of the course (https://github.com/McGill-ECSE223-Winter2020/).
 
 The domain model of our Kingdomino application can be found [here](https://github.com/McGill-ECSE223-Winter2020/ecse223-group-project-04/wiki/Domain-Model)
+
+## Deliverable 2
+
+*Interation 2: Specification of Controller interfaces, Implementation of Controller methods, Mapping
+of Gherkin scenarios*
+
+- As an input for this deliverable, you will receive user stories and scenarios written in the Gherkin
+language, which capture the main interactions during the game.
+
+- Assign the development of each feature to one of your team members, i.e., each team member
+is individually responsible for four specific features.
+
+- For each feature individually specify the Controller interface as needed to realize the feature.
+
+- Implement the assigned features individually and as a team in Java as described in Iteration 2 and
+commit the code to your group’s repository in the course’s GitHub organization.
+
+- For each feature, individually map the corresponding Gherkin scenarios to acceptance tests to be
+executed by Cucumber in the context of your Controller interface. All related acceptance tests
+should successfully execute upon completing this deliverable.
