@@ -7,7 +7,7 @@ Feature: Move current domino
     Given the game is initialized for move current domino
 
   Scenario Outline: Initial tentative place of the domino
-    Given it it "<player>"'s turn
+    Given it is "<player>"'s turn
     Given "<player>" has selected domino <id>
     When "<player>" removes his king from the domino <id>
     Then domino <id> should be tentative placed at position 0:0 of "<player>"'s kingdom with ErroneouslyPreplaced status
@@ -20,7 +20,7 @@ Feature: Move current domino
       | yellow |  1 |
 
   Scenario Outline: Player moves tentatively placed domino to a new neighboring tile successfully
-    Given It is "<player>"'s turn
+    Given it is "<player>"'s turn
     Given "<player>"'s kingdown has following dominoes:
       | id | dir   | posx | posy |
       |  1 | right |    1 |    0 |
@@ -62,7 +62,7 @@ Feature: Move current domino
       | 28 | up    | 1 | -4 |
       |  5 | right | 2 | -3 |
       |  7 | right | 2 | -4 |
-    Given domino <id> is tentatively placed at position <posx>:<posy>  with direction "<dir>"
+    Given domino <id> is tentatively placed at position <posx>:<posy> with direction "<dir>"
     Given domino <id> has status "<dstatus>"
     When "<player>" requests to move the domino "<movement>"
     Then the domino <id> is still tentatively placed at position <posx>:<posy>

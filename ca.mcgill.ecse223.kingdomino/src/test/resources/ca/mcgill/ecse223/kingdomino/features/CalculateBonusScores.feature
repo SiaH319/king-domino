@@ -48,4 +48,4 @@ Feature: Calculate bonus scores
       |     41 | right     |    1 |   -1 |
       |     12 | right     |    1 |   -2 |
     When calculate bonus score is initiated
-    Then The bonus score should be 15
+    Then the bonus score should be 15

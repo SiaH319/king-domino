@@ -7,7 +7,7 @@ Feature: Reveal Next Draft
 	
   Scenario Outline: Revealing the next draft when there are dominoes still in the pile
     Given the top 5 dominoes in my pile have IDs id9, id10, id11, id12, id13
-    Given There has been "<draftnum>" drafts
+    Given there has been "<draftnum>" drafts
     Given there is a current draft
     Given there is an existing next draft with IDs id4, id5, id6, id7
     When reveal next draft is initiated
@@ -25,7 +25,7 @@ Feature: Reveal Next Draft
     Given this is a "<num_players>" game
     Given there has been "<draftnum>" drafts
     When reveal next draft is initiated
-    Then The game is over
+    Then the game is over
 
     Examples: 
       | num_players | draftnum |

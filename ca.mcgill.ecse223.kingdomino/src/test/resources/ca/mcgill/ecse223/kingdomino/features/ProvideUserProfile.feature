@@ -45,7 +45,7 @@ Feature: Provide User Profile
       | "testc" |           3 |
       | "testb" |           2 |
 
-  Scenario Outline: View game statistics for a user
+  Scenario: View game statistics for a user
     Given the following users exist with their game statistics:
       | name  | playedGames | wonGames |
       | test1 |           0 |        0 |

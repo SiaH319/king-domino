@@ -8,7 +8,7 @@ Feature: Order next draft of dominoes
     Given the game is initialized for next draft of dominoes
     Given the revealed next draft is "<unorderedids>"
     Then the status of the next draft is sorted
-    Then The order of dominoes in the draft will be "<orderedids>"
+    Then the order of dominoes in the draft will be "<orderedids>"
     Then the status of the next draft is sorted
 
     Examples: 

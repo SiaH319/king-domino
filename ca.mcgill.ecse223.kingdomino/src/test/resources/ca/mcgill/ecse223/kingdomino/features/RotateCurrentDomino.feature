@@ -5,7 +5,7 @@ Feature: Rotate Current Domino
     Given the game is initialized for move current domino
 
   Scenario Outline: Player rotates a tentatively placed domino
-    Given It is "<player>"'s turn
+    Given it is "<player>"'s turn
     Given "<player>"'s kingdown has following dominoes:
       | id | dir   | posx | posy |
       |  1 | right |    1 |    0 |
@@ -14,7 +14,7 @@ Feature: Rotate Current Domino
       | 28 | right |   -2 |   -1 |
       | 18 | up    |   -1 |    0 |
     Given "<player>" has selected domino <id>
-    Given domino <id>  is tentatively placed at position <posx>:<posy> with direction "<dir>"
+    Given domino <id> is tentatively placed at position <posx>:<posy> with direction "<dir>"
     When "<player>" requests to rotate the domino with "<rotation>"
     Then the domino <id> is still tentatively placed at <posx>:<posy> but with new direction "<newDir>"
     Then the domino <id> should have status "<dstatus>"
@@ -43,7 +43,7 @@ Feature: Rotate Current Domino
       | 28 | up    |    1 |   -4 |
       |  5 | right |    2 |   -3 |
       |  7 | right |    2 |   -4 |
-    Given domino <id> is tentatively placed at position <posx>:<posy>, with direction "<dir>"
+    Given domino <id> is tentatively placed at position <posx>:<posy> with direction "<dir>"
     Given domino <id> has status "<dstatus>"
     When "<player>" requests to rotate the domino with "<rotation>"
     Then domino <id> is tentatively placed at the same position <posx>:<posy> with the same direction "<dir>"
