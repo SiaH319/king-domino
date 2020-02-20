@@ -3,8 +3,10 @@ Feature: Start a New Game
   with my castle placed on my territory with the current settings of the game. 
   The initial order of player should be randomly determined.
 
+  Background:
+    Given the program is started and ready for starting a new game
+
   Scenario: Start a new game
-    Given no game is in progress
     Given there are four selected players
     Given bonus options Harmony and MiddleKingdom are selected
     When starting a new game is initiated
@@ -14,3 +16,4 @@ Feature: Start a New Game
     Then all the dominoes form the first draft are facing up
     Then all the players have no properties
     Then all player scores are initialized to zero
+

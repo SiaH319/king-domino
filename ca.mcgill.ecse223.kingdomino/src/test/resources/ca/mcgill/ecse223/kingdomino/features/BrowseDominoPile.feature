@@ -4,7 +4,7 @@ Feature: Browse Domino Pile
   view an individual domino or filter the dominoes by terrain type
 
   Background: 
-    Given no game is in progress
+    Given the program is started and ready for browsing dominoes
 
   Scenario: Browse all the dominoes
     When I initiate the browsing of all dominoes

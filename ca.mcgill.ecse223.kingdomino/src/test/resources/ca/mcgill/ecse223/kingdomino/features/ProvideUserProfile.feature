@@ -4,7 +4,7 @@ Feature: Provide User Profile
    (e.g. number of games played, won, etc.). I also wish wish to view all users.
 
   Background: 
-    Given no game is in progress
+    Given the program is started and ready for providing user profile
 
   Scenario Outline: Create the first user
     Given there are no users exist
@@ -45,7 +45,7 @@ Feature: Provide User Profile
       | "testc" |           3 |
       | "testb" |           2 |
 
-  Scenario Outline: View game statistics for a user
+  Scenario: View game statistics for a user
     Given the following users exist with their game statistics:
       | name  | playedGames | wonGames |
       | test1 |           0 |        0 |

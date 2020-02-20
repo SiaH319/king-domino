@@ -8,9 +8,12 @@ Feature: Order next draft of dominoes
     Given the game is initialized for next draft of dominoes
     Given the revealed next draft is "<unorderedids>"
     Then the status of the next draft is sorted
-    Then The order of dominoes in the draft will be "<orderedids>"
+    Then the order of dominoes in the draft will be "<orderedids>"
     Then the status of the next draft is sorted
 
     Examples: 
-      | unorderedids | orderedids |
-      |      8,9,5,2 |    2,5,8,9 |
+      | unorderedids     | orderedids     |
+      |      8,9,5,2     |    2,5,8,9     |
+      |      12,25,40,41 |    12,25,40,41 |
+      |      45,32,10,13 |    10,13,32,45 |
+      |      1,47,22,33  |    1,22,33,47  |

@@ -23,4 +23,4 @@ Feature: Save Game
 
     Examples:
       | filename           |
-      | src/test/rhttps://www.amazon.ca/ref=nav_logoesources/save_game_test.mov |
+      | src/test/resources/save_game_test.mov |

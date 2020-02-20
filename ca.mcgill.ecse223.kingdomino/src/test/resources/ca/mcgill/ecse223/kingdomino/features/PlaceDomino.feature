@@ -7,8 +7,8 @@ Feature: Place Domino
     Given the game is initialized for move current domino
 
   Scenario Outline: Player places a domino
-    Given It is "<player>"'s turn
-    Given The "<player>"'s kingdom has the following dominoes:
+    Given it is "<player>"'s turn
+    Given the "<player>"'s kingdom has the following dominoes:
       | domino | dominodir | posx | posy |
       |      7 | right     |    0 |    2 |
       |     14 | right     |    0 |    1 |
