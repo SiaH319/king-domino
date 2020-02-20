@@ -99,7 +99,7 @@ class DominoSelection {
 
 // Scoring
 class Property {
-	lazy immutable TerrainType leftTile;
+	lazy immutable TerrainType propertyType;
 	0..1 -> * Domino includedDominos;
 	int score = 0;
 	int size = 0;
