@@ -25,17 +25,17 @@ Feature: Discard domino
     Then domino <id> shall have status "<dstatus>"
 
     Examples: 
-      | id | dstatus               |
-      | 48 | errouneouslyPreplaced |
-      | 45 | errouneouslyPreplaced |
-      | 37 | errouneouslyPreplaced |
-      | 33 | errouneouslyPreplaced |
-      |  8 | errouneouslyPreplaced |
-      | 41 | discarded             |
-      | 44 | discarded             |
-      | 27 | discarded             |
-      | 29 | discarded             |
-      |  2 | discarded             |
+      | id | dstatus              |
+      | 48 | erroneouslyPreplaced |
+      | 45 | erroneouslyPreplaced |
+      | 37 | erroneouslyPreplaced |
+      | 33 | erroneouslyPreplaced |
+      |  8 | erroneouslyPreplaced |
+      | 41 | discarded            |
+      | 44 | discarded            |
+      | 27 | discarded            |
+      | 29 | discarded            |
+      |  2 | discarded            |
 
   Scenario Outline: An arbitrary player attempts to discard a domino, with 4 dominoes surrounding the kindom's castle
     Given the player's kingdom has the following dominoes:
@@ -51,14 +51,14 @@ Feature: Discard domino
     Then domino <id> shall have status "<dstatus>"
 
     Examples: 
-      | id | dstatus               |
-      | 13 | errouneouslyPreplaced |
-      | 16 | errouneouslyPreplaced |
-      | 18 | errouneouslyPreplaced |
-      | 27 | errouneouslyPreplaced |
-      | 43 | errouneouslyPreplaced |
-      | 47 | discarded             |
-      | 46 | discarded             |
-      | 44 | discarded             |
-      |  7 | discarded             |
-      | 10 | discarded             |
+      | id | dstatus              |
+      | 13 | erroneouslyPreplaced |
+      | 16 | erroneouslyPreplaced |
+      | 18 | erroneouslyPreplaced |
+      | 27 | erroneouslyPreplaced |
+      | 43 | erroneouslyPreplaced |
+      | 47 | discarded            |
+      | 46 | discarded            |
+      | 44 | discarded            |
+      |  7 | discarded            |
+      | 10 | discarded            |
