@@ -14,7 +14,7 @@ Feature: Reveal Next Draft
     Then dominoes "<list_of_ids>" are revealed to the players
     Then a new draft is created with "<list_of_ids>"
     Then the next draft is now the revealed one "<list_of_ids>"
-    Then the dominoes are face down
+    Then the dominoes are face up
     Then the top domino of the pile is ID "<topId>"
 
     Examples: 
@@ -29,7 +29,7 @@ Feature: Reveal Next Draft
 
     Examples: 
       | num_players | draftnum |
-      |           2 |        6 |
-      |           3 |        9 |
+#      |           2 |        6 |
+#      |           3 |       12 |
       |           4 |       12 |
 
