@@ -10,9 +10,10 @@ Feature: Start a New Game
     Given there are four selected players
     Given bonus options Harmony and MiddleKingdom are selected
     When starting a new game is initiated
+    When reveal first draft is initiated
     Then all kingdoms shall be initialized with a single castle
     Then all castle are placed at 0:0 in their respective kingdoms
-    Then the first draft of dominoes is revelaed
+    Then the first draft of dominoes is revealed
     Then all the dominoes form the first draft are facing up
     Then all the players have no properties
     Then all player scores are initialized to zero
