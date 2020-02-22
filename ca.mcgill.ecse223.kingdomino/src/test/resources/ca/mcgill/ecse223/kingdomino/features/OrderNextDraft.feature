@@ -7,9 +7,9 @@ Feature: Order next draft of dominoes
   Scenario Outline: Ordering the next draft before the players start
     Given the game is initialized for next draft of dominoes
     Given the revealed next draft is "<unorderedids>"
+    When the ordering of the dominoes in the next draft is initiated
     Then the status of the next draft is sorted
     Then the order of dominoes in the draft will be "<orderedids>"
-    Then the status of the next draft is sorted
 
     Examples: 
       | unorderedids     | orderedids     |
