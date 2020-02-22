@@ -10,7 +10,7 @@ Feature: Choose next domino
     Given the next draft is sorted with dominoes "<nextdraft>"
     Given player's domino selection "<selection>"
     Given the current player is "<currentplayer>"
-    When current player chooses to place king on "<chosendominoid>"
+    When current player chooses to place king on "<chosendomino>"
     Then current player king now is on "<chosendomino>"
     Then the selection for next draft is now equal to "<newselection>"
 
@@ -25,7 +25,7 @@ Feature: Choose next domino
     Given the next draft is sorted with dominoes "<nextdraft>"
     Given player's domino selection "<selection>"
     Given the current player is "<currentplayer>"
-    When current player chooses to place king on "<chosendominoid>"
+    When current player chooses to place king on "<chosendomino>"
     Then the selection for the next draft selection is still "<selection>"
 
     Examples: 
