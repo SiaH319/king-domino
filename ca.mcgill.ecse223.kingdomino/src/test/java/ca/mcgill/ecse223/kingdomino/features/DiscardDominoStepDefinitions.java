@@ -98,10 +98,11 @@ public class DiscardDominoStepDefinitions {
 	///////////////////////////////////////
 
 	private void addDefaultUsersAndPlayers(Game game) {
-		String[] users = { "User1", "User2", "User3", "User4" };
-		for (int i = 0; i < users.length; i++) {
-			game.getKingdomino().addUser(users[i]);
+		String[] userNames = { "User1", "User2", "User3", "User4" };
+		for (int i = 0; i < userNames.length; i++) {
+			User user = game.getKingdomino().addUser(userNames[i]);
 			Player player = new Player(game);
+			player.setUser(user);
 			player.setColor(PlayerColor.values()[i]);
 			Kingdom kingdom = new Kingdom(player);
 			new Castle(0, 0, kingdom, player);
