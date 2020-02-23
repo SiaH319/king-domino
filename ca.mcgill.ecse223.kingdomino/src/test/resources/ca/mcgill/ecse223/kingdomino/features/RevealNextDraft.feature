@@ -25,7 +25,8 @@ Feature: Reveal Next Draft
     Given this is a "<num_players>" game
     Given there has been "<draftnum>" drafts
     When reveal next draft is initiated
-    Then the game is over
+    Then the pile is empty
+    Then there is no new draft
 
     Examples: 
       | num_players | draftnum |
