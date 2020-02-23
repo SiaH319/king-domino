@@ -20,6 +20,7 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import ca.mcgill.ecse223.kingdomino.model.TerrainType;
+import ca.mcgill.ecse223.kingdomino.model.User;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -98,10 +99,11 @@ public class DiscardDominoStepDefinitions {
 	///////////////////////////////////////
 
 	private void addDefaultUsersAndPlayers(Game game) {
-		String[] users = { "User1", "User2", "User3", "User4" };
-		for (int i = 0; i < users.length; i++) {
-			game.getKingdomino().addUser(users[i]);
+		String[] userNames = { "User1", "User2", "User3", "User4" };
+		for (int i = 0; i < userNames.length; i++) {
+			User user = game.getKingdomino().addUser(userNames[i]);
 			Player player = new Player(game);
+			player.setUser(user);
 			player.setColor(PlayerColor.values()[i]);
 			Kingdom kingdom = new Kingdom(player);
 			new Castle(0, 0, kingdom, player);
