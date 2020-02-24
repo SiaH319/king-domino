@@ -5,8 +5,8 @@ Feature: Calculate property attributes
 
   Background: 
     Given the game is initialized for calculate property attributes
-    Given the following dominoes are present in a player's kingdom:
-      | id | direction | posx | posy |
+    Given the player's kingdom has the following dominoes:
+      | id | dominodir | posx | posy |
       | 21 | left      |    2 |    0 |
       | 16 | down      |    0 |   -1 |
       | 39 | left      |    2 |   -2 |
