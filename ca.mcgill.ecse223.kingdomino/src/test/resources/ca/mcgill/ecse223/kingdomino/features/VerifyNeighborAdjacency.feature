@@ -7,7 +7,7 @@ Feature: Verify Neighbor Adjacency
     Given the following dominoes are present in a player's kingdom:
       | domino | dominodir | posx | posy |
       |     27 | up        |    0 |    2 |
-      |     17 | down      |    3 |    3 |
+      |     38 | down      |    3 |    3 |
       |      1 | right     |    0 |    1 |
       |     22 | left      |    3 |    1 |
       |     46 | right     |   -1 |   -1 |
