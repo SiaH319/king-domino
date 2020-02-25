@@ -6,7 +6,7 @@ Feature: Verify Castle Adjacency
     Given the game is initialized for castle adjacency
 
   Scenario Outline: Current domino is adjacent to the castle
-    Given the current player preplaced the domino with ID <id> at position <x>:<y> and direction "<direction>"
+    Given the current player preplaced the domino with ID 1 at position <x>:<y> and direction "<direction>"
     When check castle adjacency is initiated
     Then the castle/domino adjacency is "<result>"
 
