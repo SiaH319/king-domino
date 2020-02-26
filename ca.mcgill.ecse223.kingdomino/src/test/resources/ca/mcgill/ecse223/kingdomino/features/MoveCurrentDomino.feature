@@ -21,7 +21,7 @@ Feature: Move current domino
 
   Scenario Outline: Player moves tentatively placed domino to a new neighboring tile successfully
     Given it is "<player>"'s turn
-    Given "<player>"'s kingdown has following dominoes:
+    Given "<player>"'s kingdom has following dominoes:
       | id | dir   | posx | posy |
       |  1 | right |    1 |    0 |
       | 12 | left  |    1 |   -1 |
