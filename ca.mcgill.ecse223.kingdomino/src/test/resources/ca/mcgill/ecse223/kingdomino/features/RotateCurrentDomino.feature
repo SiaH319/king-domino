@@ -35,6 +35,7 @@ Feature: Rotate Current Domino
       | green  | 10 |    0 |    2 | down  | clockwise        | left   | ErroneouslyPreplaced |
 
   Scenario Outline: Player attempts to rotate the tentatively placed domino but fails due to kingdom size restrictions
+    Given it is "<player>"'s turn
     Given "<player>" has selected domino <id>
     Given "<player>"'s kingdom has following dominoes:
       | id | dir   | posx | posy |
