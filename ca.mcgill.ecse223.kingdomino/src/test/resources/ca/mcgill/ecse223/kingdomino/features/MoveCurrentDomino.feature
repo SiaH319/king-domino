@@ -55,7 +55,7 @@ Feature: Move current domino
 
   Scenario Outline: Player attempts to move the tentatively placed domino but fails due to kingdom size restrictions
     Given "<player>" has selected domino <id>
-    Given "<player>"'s kingdom has following dominoes
+    Given "<player>"'s kingdom has following dominoes:
       | id | dir   | x | y  |
       |  1 | right | 1 |  0 |
       | 13 | down  | 1 | -1 |
