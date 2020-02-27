@@ -25,7 +25,7 @@ Feature: Verify Neighbor Adjacency
       | 12 | -1 |  0 | up        | valid   |
       | 12 | -1 |  1 | up        | invalid |
       | 44 |  2 |  0 | down      | invalid |
-      | 42 |  2 |  2 | up        | valid   |
+      | 42 |  2 |  2 | up        | invalid |
       | 29 |  1 |  2 | up        | valid   |
       | 48 | -1 |  3 | down      | invalid |
       | 43 |  1 | -1 | right     | invalid |
