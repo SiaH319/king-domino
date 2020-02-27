@@ -54,6 +54,7 @@ Feature: Move current domino
       | yellow | 48 | right |   -2 |   -2 | left     |    -3 |    -2 | ErroneouslyPreplaced |
 
   Scenario Outline: Player attempts to move the tentatively placed domino but fails due to kingdom size restrictions
+    Given it is "<player>"'s turn
     Given "<player>" has selected domino <id>
     Given "<player>"'s kingdom has following dominoes:
       | id | dir   | x | y  |
