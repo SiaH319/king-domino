@@ -25,7 +25,7 @@ Feature: Move current domino
       | id | dir   | posx | posy |
       |  1 | right |    1 |    0 |
       | 12 | left  |    1 |   -1 |
-      | 38 | right |    1 |   -2 |
+      | 38 | left  |    1 |   -2 |
       | 28 | right |   -2 |   -1 |
       | 18 | up    |   -1 |    0 |
     Given "<player>" has selected domino <id>
@@ -36,7 +36,7 @@ Feature: Move current domino
 
     Examples: 
       | player | id | dir   | posx | posy | movement | nposx | nposy | dstatus              |
-      | pink   |  6 | right |    1 |    1 | left     |     0 |     1 | ErroneouslyPreplaced |
+      | pink   |  6 | right |    1 |    1 | left     |     0 |     1 | CorrectlyPreplaced   |
       | pink   | 48 | down  |   -1 |    1 | left     |    -2 |     1 | ErroneouslyPreplaced |
       | green  | 48 | left  |    2 |    1 | down     |     2 |     0 | ErroneouslyPreplaced |
       | pink   | 17 | left  |    0 |   -1 | up       |     0 |     0 | ErroneouslyPreplaced |
