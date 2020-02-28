@@ -41,9 +41,9 @@ Feature: Provide User Profile
     When I initiate the browsing of all users
     Then the users in the list shall be in the following alphabetical order:
       | name    | placeinlist |
-      | "testa" |           1 |
-      | "testc" |           3 |
-      | "testb" |           2 |
+      | testa |           1 |
+      | testc |           3 |
+      | testb |           2 |
 
   Scenario: View game statistics for a user
     Given the following users exist with their game statistics:
