@@ -14,6 +14,9 @@ import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
+import ca.mcgill.ecse223.kingdomino.model.Draft;
+import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
@@ -45,6 +48,8 @@ public class DiscardDominoStepDefinitions {
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
+	
+
 
 	@Given("the player's kingdom has the following dominoes:")
 	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
@@ -68,12 +73,29 @@ public class DiscardDominoStepDefinitions {
 
 	@Given("domino {int} is in the current draft")
 	public void domino_is_in_the_current_draft(Integer domID) {
-		// TODO: Write code here that turns the phrase above into concrete actions
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Draft current=game.getCurrentDraft();
+		
+		boolean added=false;
+		if(current==null) {
+			Draft newDraft=new Draft(DraftStatus.FaceUp,game);
+			current=newDraft;
+			added=current.addIdSortedDomino(getdominoByID(domID));
+		}
+		else {
+			added=current.addIdSortedDomino(getdominoByID(domID));
+		}
+		assertEquals(true,added);
+		game.setCurrentDraft(current);
+		
 	}
 
 	@Given("the current player has selected domino {int}")
 	public void the_current_player_has_selected_domino(Integer domID) {
-		// TODO: Write code here that turns the phrase above into concrete actions
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Draft current = game.getCurrentDraft();
+		DominoSelection selectedD= new DominoSelection(game.getPlayer(0),getdominoByID(domID),current);
+		
 	}
 
 	@Given("the player preplaces domino {int} at its initial position")
@@ -86,6 +108,7 @@ public class DiscardDominoStepDefinitions {
 		// TODO: Call your Controller method here.
 		throw new cucumber.api.PendingException(); // Remove this line once your controller method is implemented
 	}
+	
 
 	@Then("domino {int} shall have status {string}")
 	public void domino_shall_have_status(Integer domID, String domStatus) {
