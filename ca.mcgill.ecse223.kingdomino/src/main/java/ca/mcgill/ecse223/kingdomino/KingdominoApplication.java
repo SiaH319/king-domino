@@ -7,7 +7,7 @@ public class KingdominoApplication {
 	private static Kingdomino kingdomino;
 
 	public static void main(String[] args) {
-		System.out.println("Welcome to Kingdomino Game!");
+		System.out.println("Hello World!");
 	}
 
 	public static Kingdomino getKingdomino() {
