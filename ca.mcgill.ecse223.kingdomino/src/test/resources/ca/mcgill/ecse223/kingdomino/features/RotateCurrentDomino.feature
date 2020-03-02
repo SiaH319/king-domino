@@ -10,7 +10,7 @@ Feature: Rotate Current Domino
       | id | dir   | posx | posy |
       |  1 | right |    1 |    0 |
       | 12 | left  |    1 |   -1 |
-      | 38 | right |    1 |   -2 |
+      | 46 | right |    1 |   -2 |
       | 28 | right |   -2 |   -1 |
       | 18 | up    |   -1 |    0 |
     Given "<player>" has selected domino <id>
