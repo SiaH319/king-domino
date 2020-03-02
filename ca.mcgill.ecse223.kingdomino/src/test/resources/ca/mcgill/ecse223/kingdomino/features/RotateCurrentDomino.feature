@@ -27,7 +27,7 @@ Feature: Rotate Current Domino
       | pink   | 48 |    1 |    1 | up    | clockwise        | right  | CorrectlyPreplaced   |
       | yellow | 22 |   -2 |   -1 | up    | counterclockwise | left   | ErroneouslyPreplaced |
       | yellow | 22 |   -2 |   -1 | left  | counterclockwise | down   | ErroneouslyPreplaced |
-      | yellow | 22 |   -2 |   -1 | down  | counterclockwise | right  | CorrectlyPreplaced   |
+      | yellow | 22 |   -2 |   -1 | down  | counterclockwise | right  | ErroneouslyPreplaced |
       | yellow | 22 |   -2 |   -1 | right | counterclockwise | up     | ErroneouslyPreplaced |
       | blue   |  8 |    2 |   -1 | up    | counterclockwise | left   | ErroneouslyPreplaced |
       | blue   |  8 |    2 |   -1 | up    | clockwise        | right  | ErroneouslyPreplaced |
@@ -60,3 +60,4 @@ Feature: Rotate Current Domino
       | yellow | 23 |    0 |   -4 | left  | counterclockwise | ErroneouslyPreplaced |
       | blue   |  5 |    4 |   -3 | down  | counterclockwise | CorrectlyPreplaced   |
       | blue   | 23 |   -2 |    4 | right | counterclockwise | ErroneouslyPreplaced |
+
