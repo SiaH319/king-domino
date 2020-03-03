@@ -42,7 +42,7 @@ Feature: Move current domino
       | pink   | 17 | left  |    0 |   -1 | up       |     0 |     0 | ErroneouslyPreplaced |
       | blue   | 23 | down  |   -2 |    0 | right    |    -1 |     0 | ErroneouslyPreplaced |
       | yellow |  1 | right |   -2 |   -2 | up       |    -2 |    -1 | ErroneouslyPreplaced |
-      | blue   | 21 | left  |    0 |   -1 | down     |     0 |    -2 | CorrectlyPreplaced   |
+      | blue   | 21 | left  |    0 |   -1 | down     |     0 |    -2 | ErroneouslyPreplaced |
       | blue   |  2 | up    |    0 |    1 | right    |     1 |     1 | CorrectlyPreplaced   |
       | green  | 14 | down  |   -1 |    1 | left     |    -2 |     1 | CorrectlyPreplaced   |
       | green  |  3 | right |   -1 |   -2 | left     |    -2 |    -2 | CorrectlyPreplaced   |
@@ -53,7 +53,7 @@ Feature: Move current domino
       | yellow | 48 | down  |    0 |   -2 | down     |     0 |    -3 | ErroneouslyPreplaced |
       | yellow | 48 | right |   -2 |   -2 | left     |    -3 |    -2 | ErroneouslyPreplaced |
 
-  Scenario Outline: Player attempts to move the tentatively placed domino but fails due to kingdom size restrictions
+  Scenario Outline: Player attempts to move the tentatively placed domino but fails due to board size restrictions
     Given it is "<player>"'s turn
     Given "<player>" has selected domino <id>
     Given "<player>"'s kingdom has following dominoes:
