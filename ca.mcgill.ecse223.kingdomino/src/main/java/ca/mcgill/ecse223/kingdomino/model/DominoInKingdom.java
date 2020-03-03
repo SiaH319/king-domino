@@ -7,7 +7,7 @@ package ca.mcgill.ecse223.kingdomino.model;
 public class DominoInKingdom extends KingdomTerritory
 {
 
-  //------------------------
+  //------------------------r
   // ENUMERATIONS
   //------------------------
 
