@@ -32,7 +32,7 @@ Feature: Rotate Current Domino
       | blue   |  8 |    2 |   -1 | up    | counterclockwise | left   | ErroneouslyPreplaced |
       | blue   |  8 |    2 |   -1 | up    | clockwise        | right  | ErroneouslyPreplaced |
       | green  | 10 |    0 |    2 | left  | counterclockwise | down   | CorrectlyPreplaced   |
-      | green  | 10 |    0 |    2 | down  | clockwise        | left   | ErroneouslyPreplaced |
+      | green  | 10 |    0 |    2 | down  | clockwise        | left   | CorrectlyPreplaced |
 
   Scenario Outline: Player attempts to rotate the tentatively placed domino but fails due to kingdom size restrictions
     Given it is "<player>"'s turn
@@ -54,10 +54,10 @@ Feature: Rotate Current Domino
       | player | id | posx | posy | dir   | rotation         | dstatus              |
       | pink   | 48 |   -4 |    0 | down  | clockwise        | ErroneouslyPreplaced |
       | pink   | 48 |    0 |   -4 | right | clockwise        | ErroneouslyPreplaced |
-      | yellow |  5 |    4 |   -4 | up    | clockwise        | CorrectlyPreplaced   |
+      | yellow |  4 |    4 |   -4 | up    | clockwise        | CorrectlyPreplaced   |
       | pink   | 48 |    2 |    4 | left  | clockwise        | ErroneouslyPreplaced |
       | yellow | 23 |   -4 |    0 | up    | counterclockwise | ErroneouslyPreplaced |
       | yellow | 23 |    0 |   -4 | left  | counterclockwise | ErroneouslyPreplaced |
-      | blue   |  5 |    4 |   -3 | down  | counterclockwise | CorrectlyPreplaced   |
+      | blue   |  4 |    4 |   -3 | down  | counterclockwise | CorrectlyPreplaced   |
       | blue   | 23 |   -2 |    4 | right | counterclockwise | ErroneouslyPreplaced |
 
