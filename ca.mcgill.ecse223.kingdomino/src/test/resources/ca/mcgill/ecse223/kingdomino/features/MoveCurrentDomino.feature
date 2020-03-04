@@ -23,7 +23,7 @@ Feature: Move current domino
     Given it is "<player>"'s turn
     Given "<player>"'s kingdom has following dominoes:
       | id | dir   | posx | posy |
-      |  1 | right |    1 |    0 |
+      |  2 | right |    1 |    0 |
       | 12 | left  |    1 |   -1 |
       | 38 | left  |    1 |   -2 |
       | 28 | right |   -2 |   -1 |
@@ -43,7 +43,7 @@ Feature: Move current domino
       | blue   | 23 | down  |   -2 |    0 | right    |    -1 |     0 | ErroneouslyPreplaced |
       | yellow |  1 | right |   -2 |   -2 | up       |    -2 |    -1 | ErroneouslyPreplaced |
       | blue   | 21 | left  |    0 |   -1 | down     |     0 |    -2 | ErroneouslyPreplaced |
-      | blue   |  2 | up    |    0 |    1 | right    |     1 |     1 | CorrectlyPreplaced   |
+      | blue   |  1 | up    |    0 |    1 | right    |     1 |     1 | CorrectlyPreplaced   |
       | green  | 14 | down  |   -1 |    1 | left     |    -2 |     1 | CorrectlyPreplaced   |
       | green  |  3 | right |   -1 |   -2 | left     |    -2 |    -2 | CorrectlyPreplaced   |
       | green  |  3 | up    |    1 |    1 | left     |     0 |     1 | CorrectlyPreplaced   |
@@ -58,7 +58,7 @@ Feature: Move current domino
     Given "<player>" has selected domino <id>
     Given "<player>"'s kingdom has following dominoes:
       | id | dir   | posx | posy  |
-      |  1 | right |   1  |   0   |
+      |  2 | right |   1  |   0   |
       | 13 | down  |   1  |  -1   |
       | 28 | up    |   1  |  -4   |
       |  5 | right |   2  |  -3   |
