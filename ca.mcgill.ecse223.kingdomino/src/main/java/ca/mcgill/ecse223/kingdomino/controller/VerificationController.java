@@ -8,7 +8,7 @@ import ca.mcgill.ecse223.kingdomino.model.TerrainType;
  * @author Violet, Cecilia
  */
 public class VerificationController {
-
+    private Square[] grid
     public static boolean verifyCastleAjacency (Castle castle, DominoInKingdom domino) {
         if(castle == null)
             throw new java.lang.IllegalArgumentException("Castle is not created");
@@ -40,6 +40,7 @@ public class VerificationController {
             if(!(x_a==x_right && y_a == y_right)){
                 int index = Square.convertPositionToInt(x_a, y_a);
                 result = result || isAdjacenttoGridSquare(grid[index], domino.getDomino().getLeftTile());
+                if (result) break;
             }
         }
 
@@ -49,6 +50,7 @@ public class VerificationController {
             if(!(x_a==x_left && y_a == y_left)){
                 int index = Square.convertPositionToInt(x_a, y_a);
                 result = result || isAdjacenttoGridSquare(grid[index], domino.getDomino().getRightTile());
+                if (result) break;
             }
         }
         return result;

@@ -3,6 +3,7 @@ import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
+import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
@@ -35,7 +36,14 @@ public class VerifyNeighborAdjacencyStepDefinition {
 
     @When("check current preplaced domino adjacency is initiated")
     public void trigger_check_neighbor_adjacency(){
-
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+        Game game = kingdomino.getCurrentGame();
+        Player player = game.getNextPlayer();
+        Castle castle = getCastle(player.getKingdom());
+        List<KingdomTerritory> list= player.getKingdom().getTerritories();
+        DominoInKingdom dominoInKingdom = (DominoInKingdom)list.get(list.size() - 1);
+        if (castle != null && dominoInKingdom != null && grid !=null)
+            isValid = VerificationController.verifyNeighborAdjacency(grid,dominoInKingdom);
     }
 
     @Then("the current-domino\\/existing-domino adjacency is {string}")
