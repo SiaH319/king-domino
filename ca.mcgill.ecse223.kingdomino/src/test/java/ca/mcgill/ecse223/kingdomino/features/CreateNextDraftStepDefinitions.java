@@ -8,8 +8,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.junit.runner.RunWith;
 
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.CreateNextDraftController;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -34,6 +38,11 @@ import io.cucumber.java.en.When;
  * @author Mohamad.
  *         Created Feb 25, 2020.
  */
+//@RunWith(Cucumber.class)
+//@CucumberOptions(
+//		plugin = "pretty", 
+//		features = "src/test/resources",
+//		glue = "CreateNextDraft.feature")
 public class CreateNextDraftStepDefinitions {
 	
 	private void addDefaultUsersAndPlayers(Game game) {
@@ -105,24 +114,11 @@ public class CreateNextDraftStepDefinitions {
 	private ArrayList<Integer> getListOfIDs(String aListOfIDs){
 		boolean beforeIsDigit =false;
 		ArrayList<Integer> myList = new ArrayList<Integer>();
-		for(int i=0;i<aListOfIDs.length();i++) {
-			char c = aListOfIDs.charAt(i);
-			if(c>='0' && c<='9') {
-				if(beforeIsDigit) {
-					int lastIndex=myList.size()-1;
-					int total =myList.get(lastIndex)*10+(int)c;
-					myList.set(lastIndex,total);
-				}
-				else {
-					myList.add((int) c);
-				}
-				beforeIsDigit=true;
-				
-			}
-			else {
-				beforeIsDigit=false;
-			}
+		String [] ids = aListOfIDs.split(",");
+		for(int i=0; i<ids.length;i++) {
+			myList.add(Integer.parseInt(ids[i]));
 		}
+
 		return myList;
 		
 	}
@@ -151,28 +147,12 @@ public class CreateNextDraftStepDefinitions {
 				KingdominoApplication.setKingdomino(kingdomino);
 	}
 	
-//	@Given("the top 5 dominoes in my pile have IDs id9, id10, id11, id12, id13")
-//	public void the_top_5_dominoes_in_my_pile_have_IDs_id9_id10_id11_id12_id13(){
-//
-//		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-//		Domino topDomino=game.getTopDominoInPile();
-//		topDomino =getdominoByID(9);
-//		Domino second =topDomino.getNextDomino();
-//		second=getdominoByID(10);
-//		Domino third =second.getNextDomino();
-//		third=getdominoByID(11);
-//		Domino fourth =third.getNextDomino();
-//		fourth=getdominoByID(12);
-//		Domino fifth =fourth.getNextDomino();
-//		fifth=getdominoByID(13);
-//		
-//	}
-	
-	@Given("there has been {int} drafts created")
-	public void there_has_been_drafts_created(Integer numDrafts) {
+
+	@Given("there has been {string} drafts created")
+	public void there_has_been_drafts_created(String myString) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		
-		for(int i=0;i<numDrafts;i++) {
+		Integer numDraft= Integer.parseInt(myString);
+		for(int i=0;i<numDraft;i++) {
 			 Draft D =new Draft(DraftStatus.FaceUp,game);
 			boolean added=game.addAllDraft(D);
 			assertEquals(true,added);
@@ -208,36 +188,86 @@ public class CreateNextDraftStepDefinitions {
 		
 	}
 	
-	@Given("there is an existing next draft with IDs id4, id5, id6, id7")
-	public void there_is_an_existing_next_draft_with_IDs_id4_id5_id6_id7() {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		Draft nextDraft=new Draft(DraftStatus.FaceDown,game);
-		game.setNextDraft(nextDraft);
-		
-		Domino d1= getdominoByID(4);
-		boolean added1=nextDraft.addIdSortedDomino(d1);
-		assertEquals(true,added1);
-		d1.setStatus(DominoStatus.InNextDraft);
-		
-		Domino d2= getdominoByID(5);
-		boolean added2=nextDraft.addIdSortedDomino(d2);
-		assertEquals(true,added2);
-		d2.setStatus(DominoStatus.InNextDraft);
-		
-		Domino d3= getdominoByID(6);
-		boolean added3=nextDraft.addIdSortedDomino(d3);
-		assertEquals(true,added3);
-		d3.setStatus(DominoStatus.InNextDraft);
-		
-		Domino d4= getdominoByID(7);
-		boolean added4=nextDraft.addIdSortedDomino(d4);
-		assertEquals(true,added4);
-		d4.setStatus(DominoStatus.InNextDraft);
-		
 
+	
+	@Given("the top {int} dominoes in my pile have the IDs {string}")
+	public void the_top_5_dominoes_in_my_pile_have_the_IDs(Integer NumOfDominoes,String listOfIDs) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		ArrayList<Integer> myList =getListOfIDs(listOfIDs);
+		game.setTopDominoInPile(getdominoByID(myList.get(0)));
+		Domino TopDomino = game.getTopDominoInPile();
+		for(int i=1;i<myList.size();i++) {
+			TopDomino.setNextDomino(getdominoByID(myList.get(i)));
+			TopDomino=TopDomino.getNextDomino();
+		}
 	}
 	
+	@When("create next draft is initiated")
+	public void create_next_draft_is_initiated() {
+		CreateNextDraftController.createNewDraftIsInitiated();
+	}
 	
+	/**
+	 * TODO Put here a description of what this method does.
+	 *
+	 */
+	@Then("The pile is empty")
+	public void the_pile_is_empty() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		boolean hasTop =game.hasTopDominoInPile();
+		assertEquals(false,hasTop);
+		
+	}
+	
+	@Then("there is no next draft")
+	public void there_is_no_next_draft() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		boolean HasNextDraft =game.hasNextDraft();
+		assertEquals(false,HasNextDraft);
+	}
+	@Then("the former next draft is now the current draft")
+	public void the_former_next_draft_is_now_current_draft() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		assertEquals(game.getCurrentDraft(),game.getCurrentDraft());
+	}
+	@Then("the top domino of the pile is ID {string}")
+	public void the_top_domino_of_the_pile_is_ID(String topID) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Domino actualTop=game.getTopDominoInPile();
+		assertEquals(getdominoByID(Integer.parseInt(topID)),actualTop);
+	}
+	@Then("the dominoes in the next draft are face down")
+	public void the_dominoes_in_the_next_draft_are_face_down() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		DraftStatus actualStatus=game.getNextDraft().getDraftStatus();
+		DraftStatus expectedStatus = DraftStatus.FaceDown;
+		assertEquals(expectedStatus,actualStatus);
+	}
+	@Then("the next draft now has the dominoes {string}")
+	public void the_next_draft_now_has_the_dominoes(String listOfIDs) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		ArrayList<Integer> expectedList = getListOfIDs(listOfIDs);
+		ArrayList<Domino> expectedListD =new ArrayList<Domino>();
+		for(int i=0;i<expectedList.size();i++) {
+			expectedListD.add(getdominoByID(expectedList.get(i)));
+		}
+		List<Domino> DominoesInDraft =game.getNextDraft().getIdSortedDominos();
+		assertEquals(expectedListD,DominoesInDraft);
+
+		
+	}
+	@Then("a new draft is created from dominoes {string}")
+	public void a_new_draft_is_created_from_dominoes(String listOfIDs) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		ArrayList<Integer> actualList = getListOfIDs(listOfIDs);
+		for(int i=0;i<game.getNextDraft().maximumNumberOfIdSortedDominos();i++) {
+			Domino current =getdominoByID(actualList.get(i));
+			assertEquals(DominoStatus.InNextDraft,current.getStatus());
+		}
+
+		}
+	}
+
 	
 	
 	
@@ -245,4 +275,4 @@ public class CreateNextDraftStepDefinitions {
 	
 	
 
-}
+

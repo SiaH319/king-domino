@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.DiscardDominoController;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -105,7 +106,7 @@ public class DiscardDominoStepDefinitions {
 
 	@When("the player attempts to discard the selected domino")
 	public void the_player_attempts_to_discard_the_selected_domino() {
-		// TODO: Call your Controller method here.
+		DiscardDominoController.attempt_discard_selected_domino();
 		throw new cucumber.api.PendingException(); // Remove this line once your controller method is implemented
 	}
 	
