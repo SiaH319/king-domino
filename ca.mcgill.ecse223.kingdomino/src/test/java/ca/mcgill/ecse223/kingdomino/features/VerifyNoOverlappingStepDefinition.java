@@ -2,6 +2,7 @@ package ca.mcgill.ecse223.kingdomino.features;
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
 import ca.mcgill.ecse223.kingdomino.model.*;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 public class VerifyNoOverlappingStepDefinition {
     private Boolean isValid;
-    private Square[] grid;
+
     @Given("the game is initialized to check domino overlapping")
     public void the_game_is_initialized_to_check_domino_overlapping() {
         // Intialize empty game
@@ -31,7 +32,8 @@ public class VerifyNoOverlappingStepDefinition {
         createAllDominoes(game);
         game.setNextPlayer(game.getPlayer(0));
         KingdominoApplication.setKingdomino(kingdomino);
-        grid = new Square[81];
+        KingdominoController.setGrid(new Square[81]);
+        Square[] grid = KingdominoController.getGrid();
         for(int i = 4; i >=-4; i-- )
             for(int j = -4 ; j <= 4; j++)
                 grid[Square.convertPositionToInt(i,j)] = new Square(i,j);
@@ -55,6 +57,7 @@ public class VerifyNoOverlappingStepDefinition {
             DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
             domInKingdom.setDirection(dir);
             dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
+            Square[] grid = KingdominoController.getGrid();
             Square.splitPlacedDomino (domInKingdom, grid);
 
         }
@@ -77,6 +80,7 @@ public class VerifyNoOverlappingStepDefinition {
         Castle castle = getCastle(player.getKingdom());
         List<KingdomTerritory> list= player.getKingdom().getTerritories();
         DominoInKingdom dominoInKingdom = (DominoInKingdom)list.get(list.size() - 1);
+        Square[] grid = KingdominoController.getGrid();
         if (castle != null && dominoInKingdom != null && grid !=null)
             isValid = VerificationController.verifyNoOverlapping(castle, grid, dominoInKingdom);
     }

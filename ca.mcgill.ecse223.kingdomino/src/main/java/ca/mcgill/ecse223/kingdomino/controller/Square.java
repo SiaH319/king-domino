@@ -5,6 +5,7 @@ import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 
 public class Square {
     private TerrainType terrain;
+
     private int position;
     private int crown;
     private int dominoId;
@@ -56,5 +57,8 @@ public class Square {
 
     public TerrainType getTerrain() {
         return terrain;
+    }
+    public int getPosition() {
+        return position;
     }
 }

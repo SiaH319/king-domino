@@ -8,8 +8,15 @@ import ca.mcgill.ecse223.kingdomino.model.TerrainType;
  * @author Violet, Cecilia
  */
 public class VerificationController {
-    private Square[] grid
-    public static boolean verifyCastleAjacency (Castle castle, DominoInKingdom domino) {
+
+    /**
+     * Feature 14: test if the current preplaced domino is next to castle
+     * @author Cecilia Jiang
+     * @param castle
+     * @param domino
+     * @return true if adjacent to castle, false otherwise
+     */
+    public static boolean verifyCastleAdjacency (Castle castle, DominoInKingdom domino) {
         if(castle == null)
             throw new java.lang.IllegalArgumentException("Castle is not created");
         if(domino == null)
@@ -24,7 +31,16 @@ public class VerificationController {
         return (isAdjacentToCastle(castle.getX(), castle.getY(), x_left, y_left) && noOverlappingWithCastle(castle, x_right, y_right))
                 || (isAdjacentToCastle(castle.getX(), castle.getY(), x_right, y_right) && noOverlappingWithCastle(castle, x_left, y_left));
     }
-    public static boolean verifyNeighborAdjacency(Square[] grid, DominoInKingdom domino) {
+
+    /**
+     * Feature 15: test if the current preplaced domino is next to a territory
+     * @author Cecilia Jiang
+     * @param castle
+     * @param grid
+     * @param domino
+     * @return true if adjacent to territory, false otherwise
+     */
+    public static boolean verifyNeighborAdjacency(Castle castle, Square[] grid, DominoInKingdom domino) {
         int x_left = domino.getX();
         int y_left = domino.getY();
 
@@ -36,26 +52,34 @@ public class VerificationController {
         boolean result = false;
         for (int i = 0;i < 4; i++) {
             int x_a = x_left + adjacentXYList[i][0];
-            int y_a = x_left + adjacentXYList[i][0];
+            int y_a = y_left + adjacentXYList[i][1];
             if(!(x_a==x_right && y_a == y_right)){
                 int index = Square.convertPositionToInt(x_a, y_a);
-                result = result || isAdjacenttoGridSquare(grid[index], domino.getDomino().getLeftTile());
-                if (result) break;
+                result = result || isAdjacenttoGridSquare(castle, grid[index], domino.getDomino().getLeftTile());
+                if (result) return true;
             }
         }
 
         for (int i = 0;i < 4; i++) {
             int x_a = x_right + adjacentXYList[i][0];
-            int y_a = x_right + adjacentXYList[i][0];
+            int y_a = y_right + adjacentXYList[i][1];
             if(!(x_a==x_left && y_a == y_left)){
                 int index = Square.convertPositionToInt(x_a, y_a);
-                result = result || isAdjacenttoGridSquare(grid[index], domino.getDomino().getRightTile());
-                if (result) break;
+                result = result || isAdjacenttoGridSquare(castle, grid[index], domino.getDomino().getRightTile());
+                if (result) return true;
             }
         }
-        return result;
+        return false;
     }
 
+    /**
+     * Feature 16: Test if the preplaced domino overlaps existing castle or territory
+     * @author Cecilia Jiang
+     * @param castle
+     * @param grid
+     * @param domino
+     * @return
+     */
     public static boolean verifyNoOverlapping (Castle castle, Square[] grid, DominoInKingdom domino) {
         int x_left = domino.getX();
         int y_left = domino.getY();
@@ -68,9 +92,10 @@ public class VerificationController {
                 && noOverlappingWithDomino(grid, x_right, y_right) &&  noOverlappingWithDomino(grid, x_left, y_left);
     }
 
-    //TODO: 所以老宅的位置和新来的domino贴着的话是算还是不算
-    private static boolean isAdjacenttoGridSquare(Square square, TerrainType dominoTerrainType) {
-        return square.getTerrain()==dominoTerrainType;
+
+    private static boolean isAdjacenttoGridSquare(Castle castle, Square square, TerrainType dominoTerrainType) {
+        return square.getTerrain() == dominoTerrainType && square.getPosition() != Square.convertPositionToInt(castle.getX()
+        ,castle.getY());
     }
 
     private static boolean isAdjacentToCastle(int x1, int y1, int x2, int y2){
