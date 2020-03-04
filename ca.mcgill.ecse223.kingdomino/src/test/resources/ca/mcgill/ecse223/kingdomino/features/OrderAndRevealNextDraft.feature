@@ -6,8 +6,8 @@ Feature: Order and Reveal Next Draft of Dominoes
   #drafts are represented by their domino ids separated by commas and no spaces
   Scenario Outline: Ordering the next draft before revealing
     Given the game is initialized for order next draft of dominoes
-    Given the dominoes in next draft are facing down
     Given the next draft is "<unorderedids>"
+    Given the dominoes in next draft are facing down
     When the ordering of the dominoes in the next draft is initiated
     Then the status of the next draft is sorted
     Then the order of dominoes in the draft will be "<orderedids>"
