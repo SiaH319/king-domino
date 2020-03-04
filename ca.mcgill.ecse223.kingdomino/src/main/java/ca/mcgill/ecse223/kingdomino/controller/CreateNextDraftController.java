@@ -46,8 +46,12 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 public class CreateNextDraftController {
 	public static void createNewDraftIsInitiated() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		if(game.getNextDraft()==null) {
+			System.out.println(game.getAllDrafts().size()-1);
+			game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1));
+		}
 		game.setCurrentDraft(game.getNextDraft());
-		game.getCurrentDraft().setDraftStatus(DraftStatus.FaceUp);
+		
 		if(thereCanBeMoreDrafts(game)) {
 			Draft newNextDraft = new Draft(DraftStatus.FaceDown,game);
 			
@@ -55,9 +59,10 @@ public class CreateNextDraftController {
 				Domino Top =game.getTopDominoInPile();
 				newNextDraft.addIdSortedDomino(Top);
 				Top.setStatus(DominoStatus.InNextDraft);
-				Top=Top.getNextDomino();
 				game.setTopDominoInPile(Top.getNextDomino());
 			}
+			game.getCurrentDraft().setDraftStatus(DraftStatus.FaceUp);
+			game.addAllDraft(newNextDraft);
 			game.setNextDraft(newNextDraft);
 		}
 		else {

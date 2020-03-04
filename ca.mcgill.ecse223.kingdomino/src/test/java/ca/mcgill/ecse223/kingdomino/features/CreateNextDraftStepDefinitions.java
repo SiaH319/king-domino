@@ -133,7 +133,7 @@ public class CreateNextDraftStepDefinitions {
 	 *
 	 */
 	
-	@Given("the game is initialized to reveal next draft")
+	@Given("the game is initialized to create next draft")
 	public void the_game_is_initialized_to_reveal_next_draft() {
 				// Intialize empty game
 				Kingdomino kingdomino = new Kingdomino();
@@ -148,29 +148,24 @@ public class CreateNextDraftStepDefinitions {
 	}
 	
 
-	@Given("there has been {string} drafts created")
-	public void there_has_been_drafts_created(String myString) {
+	@Given("there has been {int} drafts created")
+	public void there_has_been_drafts_created(int number) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		Integer numDraft= Integer.parseInt(myString);
+		Integer numDraft=number;
 		for(int i=0;i<numDraft;i++) {
 			 Draft D =new Draft(DraftStatus.FaceUp,game);
-			boolean added=game.addAllDraft(D);
-			assertEquals(true,added);
+			 game.addAllDraft(D);	
 		}
+		
+		
 	}
 	
 	@Given("there is a current draft")
 	public void there_is_a_current_draft() {
 		boolean setCurrentDraft=false;
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		setCurrentDraft=game.setCurrentDraft(game.getAllDraft(game.getAllDrafts().size()-2));
-		if(setCurrentDraft) {
-			System.out.println("succesfully set current draft");
-		}
-		else {
-			System.out.println("failed to set current draft");
-
-		}
+		setCurrentDraft=game.setCurrentDraft(game.getAllDraft(1));
+	
 		
 	}
 	@Given("there is a next draft")
@@ -178,16 +173,16 @@ public class CreateNextDraftStepDefinitions {
 		boolean setNextDraft=false;
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		setNextDraft=game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1));
-		if(setNextDraft) {
-			System.out.println("succesfully set next draft");
-		}
-		else {
-			System.out.println("failed to set next draft");
-
-		}
+		
+		
+		
 		
 	}
-	
+	@Given("this is a {int} player game")
+	public void this_is_a_player_game(Integer numOfPlayer) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		game.setNumberOfPlayers(numOfPlayer);
+	}
 
 	
 	@Given("the top {int} dominoes in my pile have the IDs {string}")
@@ -211,7 +206,7 @@ public class CreateNextDraftStepDefinitions {
 	 * TODO Put here a description of what this method does.
 	 *
 	 */
-	@Then("The pile is empty")
+	@Then("the pile is empty")
 	public void the_pile_is_empty() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		boolean hasTop =game.hasTopDominoInPile();
@@ -228,13 +223,24 @@ public class CreateNextDraftStepDefinitions {
 	@Then("the former next draft is now the current draft")
 	public void the_former_next_draft_is_now_current_draft() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		assertEquals(game.getCurrentDraft(),game.getCurrentDraft());
+		Draft current = game.getCurrentDraft();
+		if(game.getNextDraft()==null) {
+			Draft LastCreated =game.getAllDraft(game.getAllDrafts().size()-1);
+			assertEquals(LastCreated,current);
+		}
+		else {
+			Draft LastCreated =game.getAllDraft(game.getAllDrafts().size()-2);
+			assertEquals(LastCreated,current);
+		}
+		
+
+		
 	}
-	@Then("the top domino of the pile is ID {string}")
-	public void the_top_domino_of_the_pile_is_ID(String topID) {
+	@Then("the top domino of the pile is ID {int}")
+	public void the_top_domino_of_the_pile_is_ID(int topID) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Domino actualTop=game.getTopDominoInPile();
-		assertEquals(getdominoByID(Integer.parseInt(topID)),actualTop);
+		assertEquals(getdominoByID(topID),actualTop);
 	}
 	@Then("the dominoes in the next draft are face down")
 	public void the_dominoes_in_the_next_draft_are_face_down() {
@@ -252,7 +258,9 @@ public class CreateNextDraftStepDefinitions {
 			expectedListD.add(getdominoByID(expectedList.get(i)));
 		}
 		List<Domino> DominoesInDraft =game.getNextDraft().getIdSortedDominos();
-		assertEquals(expectedListD,DominoesInDraft);
+		for(int i=0;i<game.getNextDraft().maximumNumberOfIdSortedDominos();i++) {
+			assertEquals(expectedListD.get(i).getId(),DominoesInDraft.get(i).getId());
+		}
 
 		
 	}
