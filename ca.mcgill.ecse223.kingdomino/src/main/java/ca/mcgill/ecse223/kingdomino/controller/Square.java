@@ -23,18 +23,16 @@ public class Square {
         this.dominoId = dominoId;
     }
 
-    public int[] convertPositionFromInt(int position){
-        int[] pos = new int[2];
-        pos[0] = position % 10;
-        pos[1] = position / 10;
-        return pos;
+    public static int convertPositionToInt (int x, int y) {
+        return (4 - y) * 9 + (x + 4);
     }
 
-    public int convertPositionToInt (int x, int y) {
-        return (4 - y) * 9 + x;
-    }
-
-    public void splitPlacedDomino (DominoInKingdom domino, Square[] squares) {
+    /**
+     * Split a domino with dstatus PlacedInKingdom into two squares and add then to Square list
+     * @param domino
+     * @param squares
+     */
+    public static void splitPlacedDomino (DominoInKingdom domino, Square[] squares) {
         int x_left = domino.getX();
         int y_left = domino.getY();
         int pos_left = convertPositionToInt(x_left, y_left);
@@ -43,36 +41,20 @@ public class Square {
 
         int x_right, y_right;
         DominoInKingdom.DirectionKind dir = domino.getDirection();
-        switch (dir){
-            case Down:
-                x_right = x_left;
-                y_right = y_left - 1;
-                break;
-            case Left:
-                x_right = x_left - 1;
-                y_right = y_left;
-                break;
-            case Right:
-                x_right = x_left + 1;
-                y_right = y_left;
-                break;
-            case Up:
-                x_right = x_left;
-                y_right = y_left + 1;
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + dir);
-        }
+        int[] xy_right= DominoInKingdom.getRightTilePosition(x_left,y_left,dir);
+        x_right = xy_right[0];
+        y_right = xy_right[1];
         int pos_right = convertPositionToInt(x_right,y_right);
         squares[pos_right] = new Square(x_right, y_right,domino.getDomino().getRightCrown(),
                 domino.getDomino().getRightTile(), domino.getDomino().getId());
     }
 
-    /**
-     * Setter for int crown
-     * @param crown
-     */
-    public void setCrownNumber (int crown) {
+
+    public void setCrown (int crown) {
         this.crown = crown;
+    }
+
+    public TerrainType getTerrain() {
+        return terrain;
     }
 }

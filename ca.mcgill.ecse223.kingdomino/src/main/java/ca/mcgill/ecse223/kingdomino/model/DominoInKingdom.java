@@ -41,6 +41,37 @@ public class DominoInKingdom extends KingdomTerritory
   // INTERFACE
   //------------------------
 
+  /**
+   * Get domino's right tile's position as an integer pair
+   * @param x_left
+   * @param y_left
+   * @param dir
+   * @return Integer pair {x,y}
+   */
+  public static int[] getRightTilePosition(int x_left, int y_left, DirectionKind dir) {
+    int x_right, y_right;
+    switch (dir){
+      case Down:
+        x_right = x_left;
+        y_right = y_left - 1;
+        break;
+      case Left:
+        x_right = x_left - 1;
+        y_right = y_left;
+        break;
+      case Right:
+        x_right = x_left + 1;
+        y_right = y_left;
+        break;
+      case Up:
+        x_right = x_left;
+        y_right = y_left + 1;
+        break;
+      default:
+        throw new IllegalStateException("Unexpected value: " + dir);
+    }
+    return new int[]{x_right, y_right};
+  }
   public boolean setDirection(DirectionKind aDirection)
   {
     boolean wasSet = false;
