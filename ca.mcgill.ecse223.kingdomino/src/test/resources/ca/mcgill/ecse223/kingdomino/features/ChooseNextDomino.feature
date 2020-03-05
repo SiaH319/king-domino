@@ -17,9 +17,9 @@ Feature: Choose next domino
     Examples: 
       | nextdraft | selection               | chosendomino | currentplayer | newselection           |
       |   5,6,7,8 | green,none,yellow,none  |            8 | pink          | green,none,yellow,pink |
-      |   5,6,7,8 | none,none, yellow,none  |            8 | pink          | none,none,yellow,pink  |
-      |   5,6,7,8 | none,none, none,none    |            8 | pink          | none,none,none,pink    |
-      |   5,6,7,8 | green,blue, yellow,none |            8 | pink          | green,blue,yellow,pink |
+      |   5,6,7,8 | none,none,yellow,none   |            8 | pink          | none,none,yellow,pink  |
+      |   5,6,7,8 | none,none,none,none     |            8 | pink          | none,none,none,pink    |
+      |   5,6,7,8 | green,blue,yellow,none  |            8 | pink          | green,blue,yellow,pink |
 
   Scenario Outline: Player choses an occupied domino
     Given the next draft is sorted with dominoes "<nextdraft>"
