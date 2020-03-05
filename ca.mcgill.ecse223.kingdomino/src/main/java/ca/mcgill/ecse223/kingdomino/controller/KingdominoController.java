@@ -40,7 +40,7 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
  * @author Violet Wei & Cecilia Jiang
  */
 public class KingdominoController {
-	
+    private static Square[] grid;
     public KingdominoController() {
 
     }
@@ -82,5 +82,12 @@ public class KingdominoController {
 
     public void createDominoSelection() {
 
+    }
+
+    public static void setGrid(Square[] gridinput) {
+        grid = gridinput;
+    }
+    public static Square[] getGrid(){
+        return grid;
     }
 }
