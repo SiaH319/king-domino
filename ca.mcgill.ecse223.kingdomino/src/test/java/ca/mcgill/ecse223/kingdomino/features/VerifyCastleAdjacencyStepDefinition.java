@@ -51,7 +51,7 @@ public class VerifyCastleAdjacencyStepDefinition {
         DominoInKingdom dominoInKingdom = (DominoInKingdom)list.get(list.size() - 1);
 
         try {
-            isValid = VerificationController.verifyCastleAjacency(castle, dominoInKingdom);
+            isValid = VerificationController.verifyCastleAdjacency(castle, dominoInKingdom);
         }catch(IllegalArgumentException e){
             System.out.println(e.getMessage());
         }

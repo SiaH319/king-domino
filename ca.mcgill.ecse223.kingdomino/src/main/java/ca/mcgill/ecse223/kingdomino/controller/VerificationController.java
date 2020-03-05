@@ -2,7 +2,10 @@ package ca.mcgill.ecse223.kingdomino.controller;
 
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
+import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.TerrainType;
+
+import java.util.List;
 
 /**
  * @author Violet, Cecilia
@@ -53,7 +56,7 @@ public class VerificationController {
         for (int i = 0;i < 4; i++) {
             int x_a = x_left + adjacentXYList[i][0];
             int y_a = y_left + adjacentXYList[i][1];
-            if(!(x_a==x_right && y_a == y_right)){
+            if(!(x_a == x_right && y_a == y_right)){
                 int index = Square.convertPositionToInt(x_a, y_a);
                 result = result || isAdjacenttoGridSquare(castle, grid[index], domino.getDomino().getLeftTile());
                 if (result) return true;
@@ -63,7 +66,7 @@ public class VerificationController {
         for (int i = 0;i < 4; i++) {
             int x_a = x_right + adjacentXYList[i][0];
             int y_a = y_right + adjacentXYList[i][1];
-            if(!(x_a==x_left && y_a == y_left)){
+            if(!(x_a == x_left && y_a == y_left)){
                 int index = Square.convertPositionToInt(x_a, y_a);
                 result = result || isAdjacenttoGridSquare(castle, grid[index], domino.getDomino().getRightTile());
                 if (result) return true;
@@ -72,8 +75,38 @@ public class VerificationController {
         return false;
     }
 
+    public static boolean verifyGridSize(List<KingdomTerritory> territories){
+        boolean result = true;
+        int x_max = -10;
+        int x_min = 10;
+        int y_max = -10;
+        int y_min = 10;
+        for(KingdomTerritory territory: territories){
+
+                int x_left = territory.getX();
+                int y_left = territory.getY();
+                x_max = Math.max(x_max,x_left);
+                x_min = Math.min(x_min,x_left);
+                y_max = Math.max(y_max,y_left);
+                y_min = Math.min(y_min,y_left);
+
+                if(territory instanceof DominoInKingdom){
+                    int[] pos_right = DominoInKingdom.getRightTilePosition(x_left, y_left, ((DominoInKingdom) territory).getDirection());
+                    int x_right = pos_right[0];
+                    int y_right = pos_right[1];
+                    result = result && (x_right <=4 && x_right >= -4 && y_right <= 4 && y_right >= -4);
+
+                    x_max = Math.max(x_max,x_right);
+                    x_min = Math.min(x_min,x_right);
+                    y_max = Math.max(y_max,y_right);
+                    y_min = Math.min(y_min,y_right);
+            }
+        }
+       
+        return result && (y_max - y_min <= 4) && (x_max - x_min <= 4);
+    }
     /**
-     * Feature 16: Test if the preplaced domino overlaps existing castle or territory
+     * Feature 17: Test if the preplaced domino overlaps existing castle or territory
      * @author Cecilia Jiang
      * @param castle
      * @param grid
