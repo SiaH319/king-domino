@@ -19,8 +19,9 @@ import java.util.List;
 public class VerifyNeighborAdjacencyStepDefinition {
     private Boolean isValid;
     private Square[] grid;
+    
     @Given("the game is initialized for neighbor adjacency")
-    public void initialize_the_game(){
+    public void initialize_the_game() {
         // Intialize empty game
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = new Game(48, kingdomino);
@@ -39,7 +40,7 @@ public class VerifyNeighborAdjacencyStepDefinition {
     }
 
     @When("check current preplaced domino adjacency is initiated")
-    public void trigger_check_neighbor_adjacency(){
+    public void trigger_check_neighbor_adjacency() {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = kingdomino.getCurrentGame();
         Player player = game.getNextPlayer();
@@ -78,6 +79,7 @@ public class VerifyNeighborAdjacencyStepDefinition {
             new Castle(0, 0, kingdom, player);
         }
     }
+    
     private Domino getdominoByID(int id) {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         for (Domino domino : game.getAllDominos()) {
@@ -87,6 +89,7 @@ public class VerifyNeighborAdjacencyStepDefinition {
         }
         throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
     }
+
     private void createAllDominoes(Game game) {
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));

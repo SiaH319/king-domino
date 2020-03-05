@@ -13,7 +13,25 @@ import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 public class DominoController {
 
     public DominoController() {
-
     }
     
+    /**
+     * Controller implemented for Feature 10: Choose Next Domino
+     * @param domino
+     * @return
+     * @author Violet Wei
+     */
+    public static boolean chooseNextDomino(Domino domino) {
+        return true;
+    }
+
+    /**
+     * Controller implemented for Feature 11: Move Current Domino
+     * @param domino
+     * @return
+     * @author Violet Wei
+     */
+    public static boolean moveCurrentDomino(Domino domino) {
+        return true;
+    }
 }

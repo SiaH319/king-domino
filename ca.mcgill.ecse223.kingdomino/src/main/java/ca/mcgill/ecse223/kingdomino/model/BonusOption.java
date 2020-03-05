@@ -4,8 +4,7 @@
 package ca.mcgill.ecse223.kingdomino.model;
 
 // line 109 "../../../../../Kingdomino.ump"
-public class BonusOption
-{
+public class BonusOption {
 
   //------------------------
   // MEMBER VARIABLES
@@ -21,12 +20,10 @@ public class BonusOption
   // CONSTRUCTOR
   //------------------------
 
-  public BonusOption(String aOptionName, Kingdomino aKingdomino)
-  {
+  public BonusOption(String aOptionName, Kingdomino aKingdomino) {
     optionName = aOptionName;
     boolean didAddKingdomino = setKingdomino(aKingdomino);
-    if (!didAddKingdomino)
-    {
+    if (!didAddKingdomino) {
       throw new RuntimeException("Unable to create bonusOption due to kingdomino");
     }
   }
@@ -38,28 +35,24 @@ public class BonusOption
   /**
    * MiddleKingdom, Harmony
    */
-  public String getOptionName()
-  {
+  public String getOptionName() {
     return optionName;
   }
+
   /* Code from template association_GetOne */
-  public Kingdomino getKingdomino()
-  {
+  public Kingdomino getKingdomino() {
     return kingdomino;
   }
+
   /* Code from template association_SetOneToMany */
-  public boolean setKingdomino(Kingdomino aKingdomino)
-  {
+  public boolean setKingdomino(Kingdomino aKingdomino) {
     boolean wasSet = false;
-    if (aKingdomino == null)
-    {
+    if (aKingdomino == null) {
       return wasSet;
     }
-
     Kingdomino existingKingdomino = kingdomino;
     kingdomino = aKingdomino;
-    if (existingKingdomino != null && !existingKingdomino.equals(aKingdomino))
-    {
+    if (existingKingdomino != null && !existingKingdomino.equals(aKingdomino)) {
       existingKingdomino.removeBonusOption(this);
     }
     kingdomino.addBonusOption(this);
@@ -67,19 +60,15 @@ public class BonusOption
     return wasSet;
   }
 
-  public void delete()
-  {
+  public void delete() {
     Kingdomino placeholderKingdomino = kingdomino;
     this.kingdomino = null;
-    if(placeholderKingdomino != null)
-    {
+    if(placeholderKingdomino != null) {
       placeholderKingdomino.removeBonusOption(this);
     }
   }
 
-
-  public String toString()
-  {
+  public String toString() {
     return super.toString() + "["+
             "optionName" + ":" + getOptionName()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "kingdomino = "+(getKingdomino()!=null?Integer.toHexString(System.identityHashCode(getKingdomino())):"null");
