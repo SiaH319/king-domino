@@ -37,9 +37,12 @@ Feature: Load Game
 
   Scenario Outline: Invalid placement in game file
     When I initiate loading a saved game from "<filename>"
-    Then the game shall notify the user that the game file is invalid
+    Then the game shall notify the user that the loaded game is invalid
 
     Examples:
       | filename                                                       |
       | src/test/resources/kingdomino_test_game_invalid_move_1.mov     |
+      | src/test/resources/kingdomino_test_game_invalid_move_2.mov     |
+      | src/test/resources/kingdomino_test_game_invalid_move_3.mov     |
+      | src/test/resources/kingdomino_test_game_invalid_move_4.mov     |
 

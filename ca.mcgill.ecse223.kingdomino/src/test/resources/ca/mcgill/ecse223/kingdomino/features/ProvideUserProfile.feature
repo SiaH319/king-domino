@@ -40,19 +40,22 @@ Feature: Provide User Profile
       | testb |
     When I initiate the browsing of all users
     Then the users in the list shall be in the following alphabetical order:
-      | name    | placeinlist |
-      | "testa" |           1 |
-      | "testc" |           3 |
-      | "testb" |           2 |
+      | name  | placeinlist |
+      | testa |           1 |
+      | testc |           3 |
+      | testb |           2 |
 
-  Scenario: View game statistics for a user
+  Scenario Outline: View game statistics for a user
     Given the following users exist with their game statistics:
       | name  | playedGames | wonGames |
       | test1 |           0 |        0 |
       | test3 |           5 |        5 |
       | test2 |          10 |        6 |
     When I initiate querying the game statistics for a user "<name>"
-    Then the number of games played by and games won by the user shall be the following:
+    Then the number of games played by "<name>" shall be <playedGames> 
+    Then the number of games won by "<name>" shall be <wonGames>
+    
+    Examples:
       | name  | playedGames | wonGames |
       | test1 |           0 |        0 |
       | test3 |           5 |        5 |

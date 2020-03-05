@@ -5,12 +5,12 @@ Feature: Verify Neighbor Adjacency
   Background: 
     Given the game is initialized for neighbor adjacency
     Given the following dominoes are present in a player's kingdom:
-      | domino | dominodir | posx | posy |
-      |     27 | up        |    0 |    2 |
-      |     17 | down      |    3 |    3 |
-      |      1 | right     |    0 |    1 |
-      |     22 | left      |    3 |    1 |
-      |     46 | right     |   -1 |   -1 |
+      | id | dominodir | posx | posy |
+      | 27 | up        |    0 |    2 |
+      | 38 | down      |    3 |    3 |
+      |  1 | right     |    0 |    1 |
+      | 22 | left      |    3 |    1 |
+      | 46 | right     |   -1 |   -1 |
 
   Scenario Outline: Current domino is placed in adjacent territory with existing dominoes
     Given the current player preplaced the domino with ID <id> at position <x>:<y> and direction "<direction>"
@@ -25,7 +25,7 @@ Feature: Verify Neighbor Adjacency
       | 12 | -1 |  0 | up        | valid   |
       | 12 | -1 |  1 | up        | invalid |
       | 44 |  2 |  0 | down      | invalid |
-      | 42 |  2 |  2 | up        | valid   |
+      | 42 |  2 |  2 | up        | invalid |
       | 29 |  1 |  2 | up        | valid   |
       | 48 | -1 |  3 | down      | invalid |
       | 43 |  1 | -1 | right     | invalid |

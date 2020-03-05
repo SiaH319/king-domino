@@ -18,7 +18,7 @@ Feature: Identify Kingdom Properties
       | 32 | down      |    0 |   -1 |
       | 38 | right     |    1 |   -2 |
       | 40 | left      |    2 |    0 |
-      | 43 | down      |    2 |   -3 |
+      | 43 | right     |    2 |   -3 |
     When the properties of the player are identified
     Then the player shall have the following properties:
       | type     | dominoes    |
@@ -40,12 +40,12 @@ Feature: Identify Kingdom Properties
       | 10 | left      |   -1 |   -3 |
       | 12 | up        |   -4 |   -3 |
       | 13 | left      |    0 |   -1 |
-      | 16 | right     |   -1 |   -2 |
+      | 16 | left      |   -1 |   -2 |
       | 21 | up        |    0 |   -3 |
       | 23 | left      |   -3 |    1 |
       | 24 | right     |   -2 |    0 |
-      | 26 | left      |   -3 |   -1 |
-      | 38 | right     |   -3 |   -3 |
+      | 26 | right     |   -3 |   -1 |
+      | 38 | up        |   -3 |   -3 |
     When the properties of the player are identified
     Then the player shall have the following properties:
       | type     | dominoes |
