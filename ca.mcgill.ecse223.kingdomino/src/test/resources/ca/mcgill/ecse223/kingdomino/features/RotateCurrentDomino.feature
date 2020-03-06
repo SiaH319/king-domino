@@ -2,7 +2,7 @@ Feature: Rotate Current Domino
   As a player, I wish to evaluate a provisional placement of my current domino in my kingdom by rotating it (clockwise or counter-clockwise) (F12)
 
   Background: 
-    Given the game is initialized for move current domino
+    Given the game is initialized for rotate current domino
 
   Scenario Outline: Player rotates a tentatively placed domino
     Given it is "<player>"'s turn
