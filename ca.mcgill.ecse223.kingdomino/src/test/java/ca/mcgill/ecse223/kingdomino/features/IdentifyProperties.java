@@ -74,7 +74,7 @@ public class IdentifyProperties {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = kingdomino.getCurrentGame();
         Player player = game.getNextPlayer();
-        IdentifyPropertiesController.identifyPropertiesController(player);
+       // IdentifyPropertiesController.identifyPropertiesController(player);
         //not sure
 	    throw new cucumber.api.PendingException();
 	}

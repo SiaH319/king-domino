@@ -1,6 +1,5 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
-import java.util.List;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import static org.junit.Assert.assertEquals;
 import java.util.List;
@@ -17,33 +16,20 @@ import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import ca.mcgill.ecse223.kingdomino.model.Property;
 import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.User;
-import ca.mcgill.ecse223.kingdomino.model.*;
-import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import java.util.*;
 
-public class IdentifyPropertiesController {
 
-	//Each player have ONE kingdom. And in each kingdom, there are several properties
-	//Returning a list of properties
+public class CalculatePlayerScore {
 
-	public static void identifyKingdomProperties(Kingdom playersKingdom) {
-		//this method is suppose to make the properties for a given kingdom. 
-		
-		for (int i = 0; i< playersKingdom.getProperties().size(); i++) {
-			playersKingdom.getProperties().remove(i);
-		}
-			
-		
-		
-	}
+public void CalculatePlayerScore(Player player, Game currentGame) {
 	
-	public static void identifyProperties(TerrainType type, Kingdom playersKingdom) {
-		
-		//make a method that finds all
-		
-		
-		
-	}
+//calculate score when no bonus features are selected
 	
+ if(currentGame.getSelectedBonusOptions().isEmpty()){
+	 
+	 
+	 
+ }
+	
+}
 	
 }
