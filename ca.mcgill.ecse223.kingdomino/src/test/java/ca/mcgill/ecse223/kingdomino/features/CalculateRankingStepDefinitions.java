@@ -240,6 +240,12 @@ public class CalculateRankingStepDefinitions {
 					return p;
 				}
 			}
+		case "yelow":
+			for( Player p :game.getPlayers()) {
+				if(p.getColor().equals(PlayerColor.Yellow)) {
+					return p;
+				}
+			}
 		
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid color: " + color);

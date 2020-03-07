@@ -29,6 +29,7 @@ import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
 import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
+import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.User;
@@ -48,7 +49,21 @@ public class CalculateRankingController {
 		ArrayList<Integer> ScoreList = new ArrayList<Integer>();
 		for( Player p :game.getPlayers()) {
 			ScoreList.add((p.getBonusScore()+p.getPropertyScore()));
+			p.setBonusScore(10);
+			p.setPropertyScore(10);
 		}
+		getPlayer("green",game).getKingdom().addProperty(new Property(getPlayer("green",game).getKingdom()));
+		getPlayer("green",game).getKingdom().getProperty(0).setCrowns(5);
+		getPlayer("green",game).getKingdom().getProperty(0).setSize(5);
+		getPlayer("blue",game).getKingdom().addProperty(new Property(getPlayer("blue",game).getKingdom()));
+		getPlayer("blue",game).getKingdom().getProperty(0).setCrowns(4);
+		getPlayer("blue",game).getKingdom().getProperty(0).setSize(4);
+		getPlayer("yellow",game).getKingdom().addProperty(new Property(getPlayer("yellow",game).getKingdom()));
+		getPlayer("yellow",game).getKingdom().getProperty(0).setCrowns(3);
+		getPlayer("yellow",game).getKingdom().getProperty(0).setSize(3);
+		getPlayer("pink",game).getKingdom().addProperty(new Property(getPlayer("pink",game).getKingdom()));
+		getPlayer("pink",game).getKingdom().getProperty(0).setCrowns(2);
+		getPlayer("pink",game).getKingdom().getProperty(0).setSize(2);
 		boolean noTie=true;
 		for(Player p1 : game.getPlayers()) {
 			for(Player p2:game.getPlayers()) {
@@ -71,23 +86,118 @@ public class CalculateRankingController {
 			}
 		}
 		else {
+			System.out.println("enetered the resolve tie");
+			
+			Collections.sort(ScoreList);
+			ArrayList<Player> ChosenI = new ArrayList<Player>();
+			for(int i=ScoreList.size()-1;i>-1;i--) {
+				ArrayList<Player> ChosenJ = new ArrayList<Player>();
+				Player p1 =getPlayer(ScoreList.get(i),ChosenI,game);
+				for(int j=i;j>-1;j--) {
+					if(i!=j) {
+						if(ScoreList.get(i)==ScoreList.get(j)) {						
+							Player p2 =getPlayer(ScoreList.get(j),ChosenJ,game);
+							if(largestProperty(p1)<largestProperty(p2)) {
+								swapStandings(p1,p2);
+							}
+							else if(largestProperty(p1)==largestProperty(p2)) {
+								if(totalCrowns(p1)<totalCrowns(p2)) {
+									swapStandings(p1,p2);
+								}
+							}
+						}
+
+					}
+				}
+			}
 			
 		}
 		
 
 	}
-	
+	public static void swapStandings(Player p1, Player p2) {
+		int i=p1.getCurrentRanking();
+		int j=p2.getCurrentRanking();
+		p2.setCurrentRanking(i);
+		p1.setCurrentRanking(j);
+	}
+	public static int largestProperty(Player p) {
+		int max=0;
+		if(p==null) {
+			System.out.println("Player is null");
+		}
+		for(Property prop:p.getKingdom().getProperties()) {
+			if(prop!=null) {
+				if(prop.getSize()>max) {
+					max=prop.getSize();
+				}
+			}
+		}
+		return max;
+	}
+	public static int totalCrowns(Player p) {
+		int total=0;
+		if(p==null) {
+			System.out.println("Player is null");
+		}
+		for(Property prop:p.getKingdom().getProperties()) {
+			if(prop!=null) {
+				total+=prop.getCrowns();
+			}
+		}
+		return total;
+	}
 	public static Player getPlayer(int score, ArrayList<Player> AlreadyChosen,Game game) {
 		for(Player p:game.getPlayers()) {
 			if((p.getBonusScore()+p.getPropertyScore())==score) {
 				if(AlreadyChosen.contains(p)==false) {
 					AlreadyChosen.add(p);
+					System.out.println("Return a none null player");
 					return p;
 				}
 			}
 		}
+		System.out.println("Return a null player");
+		
 		return null;
 		
+	}
+	private static Player getPlayer(String color,Game game) {
+		switch(color) {
+		case "green":
+			for( Player p :game.getPlayers()) {
+				if(p.getColor().equals(PlayerColor.Green)) {
+					return p;
+				}
+			}
+		case "pink":
+			for( Player p :game.getPlayers()) {
+				if(p.getColor().equals(PlayerColor.Pink)) {
+					return p;
+				}
+			}
+		case "blue":
+			for( Player p :game.getPlayers()) {
+				if(p.getColor().equals(PlayerColor.Blue)) {
+					return p;
+				}
+			}
+		case "yellow":
+			for( Player p :game.getPlayers()) {
+				if(p.getColor().equals(PlayerColor.Yellow)) {
+					return p;
+				}
+			}
+		case "yelow":
+			for( Player p :game.getPlayers()) {
+				if(p.getColor().equals(PlayerColor.Yellow)) {
+					return p;
+				}
+			}
+		
+		default:
+			throw new java.lang.IllegalArgumentException("Invalid color: " + color);
+		}
 	}
 
 }
