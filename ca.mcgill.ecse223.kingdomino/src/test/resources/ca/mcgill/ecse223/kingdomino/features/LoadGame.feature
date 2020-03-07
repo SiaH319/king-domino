@@ -23,7 +23,6 @@ Feature: Load Game
       | 3            |  <p3claimed>  |
       | 4            |  <p4claimed>  |
     Then tiles "<unclaimed>" shall be unclaimed on the board
-    Then the game shall become ready to start
 
     Examples:
       | filename                                      | player    | p1tiles       | p2tiles     | p3tiles       | p4tiles         | p1claimed | p2claimed | p3claimed | p4claimed | unclaimed        |
