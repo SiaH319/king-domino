@@ -89,58 +89,38 @@ public class CalculateRankingStepDefinitions {
 	
 	@Given("the players have no tiebreak")
 	public void the_players_have_no_tiebreak() {
-		
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		getPlayer("green",game).setBonusScore(20);
+		getPlayer("green",game).setPropertyScore(20);
+		getPlayer("yellow",game).setBonusScore(15);
+		getPlayer("yellow",game).setPropertyScore(15);
+		getPlayer("pink",game).setBonusScore(10);
+		getPlayer("pink",game).setPropertyScore(10);
+		getPlayer("blue",game).setBonusScore(5);
+		getPlayer("blue",game).setPropertyScore(5);
 	}
+	
+
 	
 	@When("calculate ranking is initiated")
 	public void calculate_ranking_is_initiated() {
 		CalculateRankingController.calculateRanking();
 	}
 	
+	@Then("player standings shall be the followings:")
+	public void player_standing_shall_be_the_followings(io.cucumber.datatable.DataTable dataTable) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		for (Map<String, String> map : valueMaps) {
+			assertEquals(Integer.parseInt(map.get("standing")),getPlayer(map.get("player"),game).getCurrentRanking());
+		}
+		
+	}
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	
 	private void addDefaultUsersAndPlayers(Game game) {
