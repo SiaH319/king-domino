@@ -102,7 +102,7 @@ public class VerificationController {
                     y_min = Math.min(y_min,y_right);
             }
         }
-       
+
         return result && (y_max - y_min <= 4) && (x_max - x_min <= 4);
     }
     /**
