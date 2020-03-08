@@ -92,7 +92,11 @@ public class SaveGameStepDefinitions {
 
     @Given("the file named {string} exists in the filesystem")
     public void the_file_named_filename_exists_in_the_filesystem(String filename) {
-        boolean fileExists = SaveLoadGameController.createFile(filename);
+        SaveLoadGameController.deleteFile(filename);
+        SaveLoadGameController.createFile(filename);
+        File file = new File(filename);
+        boolean fileExists = file.exists();
+        // boolean fileExists = SaveLoadGameController.createFile(filename);
         assertEquals(true, fileExists);
         oldFile = new File(filename);
     }
