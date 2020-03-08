@@ -4,8 +4,7 @@
 package ca.mcgill.ecse223.kingdomino.model;
 
 // line 50 "../../../../../Kingdomino.ump"
-public class Domino
-{
+public class Domino {
 
   //------------------------
   // ENUMERATIONS
@@ -35,8 +34,7 @@ public class Domino
   // CONSTRUCTOR
   //------------------------
 
-  public Domino(int aId, TerrainType aLeftTile, TerrainType aRightTile, int aRightCrown, Game aGame)
-  {
+  public Domino(int aId, TerrainType aLeftTile, TerrainType aRightTile, int aRightCrown, Game aGame) {
     id = aId;
     leftTile = aLeftTile;
     rightTile = aRightTile;
@@ -44,12 +42,10 @@ public class Domino
     rightCrown = aRightCrown;
     status = DominoStatus.InPile;
     boolean didAddGame = setGame(aGame);
-    if (!didAddGame)
-    {
+    if (!didAddGame) {
       throw new RuntimeException("Unable to create allDomino due to game");
     }
-    if (aId<1||aId>48)
-    {
+    if (aId<1 || aId>48) {
       throw new RuntimeException("Please provide a valid id [id>=1&&id<=48]");
     }
   }
@@ -58,187 +54,154 @@ public class Domino
   // INTERFACE
   //------------------------
 
-  public boolean setStatus(DominoStatus aStatus)
-  {
+  public boolean setStatus(DominoStatus aStatus) {
     boolean wasSet = false;
     status = aStatus;
     wasSet = true;
     return wasSet;
   }
 
-  public int getId()
-  {
+  public int getId() {
     return id;
   }
 
-  public TerrainType getLeftTile()
-  {
+  public TerrainType getLeftTile() {
     return leftTile;
   }
 
-  public TerrainType getRightTile()
-  {
+  public TerrainType getRightTile() {
     return rightTile;
   }
 
-  public int getLeftCrown()
-  {
+  public int getLeftCrown() {
     return leftCrown;
   }
 
-  public int getRightCrown()
-  {
+  public int getRightCrown() {
     return rightCrown;
   }
 
-  public DominoStatus getStatus()
-  {
+  public DominoStatus getStatus() {
     return status;
   }
+
   /* Code from template association_GetOne */
-  public Domino getNextDomino()
-  {
+  public Domino getNextDomino() {
     return nextDomino;
   }
 
-  public boolean hasNextDomino()
-  {
+  public boolean hasNextDomino() {
     boolean has = nextDomino != null;
     return has;
   }
+
   /* Code from template association_GetOne */
-  public Game getGame()
-  {
+  public Game getGame() {
     return game;
   }
+
   /* Code from template association_GetOne */
-  public Domino getPrevDomino()
-  {
+  public Domino getPrevDomino() {
     return prevDomino;
   }
 
-  public boolean hasPrevDomino()
-  {
+  public boolean hasPrevDomino() {
     boolean has = prevDomino != null;
     return has;
   }
+
   /* Code from template association_GetOne */
-  public DominoSelection getDominoSelection()
-  {
+  public DominoSelection getDominoSelection() {
     return dominoSelection;
   }
 
-  public boolean hasDominoSelection()
-  {
+  public boolean hasDominoSelection() {
     boolean has = dominoSelection != null;
     return has;
   }
+
   /* Code from template association_SetOptionalOneToOptionalOne */
-  public boolean setNextDomino(Domino aNewNextDomino)
-  {
+  public boolean setNextDomino(Domino aNewNextDomino) {
     boolean wasSet = false;
-    if (aNewNextDomino == null)
-    {
+    if (aNewNextDomino == null) {
       Domino existingNextDomino = nextDomino;
       nextDomino = null;
-      
-      if (existingNextDomino != null && existingNextDomino.getPrevDomino() != null)
-      {
+      if (existingNextDomino != null && existingNextDomino.getPrevDomino() != null) {
         existingNextDomino.setPrevDomino(null);
       }
       wasSet = true;
       return wasSet;
     }
-
     Domino currentNextDomino = getNextDomino();
-    if (currentNextDomino != null && !currentNextDomino.equals(aNewNextDomino))
-    {
+    if (currentNextDomino != null && !currentNextDomino.equals(aNewNextDomino)) {
       currentNextDomino.setPrevDomino(null);
     }
-
     nextDomino = aNewNextDomino;
     Domino existingPrevDomino = aNewNextDomino.getPrevDomino();
-
-    if (!equals(existingPrevDomino))
-    {
+    if (!equals(existingPrevDomino)) {
       aNewNextDomino.setPrevDomino(this);
     }
     wasSet = true;
     return wasSet;
   }
+
   /* Code from template association_SetOneToMany */
-  public boolean setGame(Game aGame)
-  {
+  public boolean setGame(Game aGame) {
     boolean wasSet = false;
-    if (aGame == null)
-    {
+    if (aGame == null) {
       return wasSet;
     }
-
     Game existingGame = game;
     game = aGame;
-    if (existingGame != null && !existingGame.equals(aGame))
-    {
+    if (existingGame != null && !existingGame.equals(aGame)) {
       existingGame.removeAllDomino(this);
     }
     game.addAllDomino(this);
     wasSet = true;
     return wasSet;
   }
+
   /* Code from template association_SetOptionalOneToOptionalOne */
-  public boolean setPrevDomino(Domino aNewPrevDomino)
-  {
+  public boolean setPrevDomino(Domino aNewPrevDomino) {
     boolean wasSet = false;
-    if (aNewPrevDomino == null)
-    {
+    if (aNewPrevDomino == null) {
       Domino existingPrevDomino = prevDomino;
       prevDomino = null;
-      
-      if (existingPrevDomino != null && existingPrevDomino.getNextDomino() != null)
-      {
+      if (existingPrevDomino != null && existingPrevDomino.getNextDomino() != null) {
         existingPrevDomino.setNextDomino(null);
       }
       wasSet = true;
       return wasSet;
     }
-
     Domino currentPrevDomino = getPrevDomino();
-    if (currentPrevDomino != null && !currentPrevDomino.equals(aNewPrevDomino))
-    {
+    if (currentPrevDomino != null && !currentPrevDomino.equals(aNewPrevDomino)) {
       currentPrevDomino.setNextDomino(null);
     }
-
     prevDomino = aNewPrevDomino;
     Domino existingNextDomino = aNewPrevDomino.getNextDomino();
-
-    if (!equals(existingNextDomino))
-    {
+    if (!equals(existingNextDomino)) {
       aNewPrevDomino.setNextDomino(this);
     }
     wasSet = true;
     return wasSet;
   }
+
   /* Code from template association_SetOptionalOneToOne */
-  public boolean setDominoSelection(DominoSelection aNewDominoSelection)
-  {
+  public boolean setDominoSelection(DominoSelection aNewDominoSelection) {
     boolean wasSet = false;
     if (dominoSelection != null && !dominoSelection.equals(aNewDominoSelection) && equals(dominoSelection.getDomino()))
     {
       //Unable to setDominoSelection, as existing dominoSelection would become an orphan
       return wasSet;
     }
-
     dominoSelection = aNewDominoSelection;
     Domino anOldDomino = aNewDominoSelection != null ? aNewDominoSelection.getDomino() : null;
 
-    if (!this.equals(anOldDomino))
-    {
-      if (anOldDomino != null)
-      {
+    if (!this.equals(anOldDomino)) {
+      if (anOldDomino != null) {
         anOldDomino.dominoSelection = null;
       }
-      if (dominoSelection != null)
-      {
+      if (dominoSelection != null) {
         dominoSelection.setDomino(this);
       }
     }
@@ -246,33 +209,26 @@ public class Domino
     return wasSet;
   }
 
-  public void delete()
-  {
-    if (nextDomino != null)
-    {
+  public void delete() {
+    if (nextDomino != null) {
       nextDomino.setPrevDomino(null);
     }
     Game placeholderGame = game;
     this.game = null;
-    if(placeholderGame != null)
-    {
+    if(placeholderGame != null) {
       placeholderGame.removeAllDomino(this);
     }
-    if (prevDomino != null)
-    {
+    if (prevDomino != null) {
       prevDomino.setNextDomino(null);
     }
     DominoSelection existingDominoSelection = dominoSelection;
     dominoSelection = null;
-    if (existingDominoSelection != null)
-    {
+    if (existingDominoSelection != null) {
       existingDominoSelection.delete();
     }
   }
 
-
-  public String toString()
-  {
+  public String toString() {
     return super.toString() + "["+
             "id" + ":" + getId()+ "," +
             "leftCrown" + ":" + getLeftCrown()+ "," +

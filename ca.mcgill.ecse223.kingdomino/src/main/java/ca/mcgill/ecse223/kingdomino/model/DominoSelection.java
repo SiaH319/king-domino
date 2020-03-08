@@ -7,8 +7,7 @@ package ca.mcgill.ecse223.kingdomino.model;
  * This can also be an association class
  */
 // line 94 "../../../../../Kingdomino.ump"
-public class DominoSelection
-{
+public class DominoSelection {
 
   //------------------------
   // MEMBER VARIABLES
@@ -23,21 +22,17 @@ public class DominoSelection
   // CONSTRUCTOR
   //------------------------
 
-  public DominoSelection(Player aPlayer, Domino aDomino, Draft aDraft)
-  {
+  public DominoSelection(Player aPlayer, Domino aDomino, Draft aDraft) {
     boolean didAddPlayer = setPlayer(aPlayer);
-    if (!didAddPlayer)
-    {
+    if (!didAddPlayer) {
       throw new RuntimeException("Unable to create dominoSelection due to player");
     }
     boolean didAddDomino = setDomino(aDomino);
-    if (!didAddDomino)
-    {
+    if (!didAddDomino) {
       throw new RuntimeException("Unable to create dominoSelection due to domino");
     }
     boolean didAddDraft = setDraft(aDraft);
-    if (!didAddDraft)
-    {
+    if (!didAddDraft) {
       throw new RuntimeException("Unable to create selection due to draft");
     }
   }
@@ -46,33 +41,28 @@ public class DominoSelection
   // INTERFACE
   //------------------------
   /* Code from template association_GetOne */
-  public Player getPlayer()
-  {
+  public Player getPlayer() {
     return player;
   }
   /* Code from template association_GetOne */
-  public Domino getDomino()
-  {
+  public Domino getDomino() {
     return domino;
   }
   /* Code from template association_GetOne */
-  public Draft getDraft()
-  {
+  public Draft getDraft() {
     return draft;
   }
+
   /* Code from template association_SetOneToOptionalOne */
-  public boolean setPlayer(Player aNewPlayer)
-  {
+  public boolean setPlayer(Player aNewPlayer) {
     boolean wasSet = false;
-    if (aNewPlayer == null)
-    {
+    if (aNewPlayer == null) {
       //Unable to setPlayer to null, as dominoSelection must always be associated to a player
       return wasSet;
     }
     
     DominoSelection existingDominoSelection = aNewPlayer.getDominoSelection();
-    if (existingDominoSelection != null && !equals(existingDominoSelection))
-    {
+    if (existingDominoSelection != null && !equals(existingDominoSelection)) {
       //Unable to setPlayer, the current player already has a dominoSelection, which would be orphaned if it were re-assigned
       return wasSet;
     }
@@ -81,26 +71,23 @@ public class DominoSelection
     player = aNewPlayer;
     player.setDominoSelection(this);
 
-    if (anOldPlayer != null)
-    {
+    if (anOldPlayer != null) {
       anOldPlayer.setDominoSelection(null);
     }
     wasSet = true;
     return wasSet;
   }
+
   /* Code from template association_SetOneToOptionalOne */
-  public boolean setDomino(Domino aNewDomino)
-  {
+  public boolean setDomino(Domino aNewDomino) {
     boolean wasSet = false;
-    if (aNewDomino == null)
-    {
+    if (aNewDomino == null) {
       //Unable to setDomino to null, as dominoSelection must always be associated to a domino
       return wasSet;
     }
     
     DominoSelection existingDominoSelection = aNewDomino.getDominoSelection();
-    if (existingDominoSelection != null && !equals(existingDominoSelection))
-    {
+    if (existingDominoSelection != null && !equals(existingDominoSelection)) {
       //Unable to setDomino, the current domino already has a dominoSelection, which would be orphaned if it were re-assigned
       return wasSet;
     }
@@ -109,36 +96,31 @@ public class DominoSelection
     domino = aNewDomino;
     domino.setDominoSelection(this);
 
-    if (anOldDomino != null)
-    {
+    if (anOldDomino != null) {
       anOldDomino.setDominoSelection(null);
     }
     wasSet = true;
     return wasSet;
   }
+
   /* Code from template association_SetOneToAtMostN */
-  public boolean setDraft(Draft aDraft)
-  {
+  public boolean setDraft(Draft aDraft) {
     boolean wasSet = false;
     //Must provide draft to selection
-    if (aDraft == null)
-    {
+    if (aDraft == null) {
       return wasSet;
     }
 
     //draft already at maximum (4)
-    if (aDraft.numberOfSelections() >= Draft.maximumNumberOfSelections())
-    {
+    if (aDraft.numberOfSelections() >= Draft.maximumNumberOfSelections()) {
       return wasSet;
     }
     
     Draft existingDraft = draft;
     draft = aDraft;
-    if (existingDraft != null && !existingDraft.equals(aDraft))
-    {
+    if (existingDraft != null && !existingDraft.equals(aDraft)) {
       boolean didRemove = existingDraft.removeSelection(this);
-      if (!didRemove)
-      {
+      if (!didRemove) {
         draft = existingDraft;
         return wasSet;
       }
@@ -148,24 +130,20 @@ public class DominoSelection
     return wasSet;
   }
 
-  public void delete()
-  {
+  public void delete() {
     Player existingPlayer = player;
     player = null;
-    if (existingPlayer != null)
-    {
+    if (existingPlayer != null) {
       existingPlayer.setDominoSelection(null);
     }
     Domino existingDomino = domino;
     domino = null;
-    if (existingDomino != null)
-    {
+    if (existingDomino != null) {
       existingDomino.setDominoSelection(null);
     }
     Draft placeholderDraft = draft;
     this.draft = null;
-    if(placeholderDraft != null)
-    {
+    if(placeholderDraft != null) {
       placeholderDraft.removeSelection(this);
     }
   }

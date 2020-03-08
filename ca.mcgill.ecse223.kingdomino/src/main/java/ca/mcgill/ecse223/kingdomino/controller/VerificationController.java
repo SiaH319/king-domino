@@ -69,7 +69,7 @@ public class VerificationController {
         for (int i = 0;i < 4; i++) {
             int x_a = x_left + adjacentXYList[i][0];
             int y_a = y_left + adjacentXYList[i][1];
-            if(!(x_a == x_right && y_a == y_right)){
+            if (!(x_a == x_right && y_a == y_right)) {
                 int index = Square.convertPositionToInt(x_a, y_a);
                 if (index >= 0 && index < 81 && isAdjacenttoGridSquare(castle, grid[index], domino.getDomino().getLeftTile()))
                     result.add(index);
@@ -91,7 +91,7 @@ public class VerificationController {
         for (int i = 0;i < 4; i++) {
             int x_a = x_right + adjacentXYList[i][0];
             int y_a = y_right + adjacentXYList[i][1];
-            if(!(x_a == x_left && y_a == y_left)){
+            if (!(x_a == x_left && y_a == y_left)) {
                 int index = Square.convertPositionToInt(x_a, y_a);
                 if (index >= 0 && index < 81 && isAdjacenttoGridSquare(castle, grid[index], domino.getDomino().getRightTile()))
                     result.add(index);
@@ -99,6 +99,7 @@ public class VerificationController {
         }
         return result;
     }
+<<<<<<< HEAD
     /**
      * Feature 16: test if the current grid size if out of bound. It returns false if any single tile of a domino's x,y
      * coordinate is not within [-4, 4]. It also returns false when its size grows beyond 5 in either x or y direction.
@@ -107,13 +108,17 @@ public class VerificationController {
      * @return true if grid size is valid, false otherwise
      */
     public static boolean verifyGridSize(List<KingdomTerritory> territories){
+=======
+
+    public static boolean verifyGridSize(List<KingdomTerritory> territories) {
+>>>>>>> ac7e4e7a53c4268fa24104162c2028c50c70431b
         boolean result = true;
         int x_max = -10;
         int x_min = 10;
         int y_max = -10;
         int y_min = 10;
-        for(KingdomTerritory territory: territories){
 
+        for (KingdomTerritory territory: territories) {
                 int x_left = territory.getX();
                 int y_left = territory.getY();
                 x_max = Math.max(x_max,x_left);
@@ -121,7 +126,7 @@ public class VerificationController {
                 y_max = Math.max(y_max,y_left);
                 y_min = Math.min(y_min,y_left);
 
-                if(territory instanceof DominoInKingdom){
+                if (territory instanceof DominoInKingdom) {
                     int[] pos_right = DominoInKingdom.getRightTilePosition(x_left, y_left, ((DominoInKingdom) territory).getDirection());
                     int x_right = pos_right[0];
                     int y_right = pos_right[1];
@@ -168,8 +173,8 @@ public class VerificationController {
         ,castle.getY());
     }
 
-    private static boolean isAdjacentToCastle(int x1, int y1, int x2, int y2){
-        return (x1 == x2 && Math.abs(y1 - y2) == 1)||(y1 == y2 && Math.abs(x1 - x2) == 1);
+    private static boolean isAdjacentToCastle(int x1, int y1, int x2, int y2) {
+        return (x1 == x2 && Math.abs(y1 - y2) == 1) || (y1 == y2 && Math.abs(x1 - x2) == 1);
     }
 
     private static boolean noOverlappingWithCastle (Castle castle, int x, int y) {

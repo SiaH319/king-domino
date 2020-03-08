@@ -4,8 +4,7 @@
 package ca.mcgill.ecse223.kingdomino.model;
 
 // line 79 "../../../../../Kingdomino.ump"
-public class Castle extends KingdomTerritory
-{
+public class Castle extends KingdomTerritory {
 
   //------------------------
   // MEMBER VARIABLES
@@ -18,11 +17,9 @@ public class Castle extends KingdomTerritory
   // CONSTRUCTOR
   //------------------------
 
-  public Castle(int aX, int aY, Kingdom aKingdom, Player aPlayer)
-  {
+  public Castle(int aX, int aY, Kingdom aKingdom, Player aPlayer) {
     super(aX, aY, aKingdom);
-    if (!setPlayer(aPlayer))
-    {
+    if (!setPlayer(aPlayer)) {
       throw new RuntimeException("Unable to create Castle due to aPlayer");
     }
   }
@@ -31,24 +28,21 @@ public class Castle extends KingdomTerritory
   // INTERFACE
   //------------------------
   /* Code from template association_GetOne */
-  public Player getPlayer()
-  {
+  public Player getPlayer() {
     return player;
   }
+
   /* Code from template association_SetUnidirectionalOne */
-  public boolean setPlayer(Player aNewPlayer)
-  {
+  public boolean setPlayer(Player aNewPlayer) {
     boolean wasSet = false;
-    if (aNewPlayer != null)
-    {
+    if (aNewPlayer != null) {
       player = aNewPlayer;
       wasSet = true;
     }
     return wasSet;
   }
 
-  public void delete()
-  {
+  public void delete() {
     player = null;
     super.delete();
   }

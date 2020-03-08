@@ -8,8 +8,7 @@ import java.util.*;
  * Players, users
  */
 // line 27 "../../../../../Kingdomino.ump"
-public class User
-{
+public class User {
 
   //------------------------
   // STATIC VARIABLES
@@ -34,18 +33,15 @@ public class User
   // CONSTRUCTOR
   //------------------------
 
-  public User(String aName, Kingdomino aKingdomino)
-  {
+  public User(String aName, Kingdomino aKingdomino) {
     playedGames = 0;
     wonGames = 0;
-    if (!setName(aName))
-    {
+    if (!setName(aName)) {
       throw new RuntimeException("Cannot create due to duplicate name");
     }
     playerInGames = new ArrayList<Player>();
     boolean didAddKingdomino = setKingdomino(aKingdomino);
-    if (!didAddKingdomino)
-    {
+    if (!didAddKingdomino) {
       throw new RuntimeException("Unable to create user due to kingdomino");
     }
   }
@@ -54,8 +50,7 @@ public class User
   // INTERFACE
   //------------------------
 
-  public boolean setName(String aName)
-  {
+  public boolean setName(String aName) {
     boolean wasSet = false;
     String anOldName = getName();
     if (hasWithName(aName)) {
@@ -70,126 +65,111 @@ public class User
     return wasSet;
   }
 
-  public boolean setPlayedGames(int aPlayedGames)
-  {
+  public boolean setPlayedGames(int aPlayedGames) {
     boolean wasSet = false;
     playedGames = aPlayedGames;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setWonGames(int aWonGames)
-  {
+  public boolean setWonGames(int aWonGames) {
     boolean wasSet = false;
     wonGames = aWonGames;
     wasSet = true;
     return wasSet;
   }
 
-  public String getName()
-  {
+  public String getName() {
     return name;
   }
+
   /* Code from template attribute_GetUnique */
-  public static User getWithName(String aName)
-  {
+  public static User getWithName(String aName) {
     return usersByName.get(aName);
   }
+
   /* Code from template attribute_HasUnique */
-  public static boolean hasWithName(String aName)
-  {
+  public static boolean hasWithName(String aName) {
     return getWithName(aName) != null;
   }
 
-  public int getPlayedGames()
-  {
+  public int getPlayedGames() {
     return playedGames;
   }
 
-  public int getWonGames()
-  {
+  public int getWonGames() {
     return wonGames;
   }
+
   /* Code from template association_GetMany */
-  public Player getPlayerInGame(int index)
-  {
+  public Player getPlayerInGame(int index) {
     Player aPlayerInGame = playerInGames.get(index);
     return aPlayerInGame;
   }
 
-  public List<Player> getPlayerInGames()
-  {
+  public List<Player> getPlayerInGames() {
     List<Player> newPlayerInGames = Collections.unmodifiableList(playerInGames);
     return newPlayerInGames;
   }
 
-  public int numberOfPlayerInGames()
-  {
+  public int numberOfPlayerInGames() {
     int number = playerInGames.size();
     return number;
   }
 
-  public boolean hasPlayerInGames()
-  {
+  public boolean hasPlayerInGames() {
     boolean has = playerInGames.size() > 0;
     return has;
   }
 
-  public int indexOfPlayerInGame(Player aPlayerInGame)
-  {
+  public int indexOfPlayerInGame(Player aPlayerInGame) {
     int index = playerInGames.indexOf(aPlayerInGame);
     return index;
   }
+
   /* Code from template association_GetOne */
-  public Kingdomino getKingdomino()
-  {
+  public Kingdomino getKingdomino() {
     return kingdomino;
   }
+
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfPlayerInGames()
-  {
+  public static int minimumNumberOfPlayerInGames() {
     return 0;
   }
+
   /* Code from template association_AddManyToOptionalOne */
-  public boolean addPlayerInGame(Player aPlayerInGame)
-  {
+  public boolean addPlayerInGame(Player aPlayerInGame) {
     boolean wasAdded = false;
     if (playerInGames.contains(aPlayerInGame)) { return false; }
     User existingUser = aPlayerInGame.getUser();
-    if (existingUser == null)
-    {
+    if (existingUser == null) {
       aPlayerInGame.setUser(this);
     }
-    else if (!this.equals(existingUser))
-    {
+    else if (!this.equals(existingUser)) {
       existingUser.removePlayerInGame(aPlayerInGame);
       addPlayerInGame(aPlayerInGame);
     }
-    else
-    {
+    else {
       playerInGames.add(aPlayerInGame);
     }
     wasAdded = true;
     return wasAdded;
   }
 
-  public boolean removePlayerInGame(Player aPlayerInGame)
-  {
+  public boolean removePlayerInGame(Player aPlayerInGame) {
     boolean wasRemoved = false;
-    if (playerInGames.contains(aPlayerInGame))
-    {
+    if (playerInGames.contains(aPlayerInGame)) {
       playerInGames.remove(aPlayerInGame);
       aPlayerInGame.setUser(null);
       wasRemoved = true;
     }
     return wasRemoved;
   }
+
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addPlayerInGameAt(Player aPlayerInGame, int index)
-  {  
+  public boolean addPlayerInGameAt(Player aPlayerInGame, int index) {  
     boolean wasAdded = false;
-    if(addPlayerInGame(aPlayerInGame))
-    {
+    if(addPlayerInGame(aPlayerInGame)) {
       if(index < 0 ) { index = 0; }
       if(index > numberOfPlayerInGames()) { index = numberOfPlayerInGames() - 1; }
       playerInGames.remove(aPlayerInGame);
@@ -199,36 +179,29 @@ public class User
     return wasAdded;
   }
 
-  public boolean addOrMovePlayerInGameAt(Player aPlayerInGame, int index)
-  {
+  public boolean addOrMovePlayerInGameAt(Player aPlayerInGame, int index) {
     boolean wasAdded = false;
-    if(playerInGames.contains(aPlayerInGame))
-    {
+    if(playerInGames.contains(aPlayerInGame)) {
       if(index < 0 ) { index = 0; }
       if(index > numberOfPlayerInGames()) { index = numberOfPlayerInGames() - 1; }
       playerInGames.remove(aPlayerInGame);
       playerInGames.add(index, aPlayerInGame);
       wasAdded = true;
-    } 
-    else 
-    {
+    } else {
       wasAdded = addPlayerInGameAt(aPlayerInGame, index);
     }
     return wasAdded;
   }
+
   /* Code from template association_SetOneToMany */
-  public boolean setKingdomino(Kingdomino aKingdomino)
-  {
+  public boolean setKingdomino(Kingdomino aKingdomino) {
     boolean wasSet = false;
-    if (aKingdomino == null)
-    {
+    if (aKingdomino == null) {
       return wasSet;
     }
-
     Kingdomino existingKingdomino = kingdomino;
     kingdomino = aKingdomino;
-    if (existingKingdomino != null && !existingKingdomino.equals(aKingdomino))
-    {
+    if (existingKingdomino != null && !existingKingdomino.equals(aKingdomino)) {
       existingKingdomino.removeUser(this);
     }
     kingdomino.addUser(this);
@@ -236,24 +209,19 @@ public class User
     return wasSet;
   }
 
-  public void delete()
-  {
+  public void delete() {
     usersByName.remove(getName());
-    while( !playerInGames.isEmpty() )
-    {
+    while( !playerInGames.isEmpty() ) {
       playerInGames.get(0).setUser(null);
     }
     Kingdomino placeholderKingdomino = kingdomino;
     this.kingdomino = null;
-    if(placeholderKingdomino != null)
-    {
+    if(placeholderKingdomino != null) {
       placeholderKingdomino.removeUser(this);
     }
   }
 
-
-  public String toString()
-  {
+  public String toString() {
     return super.toString() + "["+
             "name" + ":" + getName()+ "," +
             "playedGames" + ":" + getPlayedGames()+ "," +
