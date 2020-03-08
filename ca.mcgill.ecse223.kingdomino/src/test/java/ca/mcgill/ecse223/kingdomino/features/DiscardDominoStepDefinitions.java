@@ -80,14 +80,15 @@ public class DiscardDominoStepDefinitions {
 		boolean added=false;
 		if(current==null) {
 			Draft newDraft=new Draft(DraftStatus.FaceUp,game);
-			current=newDraft;
-			added=current.addIdSortedDomino(getdominoByID(domID));
+			game.setCurrentDraft(newDraft);
+			current=game.getCurrentDraft();
+			current.addIdSortedDomino(getdominoByID(domID));
 		}
 		else {
-			added=current.addIdSortedDomino(getdominoByID(domID));
+			current.addIdSortedDomino(getdominoByID(domID));
 		}
-		assertEquals(true,added);
-		game.setCurrentDraft(current);
+		
+		
 		
 	}
 
@@ -96,12 +97,19 @@ public class DiscardDominoStepDefinitions {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Draft current = game.getCurrentDraft();
 		DominoSelection selectedD= new DominoSelection(game.getPlayer(0),getdominoByID(domID),current);
-		
+		game.getPlayer(0).setDominoSelection(selectedD);
+		getdominoByID(domID).setDominoSelection(selectedD);
+	
 	}
 
 	@Given("the player preplaces domino {int} at its initial position")
 	public void the_player_preplaces_domino_at_its_initial_position(Integer domID) {
-		// TODO: Write code here that turns the phrase above into concrete actions
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Player currentPl = game.getPlayer(0);
+		Kingdom kingdom = currentPl.getKingdom();
+		DominoInKingdom domino = new DominoInKingdom(0,0,kingdom,getdominoByID(domID));
+		kingdom.addTerritory(domino);
+		
 	}
 
 	@When("the player attempts to discard the selected domino")

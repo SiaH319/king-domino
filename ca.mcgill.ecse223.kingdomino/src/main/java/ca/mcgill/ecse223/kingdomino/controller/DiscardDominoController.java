@@ -48,8 +48,20 @@ public class DiscardDominoController {
 	public static void attempt_discard_selected_domino() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Player currentPl = game.getPlayer(0);
+		Kingdom kingdom = currentPl.getKingdom();
+		Domino domino=currentPl.getDominoSelection().getDomino();
+		TerrainType leftTile =domino.getLeftTile();
+		TerrainType righTile =domino.getRightTile();
 		
 	}
-	
-
+	public static boolean canBePlaced(TerrainType tile,Kingdom kingdom) {
+		ArrayList<DominoInKingdom> myList = new ArrayList<DominoInKingdom>();
+		for(KingdomTerritory kt : kingdom.getTerritories()) {
+			if(kt instanceof DominoInKingdom) {
+				myList.add((DominoInKingdom) kt);
+			}
+		}
+		
+		return false;
+	}
 }
