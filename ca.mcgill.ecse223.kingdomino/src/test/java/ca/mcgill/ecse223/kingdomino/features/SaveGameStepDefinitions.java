@@ -97,6 +97,11 @@ public class SaveGameStepDefinitions {
         File file = new File(filename);
         boolean fileExists = file.exists();
         // boolean fileExists = SaveLoadGameController.createFile(filename);
+        /*if (SaveLoadGameController.fileExists(filename)) {
+            fileExists = true;
+        } else {
+            fileExists = SaveLoadGameController.createFile(filename);
+        }*/
         assertEquals(true, fileExists);
         oldFile = new File(filename);
     }
