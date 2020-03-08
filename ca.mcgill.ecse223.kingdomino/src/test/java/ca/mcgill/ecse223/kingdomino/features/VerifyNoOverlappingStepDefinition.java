@@ -2,10 +2,7 @@ package ca.mcgill.ecse223.kingdomino.features;
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.GameController;
-import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.controller.Square;
-import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
+import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
@@ -35,6 +32,7 @@ public class VerifyNoOverlappingStepDefinition {
         KingdominoApplication.setKingdomino(kingdomino);
         String player0Name = (game.getPlayer(0).getUser().getName());
         GameController.setGrid(player0Name, new Square[81]);
+        GameController.setSet(player0Name, new DisjointSet(81));
         Square[] grid = GameController.getGrid(player0Name);
         for(int i = 4; i >=-4; i-- )
             for(int j = -4 ; j <= 4; j++)
@@ -61,9 +59,31 @@ public class VerifyNoOverlappingStepDefinition {
             dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
             String player0Name = (game.getPlayer(0).getUser().getName());
             Square[] grid = GameController.getGrid(player0Name);
-            Square.splitPlacedDomino (domInKingdom, grid);
-
+            int[] pos = Square.splitPlacedDomino (domInKingdom, grid);
+            DisjointSet s = GameController.getSet(player0Name);
+            Castle castle = getCastle(kingdom);
+            if(grid[pos[0]].getTerrain() == grid[pos[1]].getTerrain())
+                s.union(pos[0],pos[1]);
+            GameController.unionCurrentSquare(pos[0],VerificationController.getAdjacentSquareIndexesLeft
+                    (castle, grid, domInKingdom),s);
+            GameController.unionCurrentSquare(pos[1],VerificationController.getAdjacentSquareIndexesRight
+                    (castle, grid, domInKingdom),s);
         }
+
+        //Print Grid
+//        String player0Name = (game.getPlayer(0).getUser().getName());
+//        Square[] grid = GameController.getGrid(player0Name);
+//        for(int i = 4; i >=-4; i-- ){
+//            for(int j = -4 ; j <= 4; j++){
+//                int cur = Square.convertPositionToInt(j,i);
+//                char c = (grid[cur].getTerrain() == null) ?'/':printTerrain(grid[cur].getTerrain());
+//                System.out.print(""+cur+""+c+" ");
+//            }
+//            System.out.println();
+//        }
+//        System.out.println("Disjoint Set");
+//        System.out.println(GameController.getSet(player0Name).toString(grid));
+
     }
 
     @Given("the current player preplaced the domino with ID {int} at position <x>:<y> and direction {string}")
@@ -99,10 +119,40 @@ public class VerifyNoOverlappingStepDefinition {
     public void tearDown() {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         kingdomino.delete();
+        GameController.clearGrids();
+        GameController.clearSets();
     }
     ///////////////////////////////////////
     /// -----Private Helper Methods---- ///
     ///////////////////////////////////////
+    private char printTerrain(TerrainType terrainType){
+        char c;
+        switch(terrainType){
+            case WheatField:
+                c = 'W';
+                break;
+            case Mountain:
+                c = 'M';
+                break;
+            case Lake:
+                c = 'L';
+                break;
+            case Forest:
+                c = 'F';
+                break;
+            case Grass:
+                c = 'G';
+                break;
+            case Swamp:
+                c = 'S';
+                break;
+            default:
+                c = '/';
+                break;
+        }
+        return c;
+    }
+
 
     private void addDefaultUsersAndPlayers(Game game) {
         String[] userNames = { "User1", "User2", "User3", "User4" };

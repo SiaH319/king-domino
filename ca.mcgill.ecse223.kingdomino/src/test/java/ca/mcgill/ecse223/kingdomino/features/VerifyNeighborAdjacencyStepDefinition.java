@@ -2,10 +2,7 @@ package ca.mcgill.ecse223.kingdomino.features;
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.GameController;
-import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.controller.Square;
-import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
+import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
@@ -34,6 +31,7 @@ public class VerifyNeighborAdjacencyStepDefinition {
         KingdominoApplication.setKingdomino(kingdomino);
         String player0Name = (game.getPlayer(0).getUser().getName());
         GameController.setGrid(player0Name, new Square[81]);
+        GameController.setSet(player0Name, new DisjointSet(81));
         Square[] grid = GameController.getGrid(player0Name);
         for(int i = 4; i >=-4; i-- )
             for(int j = -4 ; j <= 4; j++)
@@ -65,6 +63,7 @@ public class VerifyNeighborAdjacencyStepDefinition {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         kingdomino.delete();
         GameController.clearGrids();
+        GameController.clearSets();
     }
     ///////////////////////////////////////
     /// -----Private Helper Methods---- ///

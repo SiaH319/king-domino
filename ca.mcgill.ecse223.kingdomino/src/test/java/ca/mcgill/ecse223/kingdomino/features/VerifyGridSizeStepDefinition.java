@@ -3,8 +3,6 @@ package ca.mcgill.ecse223.kingdomino.features;
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import io.cucumber.java.After;
@@ -16,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class VerifyGridSizeStepDefinition {
     private Boolean isValid;

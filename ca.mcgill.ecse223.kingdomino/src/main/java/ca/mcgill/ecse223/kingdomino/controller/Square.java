@@ -32,8 +32,9 @@ public class Square {
      * Split a domino with dstatus PlacedInKingdom into two squares and add then to Square list
      * @param domino
      * @param squares
+     * @return grid positions of domino tiles
      */
-    public static void splitPlacedDomino (DominoInKingdom domino, Square[] squares) {
+    public static int[] splitPlacedDomino (DominoInKingdom domino, Square[] squares) {
         int x_left = domino.getX();
         int y_left = domino.getY();
         int pos_left = convertPositionToInt(x_left, y_left);
@@ -48,6 +49,7 @@ public class Square {
         int pos_right = convertPositionToInt(x_right,y_right);
         squares[pos_right] = new Square(x_right, y_right,domino.getDomino().getRightCrown(),
                 domino.getDomino().getRightTile(), domino.getDomino().getId());
+        return new int[]{pos_left,pos_right};
     }
 
 
