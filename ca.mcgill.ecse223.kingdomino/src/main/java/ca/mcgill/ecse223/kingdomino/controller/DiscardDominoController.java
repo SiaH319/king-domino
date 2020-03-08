@@ -45,7 +45,12 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
  */
 public class DiscardDominoController {
 	
-	
+	/**
+	 * Feature 18 : Discard Domino
+	 * @author Mohamad Dimassi.
+	 * @param DominoInKingdom that we want to see if it can be discarded.
+	 * @return true if the domino can be placed correctly placed in the kingdom, false otherwise.
+	 */
 	public static boolean attempt_discard_selected_domino(DominoInKingdom dominoInKingdom) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Player currentPl = game.getPlayer(0);
@@ -54,11 +59,10 @@ public class DiscardDominoController {
 		Domino domino=currentPl.getDominoSelection().getDomino();
 		TerrainType leftTile =domino.getLeftTile();
 		TerrainType righTile =domino.getRightTile();
-		KingdominoController.setGrid(new Square[81]);
-		Square[] grid = KingdominoController.getGrid();
-        for(int i = 4; i >=-4; i-- )
-            for(int j = -4 ; j <= 4; j++)
-                grid[Square.convertPositionToInt(i,j)] = new Square(i,j);
+		
+
+		Square[] grid = GameController.getGrid(currentPl.getUser().getName());
+
         ArrayList<DominoInKingdom.DirectionKind> directions =new ArrayList<DominoInKingdom.DirectionKind>();
         directions.add(DirectionKind.Down);
         directions.add(DirectionKind.Left);
@@ -68,18 +72,14 @@ public class DiscardDominoController {
         for(int x=-4;x<5;x++) {
         	for(int y=-4;y<5;y++) {
         		for(DirectionKind dir :directions ) {
-//        			if((x==-1) && (y==-2) && (dir.equals(DirectionKind.Down))) {
-//        				System.out.println("I am now at the right empty place with the right driection and the domino is :"+domino.getId());
-//        			}
+//        			
         			dominoInKingdom.setDirection(dir);
         			dominoInKingdom.setX(x);
         			dominoInKingdom.setY(y);
-        			boolean CanNextToCastle = VerificationController.verifyCastleAdjacency(castle,dominoInKingdom);
-        			boolean CanNextToNeighboor = VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom);
-        			boolean GridSizeIsOK = VerificationController.verifyGridSize(currentPl.getKingdom().getTerritories());
-        			boolean NoOverlapping = VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom);
-        			if((CanNextToCastle || CanNextToNeighboor) && GridSizeIsOK && NoOverlapping) {
+        			
+        			if((VerificationController.verifyGridSize(currentPl.getKingdom().getTerritories()))  && (VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom)) && ((VerificationController.verifyCastleAdjacency(castle,dominoInKingdom)) || (VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))) {
         				System.out.println("Found a place where we can place the domino with x= "+x+" y="+y+"direction ="+dir);
+        				System.out.println("A this x,y there is :"+ grid[Square.convertPositionToInt(x,y)].getTerrain());
         				return true;
         			}
         		}

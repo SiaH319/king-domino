@@ -44,6 +44,11 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
  *         Created Mar 3, 2020.
  */
 public class CreateNextDraftController {
+	/**
+	 * 
+	 * Create a next draft and do the necessary changes.
+	 *
+	 */
 	public static void createNewDraftIsInitiated() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		if(game.getNextDraft()==null) {
@@ -71,6 +76,13 @@ public class CreateNextDraftController {
 		}
 		
 	}
+	/**
+	 * 
+	 * Tells if there can be more drafts created
+	 *
+	 * @param game
+	 * @return true if you can create more drafts, false otherwise
+	 */
 	public static boolean thereCanBeMoreDrafts(Game game) {
 		int numberOfDraftsCreated=game.getAllDrafts().size();
 		int numberOfPlayers=game.getNumberOfPlayers();

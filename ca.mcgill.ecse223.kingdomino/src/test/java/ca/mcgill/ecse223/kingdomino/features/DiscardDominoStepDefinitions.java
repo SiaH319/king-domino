@@ -10,6 +10,9 @@ import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.DiscardDominoController;
+import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
+import ca.mcgill.ecse223.kingdomino.controller.GameController;
+import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -39,38 +42,45 @@ public class DiscardDominoStepDefinitions {
 	@Given("the game is initialized for discard domino")
 	public void the_game_is_initialized_for_discard_domino() {
 		// Intialize empty game
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		// Populate game
-		addDefaultUsersAndPlayers(game);
-		createAllDominoes(game);
-		game.setNextPlayer(game.getPlayer(0));
-		KingdominoApplication.setKingdomino(kingdomino);
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+        Game game = new Game(48, kingdomino);
+        game.setNumberOfPlayers(4);
+        kingdomino.setCurrentGame(game);
+        // Populate game
+        addDefaultUsersAndPlayers(game);
+        createAllDominoes(game);
+        game.setNextPlayer(game.getPlayer(0));
+        KingdominoApplication.setKingdomino(kingdomino);
+        String player0Name = (game.getPlayer(0).getUser().getName());
+        GameController.setGrid(player0Name, new Square[81]);
+        GameController.setSet(player0Name, new DisjointSet(81));
+        Square[] grid = GameController.getGrid(player0Name);
+        for (int i = 4; i >= -4; i--)
+            for (int j = -4; j <= 4; j++)
+                grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
 	}
 	
 
 
 	//@Given("the player's kingdom has the following dominoes:")
-	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		List<Map<String, String>> valueMaps = dataTable.asMaps();
-		for (Map<String, String> map : valueMaps) {
-			// Get values from cucumber table
-			Integer id = Integer.decode(map.get("id"));
-			DirectionKind dir = getDirection(map.get("dominodir"));
-			Integer posx = Integer.decode(map.get("posx"));
-			Integer posy = Integer.decode(map.get("posy"));
-
-			// Add the domino to a player's kingdom
-			Domino dominoToPlace = getdominoByID(id);
-			Kingdom kingdom = game.getPlayer(0).getKingdom();
-			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
-			domInKingdom.setDirection(dir);
-			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
-		}
-	}
+//	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
+//		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+//		List<Map<String, String>> valueMaps = dataTable.asMaps();
+//		for (Map<String, String> map : valueMaps) {
+//			// Get values from cucumber table
+//			Integer id = Integer.decode(map.get("id"));
+//			DirectionKind dir = getDirection(map.get("dominodir"));
+//			Integer posx = Integer.decode(map.get("posx"));
+//			Integer posy = Integer.decode(map.get("posy"));
+//
+//			// Add the domino to a player's kingdom
+//			Domino dominoToPlace = getdominoByID(id);
+//			Kingdom kingdom = game.getPlayer(0).getKingdom();
+//			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
+//			domInKingdom.setDirection(dir);
+//			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
+//		}
+//	}
 
 	@Given("domino {int} is in the current draft")
 	public void domino_is_in_the_current_draft(Integer domID) {

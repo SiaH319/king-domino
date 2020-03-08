@@ -44,6 +44,11 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
  *         Created Mar 7, 2020.
  */
 public class CalculateRankingController {
+	/**
+	 * 
+	 * Sort the players according to their score,size of largest property and the total number of crowns each one has.
+	 *
+	 */
 	public static void calculateRanking() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		ArrayList<Integer> ScoreList = new ArrayList<Integer>();
@@ -97,11 +102,18 @@ public class CalculateRankingController {
 		
 
 	}
+	/**
+	 * 
+	 * Helper Method : Tells me if two players are equal
+	 *
+	 * @param p2:Player 1
+	 * @param p1:Player 1
+	 * @return true if both have the same scores,crowns total and size of largest property, false otherwise
+	 */
 	public static boolean playersEqual(Player p1,Player p2) {
 		if((p1.getBonusScore()+p1.getPropertyScore())==(p2.getBonusScore()+p2.getPropertyScore())){
 			if(largestProperty(p1)==largestProperty(p2)) {
 				if(totalCrowns(p1)==totalCrowns(p2)) {
-					System.out.println("two players are equal but shouldnt be");
 					return true;
 				}
 			}
@@ -114,6 +126,13 @@ public class CalculateRankingController {
 		p2.setCurrentRanking(i);
 		p1.setCurrentRanking(j);
 	}
+	/**
+	 * 
+	 * Helpler method, gets the size of largets property
+	 *
+	 * @param p : player
+	 * @return the size of the largest property
+	 */
 	public static int largestProperty(Player p) {
 		int max=0;
 		if(p==null) {
@@ -128,6 +147,13 @@ public class CalculateRankingController {
 		}
 		return max;
 	}
+	/**
+	 * 
+	 * Helper method: gets the total number of crowns 
+	 *
+	 * @param p : Player
+	 * @return the total number of crowns
+	 */
 	public static int totalCrowns(Player p) {
 		int total=0;
 		if(p==null) {
