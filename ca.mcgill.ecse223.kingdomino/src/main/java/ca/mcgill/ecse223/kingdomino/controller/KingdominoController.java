@@ -40,7 +40,7 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
  * @author Violet Wei & Cecilia Jiang
  */
 public class KingdominoController {
-	
+
     public KingdominoController() {
 
     }
@@ -83,4 +83,5 @@ public class KingdominoController {
     public void createDominoSelection() {
 
     }
+
 }
