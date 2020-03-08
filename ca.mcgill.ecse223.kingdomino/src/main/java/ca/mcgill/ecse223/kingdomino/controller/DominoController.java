@@ -46,7 +46,8 @@ public class DominoController {
     
         game.setNextPlayer(game.getPlayer(0));
         KingdominoApplication.setKingdomino(kingdomino);
-        KingdominoController.setGrid(new Square[81]);
+        String name = game.getPlayer(0).getUser().getName();
+        GameController.setGrid(name, new Square[81]);
 
         //Player currentPlayer = null;
         List<Domino> nextDraftDominos = getNextDraftDominos(draft);
