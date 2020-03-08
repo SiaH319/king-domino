@@ -24,7 +24,8 @@ import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
+import ca.mcgill.ecse223.kingdomino.features.CalculatePlayerScore;
+import ca.mcgill.ecse223.kingdomino.features.CalculatePropertyScore;
 
 public class CalculatePlayerScore {
 	

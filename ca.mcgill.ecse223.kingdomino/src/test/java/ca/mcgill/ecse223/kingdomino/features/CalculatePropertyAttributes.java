@@ -3,7 +3,10 @@ package ca.mcgill.ecse223.kingdomino.features;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
@@ -19,10 +22,13 @@ import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import ca.mcgill.ecse223.kingdomino.controller.CalculatePropertyAttributeController;
 
 public class CalculatePropertyAttributes {
 
-	//@given missing
+	private Player player;
+	
+	
 	@Given("the game is initialized for calculate property attributes")
 	// Intialize empty game
 	public void the_game_is_initialized_for_calculate_properties_attributes() {
@@ -37,41 +43,41 @@ public class CalculatePropertyAttributes {
 				KingdominoApplication.setKingdomino(kingdomino);
 			}
 	
-//	@Given("the player's kingdom also includes the domino {int} at position {int}:{int} with the direction {string}")
-//	public void the_player_s_kingdom_also_includes_the_domino_at_position_with_the_direction(Integer int1, Integer int2, Integer int3, String string) {
-	    // Write code here that turns the phrase above into concrete actions
-//	    throw new cucumber.api.PendingException();
-//	}
 
 	@When("calculate property attributes is initiated")
 	public void calculate_property_attributes_is_initiated() {
 	    // Write code here that turns the phrase above into concrete actions
 		 Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 	        Game game = kingdomino.getCurrentGame();
-	        Player player = game.getNextPlayer();
+	        player = game.getNextPlayer();
 	        Kingdom playersKingdom = player.getKingdom();
-	        
-	        
+	        CalculatePropertyAttributeController.CalculatePropertySize(playersKingdom);
 		
-	    throw new cucumber.api.PendingException();
+	    //throw new cucumber.api.PendingException();
 	}
 
 	@Then("the player shall have a total of {int} properties")
 	public void the_player_shall_have_a_total_of_properties(Integer int1) {
 	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+		Kingdom playersKingdom = player.getKingdom();
+		int numberOfProperties = playersKingdom.getProperties().size();
+		assertEquals(numberOfProperties, int1.intValue());
+		
+		
+	   // throw new cucumber.api.PendingException();
 	}
 
 	@Then("the player shall have properties with the following attributes:")
 	public void the_player_shall_have_properties_with_the_following_attributes(io.cucumber.datatable.DataTable dataTable) {
-	    // Write code here that turns the phrase above into concrete actions
-	    // For automatic transformation, change DataTable to one of
-	    // E, List<E>, List<List<E>>, List<Map<K,V>>, Map<K,V> or
-	    // Map<K, List<V>>. E,K,V must be a String, Integer, Float,
-	    // Double, Byte, Short, Long, BigInteger or BigDecimal.
-	    //
-	    // For other transformations you can register a DataTableType.
-	    throw new cucumber.api.PendingException();
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		for (Map<String, String> map : valueMaps) {
+			//unsure how
+			
+		}
+		
+	
+		
 	}
 	
 ///////////////////////////////////////
