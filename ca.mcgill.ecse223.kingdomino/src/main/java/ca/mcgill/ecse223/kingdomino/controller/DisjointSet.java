@@ -82,6 +82,9 @@ public class DisjointSet {
         return output;
     }
 
+    public int parArraySize(){
+        return par.length;
+    }
     /**
      * Getter for par array
      * @return

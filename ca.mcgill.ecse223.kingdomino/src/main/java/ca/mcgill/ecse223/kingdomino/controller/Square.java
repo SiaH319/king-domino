@@ -7,7 +7,9 @@ public class Square {
     private TerrainType terrain;
 
     private int position;
+
     private int crown;
+
     private int dominoId;
 
     public Square (int x, int y) {
@@ -62,5 +64,11 @@ public class Square {
     }
     public int getPosition() {
         return position;
+    }
+    public int getDominoId() {
+        return dominoId;
+    }
+    public int getCrown() {
+        return crown;
     }
 }

@@ -46,7 +46,7 @@ public class DiscardDominoStepDefinitions {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
-	@Given("the player's kingdom has the following dominoes:")
+	//@Given("the player's kingdom has the following dominoes:")
 	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
