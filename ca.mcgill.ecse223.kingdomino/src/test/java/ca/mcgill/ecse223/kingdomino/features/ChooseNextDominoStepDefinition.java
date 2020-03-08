@@ -127,7 +127,7 @@ public class ChooseNextDominoStepDefinition {
 		}
 	}
 
-	private static Domino getdominoByID(int id) {
+	private Domino getdominoByID(int id) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		for (Domino domino : game.getAllDominos()) {
 			if (domino.getId() == id) {

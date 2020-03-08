@@ -93,7 +93,8 @@ public class SaveLoadGameController {
         File file = new File(filename);
         if (!file.exists()) {
             try {
-                return file.createNewFile();
+                file.createNewFile();
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
