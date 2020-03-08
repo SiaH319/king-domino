@@ -3,6 +3,9 @@ package ca.mcgill.ecse223.kingdomino.features;
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
+import ca.mcgill.ecse223.kingdomino.controller.GameController;
+import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import io.cucumber.java.After;
@@ -19,7 +22,6 @@ public class VerifyGridSizeStepDefinition {
     private Boolean isValid;
     @Given("the game is initialized for verify grid size")
     public void initialize_the_game()  {
-        // Intialize empty game
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = new Game(48, kingdomino);
         game.setNumberOfPlayers(4);
@@ -29,6 +31,13 @@ public class VerifyGridSizeStepDefinition {
         createAllDominoes(game);
         game.setNextPlayer(game.getPlayer(0));
         KingdominoApplication.setKingdomino(kingdomino);
+        String player0Name = (game.getPlayer(0).getUser().getName());
+        GameController.setGrid(player0Name, new Square[81]);
+        GameController.setSet(player0Name, new DisjointSet(81));
+        Square[] grid = GameController.getGrid(player0Name);
+        for (int i = 4; i >= -4; i--)
+            for (int j = -4; j <= 4; j++)
+                grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
     }
 
     @Given("the  player preplaces domino {int} to their kingdom at position {int}:{int} with direction {string}")
