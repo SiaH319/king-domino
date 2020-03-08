@@ -30,24 +30,18 @@ public class ProvideUserProfile {
 	 *  As a player, 
 	 *  I wish to use my unique user name in when a game starts. 
 	 *  I also want the Kingdomino app to maintain my game statistics
-	 *   (e.g. number of games played, won, etc.). I also wish wish to view all users.
+	 *   (e.g. number of games played, won, etc.). 
+	 *   I also wish wish to view all users.
 	 */
-	Boolean isValid;
+	private boolean isValid;
 	
 	/*
 	 * Background
 	 */
 	@Given("the program is started and ready for providing user profile")
 	public void the_program_is_started_and_ready_for_providing_user_profile() {
-		try {
-			InitializationController.initializeGame();
-		}
-		catch (InvalidInputException e) {
-			e.printStackTrace();
-		}
-		KingdominoApplication.getKingdomino().getCurrentGame().hasPlayers();
-		KingdominoApplication.getKingdomino().getCurrentGame().hasNextPlayer();
-		KingdominoApplication.getKingdomino().getCurrentGame().getPlayers();
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		kingdomino.hasUsers();
 	}
 	
 	
@@ -55,23 +49,23 @@ public class ProvideUserProfile {
 	 *   Scenario Outline: Create the first user   
 	 *   Examples: 
   			| name      |
-      		| firstuser |
+      		| first user |
 	 */
-	 @Given("there are no users exist")
+	@Given("there are no users exist")
 	public void there_are_no_users_exist() {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		if (!(kingdomino.numberOfUsers()==0)) {
 			for (User user: kingdomino.getUsers()) {
-				kingdomino.removeUser(user);
+				user.delete();
 			}
 		}
 	}
 
 	@When("I provide my username {string} and initiate creating a new user")
-	public void i_provide_my_username_and_initiate_creating_a_new_user(String string) {
+	public void i_provide_my_username_and_initiate_creating_a_new_user(String name) {
 		try {
-			UserProfileController.initializeUser(string);
-		}
+			InitializationController.createUser(name);
+		} 		
 		catch (InvalidInputException e) {
 			e.printStackTrace();
 		}
@@ -79,32 +73,42 @@ public class ProvideUserProfile {
 
 
 	@Then("the user {string} shall be in the list of users")
-	public void the_user_shall_be_in_the_list_of_users(String string) {
-		String actual = User.getWithName(string).getName();
-		assertEquals(string, actual);	
+	public void the_user_shall_be_in_the_list_of_users(String name) {
+		String actual = User.getWithName(name).getName();
+		assertEquals(name, actual);	
 	}
 
+	
 	/*
 	 *   Scenario Outline: Create a new user
 	 */
 	@Given("the following users exist:")
-	public void the_following_users_exist(io.cucumber.datatable.DataTable dataTable) {
+	public void the_following_users_exist(io.cucumber.datatable.DataTable dataTable) throws InvalidInputException {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		for (Map<String, String> map : valueMaps) {
 			String name = map.get("name");
 			kingdomino.addUser(name);	
-			isValid = UserProfileController.verifyUserCreation(name);
+			isValid = verifyUserCreation(name);
 		}
 	}
 	
-	
-	//@69: When I provide my username "<name>" and initiate creating a new user
-	
+
 	@Then("the user creation shall {string}") // user creation shall fail or succeed
-	public void the_user_creation_shall(String status) {
-	    Boolean expectedStatus = (status.equals("fail"));
-	    assertEquals(expectedStatus,isValid);
+	public void the_user_creation_shall(String status) throws InvalidInputException {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Boolean expectedResult = (status.equals("fail")); // return false if creation status == fail
+		assertEquals(expectedResult,isValid);
+		}
+	    
+	// helper class
+	private static boolean verifyUserCreation(String name)throws InvalidInputException {
+		try {
+			KingdominoApplication.getKingdomino().addUser(name);
+		} catch (RuntimeException e) {
+			return false; //creation fail
+		}
+		return true; // creation succeed
 	}
 	
 	/*
@@ -169,5 +173,5 @@ public class ProvideUserProfile {
 	    throw new cucumber.api.PendingException();
 	}
 
-	
+
 }

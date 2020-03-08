@@ -36,9 +36,17 @@ public class InitializationController {
 		else {
 			throw new InvalidInputException("There already is a same user");
 		}
+		
+		
 	}
 
-	
+	public static void createUser(String name) throws InvalidInputException {
+		try {
+			KingdominoApplication.getKingdomino().addUser(name);
+		} catch (RuntimeException e) {
+			throw new InvalidInputException("The username " + name + " already exists");
+		}
+	}
 
 	//private helper class
 	public static class InvalidInputException extends Exception {
