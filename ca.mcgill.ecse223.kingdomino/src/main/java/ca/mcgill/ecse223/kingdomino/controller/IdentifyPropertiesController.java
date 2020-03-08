@@ -20,26 +20,30 @@ import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import java.util.*;
+import ca.mcgill.ecse223.kingdomino.controller.Square;
+import ca.mcgill.ecse223.kingdomino.controller.DominoController;
 
 public class IdentifyPropertiesController {
 
 	//Each player have ONE kingdom. And in each kingdom, there are several properties
 	//Returning a list of properties
-
-	public static void identifyKingdomProperties(Kingdom playersKingdom) {
-		//this method is suppose to make the properties for a given kingdom. 
-		
-		for (int i = 0; i< playersKingdom.getProperties().size(); i++) {
-			playersKingdom.getProperties().remove(i);
-		}
-			
 		
 		
-	}
 	
-	public static void identifyProperties(TerrainType type, Kingdom playersKingdom) {
+	public static void makeProperties(TerrainType type, Kingdom playersKingdom) {
+		Square[] tiles = KingdominoController.getGrid();
 		
-		//make a method that finds all
+		for(int i = 0; i < tiles.length; i++) {
+			
+		List<Square> sameTerrain = new ArrayList<Square>();
+		
+			if(tiles[i].getTerrain() == type) {
+	
+			sameTerrain.add(tiles[i]);
+			
+			}
+			
+		}
 		
 		
 		

@@ -28,7 +28,7 @@ public class CalculatePropertyAttributeController {
 	 */
 	//find size of each property
 	
-	public void CalculatePropertySize(Kingdom currentKingdom) {
+	public static void CalculatePropertySize(Kingdom currentKingdom) {
 	
 	for(int i =0; i < currentKingdom.numberOfProperties(); i++) {
 		
@@ -74,7 +74,7 @@ public class CalculatePropertyAttributeController {
 				List<Property> properties = currentKingdom.getProperties();
 				
 				Property tempProperty = properties.get(i);
-			
+				
 			
 				//go through all the dominos to get the number of crowns
 				

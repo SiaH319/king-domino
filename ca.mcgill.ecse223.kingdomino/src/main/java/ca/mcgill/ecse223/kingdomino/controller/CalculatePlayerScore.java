@@ -18,6 +18,7 @@ import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.User;
 
 
+
 public class CalculatePlayerScore {
 
 public void CalculatePlayerScore(Player player, Game currentGame) {
