@@ -13,7 +13,7 @@ import java.util.List;
 public class VerificationController {
 
     /**
-     * Feature 14: test if the current preplaced domino is next to castle
+     * Feature 14: test if the current preplaced domino is next to castle.
      * @author Cecilia Jiang
      * @param castle
      * @param domino
@@ -36,14 +36,20 @@ public class VerificationController {
     }
 
     /**
-     * Feature 15: test if the current preplaced domino is next to a territory
+     * Feature 15: test if the current preplaced domino is next to a territory.
      * @author Cecilia Jiang
      * @param castle
      * @param grid
      * @param domino
-     * @return true if adjacent to territory, false otherwise
+     * @return true if adjacent to KingdomTerritory excluding castle, false otherwise
      */
     public static boolean verifyNeighborAdjacency(Castle castle, Square[] grid, DominoInKingdom domino) {
+        if(castle == null)
+            throw new java.lang.IllegalArgumentException("Castle is not created");
+        if(grid == null)
+            throw new java.lang.IllegalArgumentException("grid is not created");
+        if(domino == null)
+            throw new java.lang.IllegalArgumentException("DominoInKingdom is not created");
         int x_left = domino.getX();
         int y_left = domino.getY();
 
@@ -58,7 +64,8 @@ public class VerificationController {
             int y_a = y_left + adjacentXYList[i][1];
             if(!(x_a == x_right && y_a == y_right)){
                 int index = Square.convertPositionToInt(x_a, y_a);
-                result = result || isAdjacenttoGridSquare(castle, grid[index], domino.getDomino().getLeftTile());
+                if (index >= 0 && index < 81)
+                    result = result || isAdjacenttoGridSquare(castle, grid[index], domino.getDomino().getLeftTile());
                 if (result) return true;
             }
         }
@@ -68,13 +75,21 @@ public class VerificationController {
             int y_a = y_right + adjacentXYList[i][1];
             if(!(x_a == x_left && y_a == y_left)){
                 int index = Square.convertPositionToInt(x_a, y_a);
-                result = result || isAdjacenttoGridSquare(castle, grid[index], domino.getDomino().getRightTile());
+                if (index >= 0 && index < 81)
+                    result = result || isAdjacenttoGridSquare(castle, grid[index], domino.getDomino().getRightTile());
                 if (result) return true;
             }
         }
         return false;
     }
 
+    /**
+     * Feature 16: test if the current grid size if out of bound. It returns false if any single tile of a domino's x,y
+     * coordinate is not within [-4, 4]. It also returns false when its size grows beyond 5 in either x or y direction.
+     * @author Cecilia Jiang
+     * @param territories
+     * @return true if grid size is valid, false otherwise
+     */
     public static boolean verifyGridSize(List<KingdomTerritory> territories){
         boolean result = true;
         int x_max = -10;
@@ -111,9 +126,15 @@ public class VerificationController {
      * @param castle
      * @param grid
      * @param domino
-     * @return
+     * @return true if no overlapping, false otherwise
      */
     public static boolean verifyNoOverlapping (Castle castle, Square[] grid, DominoInKingdom domino) {
+        if(castle == null)
+            throw new java.lang.IllegalArgumentException("Castle is not created");
+        if(grid == null)
+            throw new java.lang.IllegalArgumentException("grid is not created");
+        if(domino == null)
+            throw new java.lang.IllegalArgumentException("DominoInKingdom is not created");
         int x_left = domino.getX();
         int y_left = domino.getY();
 
@@ -140,6 +161,9 @@ public class VerificationController {
     }
 
     private static boolean noOverlappingWithDomino (Square[] grid, int x, int y) {
-        return grid[Square.convertPositionToInt(x,y)].getTerrain() == null;
+        int position = Square.convertPositionToInt(x,y);
+        if (position < 0 || position > 80)
+            throw new java.lang.IllegalArgumentException("The domino's placement does not follow grid size rule");
+        return grid[position].getTerrain() == null;
     }
 }

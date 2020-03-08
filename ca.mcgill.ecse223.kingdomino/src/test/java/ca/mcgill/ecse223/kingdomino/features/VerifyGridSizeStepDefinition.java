@@ -61,7 +61,6 @@ public class VerifyGridSizeStepDefinition {
     public void tearDown() {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         kingdomino.delete();
-        KingdominoController.setGrid(null);
     }
 
     ///////////////////////////////////////
