@@ -94,6 +94,8 @@ public class DiscardDominoStepDefinitions {
 		assertEquals(expectedStatus, actualStatus);
 	}
 
+	
+//	Then domino <id> shall have status "<dstatus>
 	///////////////////////////////////////
 	/// -----Private Helper Methods---- ///
 	///////////////////////////////////////

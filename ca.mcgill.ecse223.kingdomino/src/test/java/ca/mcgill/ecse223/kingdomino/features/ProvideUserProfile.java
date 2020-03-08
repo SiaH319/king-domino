@@ -1,117 +1,137 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
+import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.NewGameStartController;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+import java.util.Map;
+
+import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.*;
+import ca.mcgill.ecse223.kingdomino.controller.NewGameStartController.InvalidInputException;
+import ca.mcgill.ecse223.kingdomino.model.*;
+import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
+import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+/*
+ * 	/**
+	 * Creates a new user
+	 * 
+	 * @author Remi Carriere
+	 * @param name
+	 *            The name of the user
+	 * @throws ca.mcgill.ecse223.quoridor.controller.InvalidInputException
+	 *             if the user already exists or the username is invalid
+	 
+	public static void createUser(String name) throws InvalidInputException {
+		if (name.trim().length() == 0 || name == null || name.length() < 3) {
+			throw new InvalidInputException("Name must 3 or more charcters!");
+		}
+		try {
+			QuoridorApplication.getQuoridor().addUser(name);
+		} catch (RuntimeException e) {
+			throw new InvalidInputException("The username " + name + " already exists");
+		}
+	}
+ */
 public class ProvideUserProfile {
+	/**
+	 *  Feature: Provide User Profile
+	 *  @author: Sia Ham
+	 *  As a player, 
+	 *  I wish to use my unique user name in when a game starts. 
+	 *  I also want the Kingdomino app to maintain my game statistics
+	 *   (e.g. number of games played, won, etc.). I also wish wish to view all users.
+	 */
+	Boolean isValid;
+	
 	/*
-	 * Feature: Provide User Profile
-  As a player, I wish to use my unique user name in when a game starts. 
-  I also want the Kingdomino app to maintain my game statistics
-   (e.g. number of games played, won, etc.). I also wish wish to view all users.
-
-  Background: 
-    Given the program is started and ready for providing user profile
-
-  Scenario Outline: Create the first user
-    Given there are no users exist
-    When I provide my username "<name>" and initiate creating a new user
-    Then the user "<name>" shall be in the list of users
-
-    Examples: 
-      | name      |
-      | firstuser |
-
-  Scenario Outline: Create a new user
-    Given the following users exist:
-      | name  |
-      | test1 |
-      | test2 |
-    When I provide my username "<name>" and initiate creating a new user
-    Then the user creation shall "<status>"
-
-    Examples: 
-      | name  | status  |
-      | test1 | fail    |
-      | test2 | fail    |
-      | Test1 | fail    |
-      | test3 | succeed |
-      |       | fail    |
-      | te.() | fail    |
-
-  Scenario: List all users
-    Given the following users exist:
-      | name  |
-      | testa |
-      | testc |
-      | testb |
-    When I initiate the browsing of all users
-    Then the users in the list shall be in the following alphabetical order:
-      | name  | placeinlist |
-      | testa |           1 |
-      | testc |           3 |
-      | testb |           2 |
-
-  Scenario Outline: View game statistics for a user
-    Given the following users exist with their game statistics:
-      | name  | playedGames | wonGames |
-      | test1 |           0 |        0 |
-      | test3 |           5 |        5 |
-      | test2 |          10 |        6 |
-    When I initiate querying the game statistics for a user "<name>"
-    Then the number of games played by "<name>" shall be <playedGames> 
-    Then the number of games won by "<name>" shall be <wonGames>
-    
-    Examples:
-      | name  | playedGames | wonGames |
-      | test1 |           0 |        0 |
-      | test3 |           5 |        5 |
-      | test2 |          10 |        6 |
-
+	 * Background
 	 */
 	@Given("the program is started and ready for providing user profile")
 	public void the_program_is_started_and_ready_for_providing_user_profile() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+		try {
+			NewGameStartController.initializeGame();
+		}
+		catch (InvalidInputException e) {
+			e.printStackTrace();
+		}
+		KingdominoApplication.getKingdomino().getCurrentGame().hasPlayers();
+		KingdominoApplication.getKingdomino().getCurrentGame().hasNextPlayer();
+		KingdominoApplication.getKingdomino().getCurrentGame().getPlayers();
 	}
-
-	@Given("there are no users exist")
+	
+	
+	/*
+	 *   Scenario Outline: Create the first user   
+	 *   Examples: 
+  			| name      |
+      		| firstuser |
+	 */
+	 @Given("there are no users exist")
 	public void there_are_no_users_exist() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		if (!(kingdomino.numberOfUsers()==0)) {
+			for (User user: kingdomino.getUsers()) {
+				kingdomino.removeUser(user);
+			}
+		}
 	}
 
 	@When("I provide my username {string} and initiate creating a new user")
 	public void i_provide_my_username_and_initiate_creating_a_new_user(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+		try {
+			UserProfileController.initializeUser(string);
+		}
+		catch (InvalidInputException e) {
+			e.printStackTrace();
+		}
 	}
+
 
 	@Then("the user {string} shall be in the list of users")
 	public void the_user_shall_be_in_the_list_of_users(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+		String actual = User.getWithName(string).getName();
+		assertEquals(string, actual);	
 	}
 
+	/*
+	 *   Scenario Outline: Create a new user
+	 */
 	@Given("the following users exist:")
 	public void the_following_users_exist(io.cucumber.datatable.DataTable dataTable) {
-	    // Write code here that turns the phrase above into concrete actions
-	    // For automatic transformation, change DataTable to one of
-	    // E, List<E>, List<List<E>>, List<Map<K,V>>, Map<K,V> or
-	    // Map<K, List<V>>. E,K,V must be a String, Integer, Float,
-	    // Double, Byte, Short, Long, BigInteger or BigDecimal.
-	    //
-	    // For other transformations you can register a DataTableType.
-	    throw new cucumber.api.PendingException();
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		for (Map<String, String> map : valueMaps) {
+			String name = map.get("name");
+			kingdomino.addUser(name);	
+			isValid = UserProfileController.verifyUserCreation(name);
+		}
 	}
-
-	@Then("the user creation shall {string}")
-	public void the_user_creation_shall(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+	
+	
+	//@69: When I provide my username "<name>" and initiate creating a new user
+	
+	@Then("the user creation shall {string}") // user creation shall fail or succeed
+	public void the_user_creation_shall(String status) {
+	    Boolean expectedStatus = (status.equals("fail"));
+	    assertEquals(expectedStatus,isValid);
 	}
-
+	
+	/*
+	 *    Scenario: List all users
+	 */
+	
+	//@89: Given the following users exist:
 	@When("I initiate the browsing of all users")
 	public void i_initiate_the_browsing_of_all_users() {
 	    // Write code here that turns the phrase above into concrete actions
@@ -129,23 +149,32 @@ public class ProvideUserProfile {
 	    // For other transformations you can register a DataTableType.
 	    throw new cucumber.api.PendingException();
 	}
+	/*
+	 *   Scenario Outline: View game statistics for a user
+	 */
 
 	@Given("the following users exist with their game statistics:")
 	public void the_following_users_exist_with_their_game_statistics(io.cucumber.datatable.DataTable dataTable) {
-	    // Write code here that turns the phrase above into concrete actions
-	    // For automatic transformation, change DataTable to one of
-	    // E, List<E>, List<List<E>>, List<Map<K,V>>, Map<K,V> or
-	    // Map<K, List<V>>. E,K,V must be a String, Integer, Float,
-	    // Double, Byte, Short, Long, BigInteger or BigDecimal.
-	    //
-	    // For other transformations you can register a DataTableType.
-	    throw new cucumber.api.PendingException();
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		for (Map<String, String> map : valueMaps) {
+			// Get values from cucumber table
+			User user = kingdomino.addUser(map.get("name"));
+			Integer played = Integer.decode(map.get("playedGames"));
+			Integer won = Integer.decode(map.get("wonGame"));
+	
+			// users has their game statistics
+			user.setWonGames(won);
+			user.setPlayedGames(played);}
 	}
 
 	@When("I initiate querying the game statistics for a user {string}")
 	public void i_initiate_querying_the_game_statistics_for_a_user(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		for (User user: kingdomino.getUsers()) {
+			user.getPlayedGames();
+			user.getWonGames();
+		}
 	}
 
 	@Then("the number of games played by and games won by the user shall be the following:")

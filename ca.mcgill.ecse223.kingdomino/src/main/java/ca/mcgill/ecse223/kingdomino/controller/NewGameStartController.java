@@ -11,10 +11,9 @@ import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
-public class InitializeController {
+public class NewGameStartController {
 	public static void initializeGame() throws InvalidInputException{
 		if (KingdominoApplication.getKingdomino().getCurrentGame() == null) {
-
 			KingdominoApplication.getKingdomino().setCurrentGame(new Game(48, KingdominoApplication.getKingdomino()));
 		}
 		else {
@@ -27,9 +26,10 @@ public class InitializeController {
 			new Draft(DraftStatus.FaceDown, KingdominoApplication.getKingdomino().getCurrentGame());	
 		}
 		else {
-			throw new InvalidInputException("A game is already running");
+			throw new InvalidInputException("A drat already exists");
 		}
 	}
+	
 	public static void addDefaultUsersAndPlayers(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
 		for (int i = 0; i < userNames.length; i++) {
@@ -41,7 +41,7 @@ public class InitializeController {
 			new Castle(0, 0, kingdom, player);
 		}
 	}
-
+	
 
 	//private helper class
 	public static class InvalidInputException extends Exception {
