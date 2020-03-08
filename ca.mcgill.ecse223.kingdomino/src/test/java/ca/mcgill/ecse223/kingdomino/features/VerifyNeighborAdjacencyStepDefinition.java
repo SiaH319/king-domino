@@ -2,9 +2,7 @@ package ca.mcgill.ecse223.kingdomino.features;
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.controller.Square;
-import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
+import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
@@ -19,8 +17,9 @@ import java.util.List;
 public class VerifyNeighborAdjacencyStepDefinition {
     private Boolean isValid;
     private Square[] grid;
+    
     @Given("the game is initialized for neighbor adjacency")
-    public void initialize_the_game(){
+    public void initialize_the_game() {
         // Intialize empty game
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = new Game(48, kingdomino);
@@ -31,22 +30,25 @@ public class VerifyNeighborAdjacencyStepDefinition {
         createAllDominoes(game);
         game.setNextPlayer(game.getPlayer(0));
         KingdominoApplication.setKingdomino(kingdomino);
-        KingdominoController.setGrid(new Square[81]);
-        Square[] grid = KingdominoController.getGrid();
+        String player0Name = (game.getPlayer(0).getUser().getName());
+        GameController.setGrid(player0Name, new Square[81]);
+        GameController.setSet(player0Name, new DisjointSet(81));
+        Square[] grid = GameController.getGrid(player0Name);
         for(int i = 4; i >=-4; i-- )
             for(int j = -4 ; j <= 4; j++)
                 grid[Square.convertPositionToInt(i,j)] = new Square(i,j);
     }
 
     @When("check current preplaced domino adjacency is initiated")
-    public void trigger_check_neighbor_adjacency(){
+    public void trigger_check_neighbor_adjacency() {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = kingdomino.getCurrentGame();
         Player player = game.getNextPlayer();
         Castle castle = getCastle(player.getKingdom());
         List<KingdomTerritory> list= player.getKingdom().getTerritories();
         DominoInKingdom dominoInKingdom = (DominoInKingdom)list.get(list.size() - 1);
-        Square[] grid = KingdominoController.getGrid();
+        String player0Name = (game.getPlayer(0).getUser().getName());
+        Square[] grid = GameController.getGrid(player0Name);
         if (castle != null && dominoInKingdom != null && grid !=null)
             isValid = VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom);
     }
@@ -61,7 +63,8 @@ public class VerifyNeighborAdjacencyStepDefinition {
     public void tearDown() {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         kingdomino.delete();
-        KingdominoController.setGrid(null);
+        GameController.clearGrids();
+        GameController.clearSets();
     }
     ///////////////////////////////////////
     /// -----Private Helper Methods---- ///
@@ -78,6 +81,7 @@ public class VerifyNeighborAdjacencyStepDefinition {
             new Castle(0, 0, kingdom, player);
         }
     }
+    
     private Domino getdominoByID(int id) {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         for (Domino domino : game.getAllDominos()) {
@@ -87,6 +91,7 @@ public class VerifyNeighborAdjacencyStepDefinition {
         }
         throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
     }
+
     private void createAllDominoes(Game game) {
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));

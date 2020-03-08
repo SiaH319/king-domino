@@ -12,7 +12,7 @@ Feature: Save Game
     Then a file named "<filename>" shall be created in the filesystem
 
     Examples:
-      | filename                             |
+      | filename                              |
       | src/test/resources/save_game_test.mov |
 
   Scenario Outline: Save game overwrites existing file name
@@ -22,5 +22,5 @@ Feature: Save Game
     Then the file named "<filename>" shall be updated in the filesystem
 
     Examples:
-      | filename           |
+      | filename                              |
       | src/test/resources/save_game_test.mov |

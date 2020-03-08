@@ -55,6 +55,36 @@ public class DisjointSet {
         return mergedRep;
     }
 
+    public String toString(Square[] grid){
+        int pari,countsets=0;
+        String output = "";
+        String[] setstrings = new String[this.par.length];
+        /* build string for each set */
+        for (int i=0; i<this.par.length; i++) {
+            pari = find(i);
+            if(grid[i].getTerrain()!=null){
+                if (setstrings[pari]==null) {
+                    setstrings[pari] = String.valueOf(i);
+                    countsets+=1;
+                } else {
+                    setstrings[pari] += "," + i;
+
+                }
+            }
+        }
+        /* print strings */
+        output = countsets + " set(s):\n";
+        for (int i=0; i<this.par.length; i++) {
+            if (setstrings[i] != null) {
+                output += i + " : " + setstrings[i] + "\n";
+            }
+        }
+        return output;
+    }
+
+    public int parArraySize(){
+        return par.length;
+    }
     /**
      * Getter for par array
      * @return

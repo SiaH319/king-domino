@@ -33,13 +33,24 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 public class SaveLoadGameController {
 
     public SaveLoadGameController() {
-
     }
 
+    /**
+     * Controller implemented for Feature 7: Save Game
+     * @param fileName
+     * @return
+     * @author Violet Wei
+     */
     public static boolean saveGame(String fileName) {
         return true;
     }
 
+    /**
+     * Controller implemented for Feature 6: Load Game
+     * @param fileName
+     * @return
+     * @author Violet Wei
+     */
     public static boolean loadGame(String fileName) {
         return true;
     }

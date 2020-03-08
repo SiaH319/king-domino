@@ -33,4 +33,7 @@ Feature: Choose next domino
       |   5,6,7,8 | green,none,yellow,none |              7 | pink          |
       |   5,6,7,8 | none,none,yellow,none  |              7 | pink          |
       |   5,6,7,8 | green,blue,yellow,none |              7 | pink          |
+<<<<<<< HEAD
 
+=======
+>>>>>>> ac7e4e7a53c4268fa24104162c2028c50c70431b
