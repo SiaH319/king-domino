@@ -30,6 +30,9 @@ public class ChooseNextDominoStepDefinition {
 
     Kingdomino kingdomino = new Kingdomino();
     Game game = new Game(48, kingdomino);
+    Draft nDraft;
+    String color;
+
 
     @Given("the game is initialized for choose next domino")
     public void the_game_is_initialized_for_choose_next_domino() {
@@ -54,6 +57,7 @@ public class ChooseNextDominoStepDefinition {
             draft.addIdSortedDomino(getdominoByID(Integer.parseInt(dominoids[i])));
         }
         draft.setDraftStatus(DraftStatus.Sorted);
+        nDraft = draft;
         DraftStatus draftStatus = draft.getDraftStatus();
         assertEquals(DraftStatus.Sorted, draftStatus);
     }
@@ -65,12 +69,14 @@ public class ChooseNextDominoStepDefinition {
 
     @Given("the current player is {string}")
     public void the_current_player_is_currentplayer(String player) {
+        color = player;
 
     }
 
     @When("current player chooses to place king on {int}")
     public void current_player_chooses_to_place_king_on_chosendominoid(int chosendominoid) {
-
+        boolean canChoose = DominoController.chooseNextDomino(game, getPlayerColor(color), nDraft, chosendominoid);
+        assertEquals(true, canChoose);
     }
 
     @Then("current player king now is on {string}")
@@ -88,6 +94,18 @@ public class ChooseNextDominoStepDefinition {
     @Then("the selection for the next draft selection is still {string}")
     public void the_selection_for_the_next_draft_selection_is_still_selection(String selection) {
 
+    }
+
+    private PlayerColor getPlayerColor(String color) {
+        if (color.equals("pink")) {
+            return PlayerColor.Pink;
+        } else if (color.equals("green")) {
+            return PlayerColor.Green;
+        } else if (color.equals("yellow")) {
+            return PlayerColor.Yellow;
+        } else {
+            return PlayerColor.Blue;
+        }
     }
 
 

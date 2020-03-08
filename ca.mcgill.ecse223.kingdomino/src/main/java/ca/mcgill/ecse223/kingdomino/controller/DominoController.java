@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
 import ca.mcgill.ecse223.kingdomino.model.Draft;
@@ -11,6 +12,8 @@ import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
+import ca.mcgill.ecse223.kingdomino.model.TerrainType;
+import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
@@ -22,8 +25,10 @@ import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
  */
 public class DominoController {
 
-    Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-    
+    //Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+    static Game game;
+    static Player currentPlayer;
+
     /**
      * Controller implemented for Feature 10: Choose Next Domino
      * @param game
@@ -31,12 +36,22 @@ public class DominoController {
      *         false if selection for next draft remains same
      * @author Violet Wei
      */
-    public static boolean chooseNextDomino(Game game, PlayerColor color, String nextDraft, int dominoId) {
-        Draft draft = getNextDraft(nextDraft, game);
+    public static boolean chooseNextDomino(Game game, PlayerColor color, Draft draft, int dominoId) {
+        //Draft draft = getNextDraft(nextDraft, game);
+        game = KingdominoApplication.getKingdomino().getCurrentGame();
+
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+        game.setNumberOfPlayers(4);
+        kingdomino.setCurrentGame(game);
+    
+        game.setNextPlayer(game.getPlayer(0));
+        KingdominoApplication.setKingdomino(kingdomino);
+        KingdominoController.setGrid(new Square[81]);
+
+        //Player currentPlayer = null;
         List<Domino> nextDraftDominos = getNextDraftDominos(draft);
         List<DominoSelection> dominoSelection = getDominoSelection(draft);
         List<Player> players = game.getPlayers();
-        Player currentPlayer = new Player(game);
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getColor().equals(color)) {
                 currentPlayer = players.get(i);
@@ -47,18 +62,39 @@ public class DominoController {
             if (nextDraftDominos.get(i).getId() == dominoId) {
                 if (nextDraftDominos.get(i).getDominoSelection() == null) {  
                     DominoSelection selection = new DominoSelection(currentPlayer, nextDraftDominos.get(i), draft);
+                    currentPlayer.setDominoSelection(selection);
                     draft.addSelectionAt(selection, i);
-                    newDominoSelection.add(i, selection);
+                    newDominoSelection.add(selection);
                 } else {
                     newDominoSelection = dominoSelection;
                     return false;
                 }
             } else {
-                newDominoSelection.add(i, dominoSelection.get(i));
+                //newDominoSelection.add(dominoSelection.get(i));
             }
         }
         return true;
     }
+
+    
+    private static TerrainType getTerrainType(String terrain) {
+		switch (terrain) {
+		case "W":
+			return TerrainType.WheatField;
+		case "F":
+			return TerrainType.Forest;
+		case "M":
+			return TerrainType.Mountain;
+		case "G":
+			return TerrainType.Grass;
+		case "S":
+			return TerrainType.Swamp;
+		case "L":
+			return TerrainType.Lake;
+		default:
+			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+		}
+	}
 
     private static Domino getdominoByID(int id) {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
