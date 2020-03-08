@@ -73,6 +73,7 @@ public class DominoController {
             } else {
                 //newDominoSelection.add(dominoSelection.get(i));
             }
+            game.setNextDraft(draft);
         }
         return true;
     }

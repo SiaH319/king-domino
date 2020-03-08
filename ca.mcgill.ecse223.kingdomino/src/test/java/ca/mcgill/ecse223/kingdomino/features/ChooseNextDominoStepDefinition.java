@@ -16,9 +16,11 @@ import io.cucumber.java.en.When;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Feature: Choose next domino
@@ -32,12 +34,12 @@ public class ChooseNextDominoStepDefinition {
     Game game = new Game(48, kingdomino);
     Draft nDraft;
     String color;
-
+    Player currentPlayer;
 
     @Given("the game is initialized for choose next domino")
     public void the_game_is_initialized_for_choose_next_domino() {
         // Intialize empty game
-       game.setNumberOfPlayers(4);
+        game.setNumberOfPlayers(4);
         //game.getNextDraft().setDraftStatus(DraftStatus.Sorted);
 		kingdomino.setCurrentGame(game);
 		// Populate game
@@ -57,6 +59,7 @@ public class ChooseNextDominoStepDefinition {
             draft.addIdSortedDomino(getdominoByID(Integer.parseInt(dominoids[i])));
         }
         draft.setDraftStatus(DraftStatus.Sorted);
+        game.setNextDraft(draft);
         nDraft = draft;
         DraftStatus draftStatus = draft.getDraftStatus();
         assertEquals(DraftStatus.Sorted, draftStatus);
@@ -64,13 +67,31 @@ public class ChooseNextDominoStepDefinition {
 
     @Given("player's domino selection {string}")
     public void players_domino_selection_(String selection) {
-
+        String[] selections = selection.split(",");
+        game.setCurrentDraft(nDraft);
+        assertNotNull(selections);
     }
 
     @Given("the current player is {string}")
-    public void the_current_player_is_currentplayer(String player) {
-        color = player;
-
+    public void the_current_player_is_currentplayer(String playerColor) {
+        color = playerColor;
+        PlayerColor playercolor;
+        if (playerColor.equals("pink")) {
+            playercolor = PlayerColor.Pink;
+        } else if (playerColor.equals("green")) {
+            playercolor = PlayerColor.Green;
+        } else if (playerColor.equals("yellow")) {
+            playercolor = PlayerColor.Yellow;
+        } else {
+            playercolor = PlayerColor.Blue;
+        }
+        List<Player> players = game.getPlayers();
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getColor().equals(playercolor)) {
+                currentPlayer = players.get(i);
+            }
+        }
+        assertNotNull(currentPlayer);
     }
 
     @When("current player chooses to place king on {int}")
@@ -81,19 +102,38 @@ public class ChooseNextDominoStepDefinition {
 
     @Then("current player king now is on {string}")
     public void current_player_king_now_is_on_chosendominoid(String chosendominoid) {
-
+        Domino chosendomino = getdominoByID(Integer.parseInt(chosendominoid));
+        DominoSelection dominoselection = currentPlayer.getDominoSelection();
+        Domino nowdomiono = dominoselection.getDomino();
+        assertEquals(nowdomiono, chosendomino);
     }
 
     @Then("the selection for next draft is now equal to {string}")
     public void the_selection_for_next_draft_is_now_equal_to_newselection(String newselection) {
-
+        String[] newSelections = newselection.split(",");
+        PlayerColor[] cols = new PlayerColor[4];
+        for (int i = 0; i < newSelections.length; i++) {
+            if (newSelections[i].equals("pink")) {
+                cols[i] = PlayerColor.Pink;
+            } else if (newSelections[i].equals("blue")) {
+                cols[i] = PlayerColor.Blue;
+            } else if (newSelections[i].equals("yellow")) {
+                cols[i] = PlayerColor.Yellow;
+            } else {
+                cols[i] = PlayerColor.Green;
+            }
+        }
+        List<DominoSelection> selection = game.getNextDraft().getSelections();
+        assertEquals(cols[3], selection.get(0).getPlayer().getColor());
     }
 
     /* Scenario Outline: Player choses an occupied domino */
     
     @Then("the selection for the next draft selection is still {string}")
     public void the_selection_for_the_next_draft_selection_is_still_selection(String selection) {
-
+        List<DominoSelection> olddominoselect = game.getNextDraft().getSelections();
+        List<DominoSelection> curdominoselect = game.getCurrentDraft().getSelections();
+        assertEquals(olddominoselect, curdominoselect);
     }
 
     private PlayerColor getPlayerColor(String color) {
