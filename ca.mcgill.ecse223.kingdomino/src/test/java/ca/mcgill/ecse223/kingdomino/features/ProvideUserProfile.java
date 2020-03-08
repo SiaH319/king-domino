@@ -1,7 +1,7 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.NewGameStartController;
+import ca.mcgill.ecse223.kingdomino.controller.InitializationController;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.*;
-import ca.mcgill.ecse223.kingdomino.controller.NewGameStartController.InvalidInputException;
+import ca.mcgill.ecse223.kingdomino.controller.InitializationController.InvalidInputException;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
@@ -22,27 +22,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-/*
- * 	/**
-	 * Creates a new user
-	 * 
-	 * @author Remi Carriere
-	 * @param name
-	 *            The name of the user
-	 * @throws ca.mcgill.ecse223.quoridor.controller.InvalidInputException
-	 *             if the user already exists or the username is invalid
-	 
-	public static void createUser(String name) throws InvalidInputException {
-		if (name.trim().length() == 0 || name == null || name.length() < 3) {
-			throw new InvalidInputException("Name must 3 or more charcters!");
-		}
-		try {
-			QuoridorApplication.getQuoridor().addUser(name);
-		} catch (RuntimeException e) {
-			throw new InvalidInputException("The username " + name + " already exists");
-		}
-	}
- */
+
 public class ProvideUserProfile {
 	/**
 	 *  Feature: Provide User Profile
@@ -60,7 +40,7 @@ public class ProvideUserProfile {
 	@Given("the program is started and ready for providing user profile")
 	public void the_program_is_started_and_ready_for_providing_user_profile() {
 		try {
-			NewGameStartController.initializeGame();
+			InitializationController.initializeGame();
 		}
 		catch (InvalidInputException e) {
 			e.printStackTrace();

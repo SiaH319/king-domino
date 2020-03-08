@@ -1,23 +1,30 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
-import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 import ca.mcgill.ecse223.kingdomino.model.Castle;
-import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
-import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
 import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
-import java.util.List;
-import java.util.StringTokenizer;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
-public class BroseDominoController {
+public class addDefaultController {
+	public static void addDefaultUsersAndPlayers(Game game) {
+		String[] userNames = { "User1", "User2", "User3", "User4" };
+		for (int i = 0; i < userNames.length; i++) {
+			User user = game.getKingdomino().addUser(userNames[i]);
+			Player player = new Player(game);
+			player.setUser(user);
+			player.setColor(PlayerColor.values()[i]);
+			Kingdom kingdom = new Kingdom(player);
+			new Castle(0, 0, kingdom, player);
+		}
+	}
+	
 	public static void addDefaultDominoes(Game game) {
 		BufferedReader reader;
 		boolean hasCrown;
@@ -70,18 +77,5 @@ public class BroseDominoController {
 		}
 				
 	}
-	public static void bubbleSortById(List<Domino> dominos) { 
-        int n = dominos.size(); 
-        for (int i = 0; i < n-1; i++) 
-            for (int j = 0; j < n-i-1; j++) 
-                if (dominos[j].getId() > dominos[j+1].getId()) 
-                { 
-                    // swap arr[j+1] and arr[i] 
-                    int temp = dominos[j]; 
-                    dominos[j] = dominos[j+1]; 
-                    dominos[j+1] = temp; 
-                } 
-    }
-	
-	}
 
+}

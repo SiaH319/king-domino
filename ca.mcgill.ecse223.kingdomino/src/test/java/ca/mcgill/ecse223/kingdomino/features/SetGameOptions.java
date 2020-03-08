@@ -1,7 +1,7 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.NewGameStartController;
+import ca.mcgill.ecse223.kingdomino.controller.InitializationController;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.*;
-import ca.mcgill.ecse223.kingdomino.controller.NewGameStartController.InvalidInputException;
+import ca.mcgill.ecse223.kingdomino.controller.InitializationController.InvalidInputException;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
@@ -38,7 +38,7 @@ public class SetGameOptions {
 	@Given("the game is initialized for set game options")
 	public void the_game_is_initialized_for_set_game_options() {
 		try {
-			NewGameStartController.initializeGame();
+			InitializationController.initializeGame();
 		}
 		catch (InvalidInputException e) {
 			e.printStackTrace();

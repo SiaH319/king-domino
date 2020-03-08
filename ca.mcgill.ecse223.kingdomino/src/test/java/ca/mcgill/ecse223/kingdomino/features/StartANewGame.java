@@ -3,7 +3,7 @@ package ca.mcgill.ecse223.kingdomino.features;
 import java.util.List;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.*;
-import ca.mcgill.ecse223.kingdomino.controller.NewGameStartController.InvalidInputException;
+import ca.mcgill.ecse223.kingdomino.controller.InitializationController.InvalidInputException;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import io.cucumber.java.en.Given;
@@ -41,22 +41,22 @@ public class StartANewGame {
 	public void there_are_four_selected_players() {
 		Game game = new Game(48, KingdominoApplication.getKingdomino());
 		game.setNumberOfPlayers(4);
-		NewGameStartController.addDefaultUsersAndPlayers(game);
+		addDefaultController.addDefaultUsersAndPlayers(game);
 	}
 
 	@Given("bonus options Harmony and MiddleKingdom are selected")
 	public void bonus_options_Harmony_and_MiddleKingdom_are_selected() {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-		Game currentGame = new Game(48, KingdominoApplication.getKingdomino());
-		currentGame.hasSelectedBonusOptions();
-		currentGame.addSelectedBonusOption(new BonusOption("Harmony", kingdomino));
-		currentGame.addSelectedBonusOption(new BonusOption("MiddleKingdom", kingdomino));
+		Game game = new Game(48, KingdominoApplication.getKingdomino());
+		game.hasSelectedBonusOptions();
+		game.addSelectedBonusOption(new BonusOption("Harmony", kingdomino));
+		game.addSelectedBonusOption(new BonusOption("MiddleKingdom", kingdomino));
 	}
 
 	@When("starting a new game is initiated")
 	public void starting_a_new_game_is_initiated() {
 		try {
-			NewGameStartController.initializeGame();
+			InitializationController.initializeGame();
 		}
 		catch (InvalidInputException e) {
 			e.printStackTrace();
@@ -66,7 +66,7 @@ public class StartANewGame {
 	@When("reveal first draft is initiated")
 	public void reveal_first_draft_is_initiated() {
 		try {
-			NewGameStartController.initializeDraft();
+			InitializationController.initializeDraft();
 		}
 		catch (InvalidInputException e) {
 			e.printStackTrace();
@@ -84,7 +84,6 @@ public class StartANewGame {
 		}
 	}
 
-	//Then all castle are placed at 0:0 in their respective kingdoms
 	@Then("all castle are placed at {int}:{int} in their respective kingdoms")
 	public void all_castle_are_placed_at_in_their_respective_kingdoms(Integer int1, Integer int2) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
