@@ -44,10 +44,12 @@ public class DominoSelection {
   public Player getPlayer() {
     return player;
   }
+
   /* Code from template association_GetOne */
   public Domino getDomino() {
     return domino;
   }
+
   /* Code from template association_GetOne */
   public Draft getDraft() {
     return draft;
@@ -66,7 +68,6 @@ public class DominoSelection {
       //Unable to setPlayer, the current player already has a dominoSelection, which would be orphaned if it were re-assigned
       return wasSet;
     }
-    
     Player anOldPlayer = player;
     player = aNewPlayer;
     player.setDominoSelection(this);
@@ -85,7 +86,7 @@ public class DominoSelection {
       //Unable to setDomino to null, as dominoSelection must always be associated to a domino
       return wasSet;
     }
-    
+
     DominoSelection existingDominoSelection = aNewDomino.getDominoSelection();
     if (existingDominoSelection != null && !equals(existingDominoSelection)) {
       //Unable to setDomino, the current domino already has a dominoSelection, which would be orphaned if it were re-assigned

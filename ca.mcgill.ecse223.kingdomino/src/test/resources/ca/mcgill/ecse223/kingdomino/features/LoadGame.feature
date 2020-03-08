@@ -36,7 +36,7 @@ Feature: Load Game
 
   Scenario Outline: Invalid placement in game file
     When I initiate loading a saved game from "<filename>"
-    Then the game shall notify the user that the loaded game is invalid
+    Then the game shall notify the user that the loaded game from "<filename>" is invalid
 
     Examples:
       | filename                                                       |
