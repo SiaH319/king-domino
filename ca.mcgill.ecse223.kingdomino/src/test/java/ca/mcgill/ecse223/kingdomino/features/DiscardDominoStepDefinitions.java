@@ -30,7 +30,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 public class DiscardDominoStepDefinitions {
-
+	DominoInKingdom dominoInKingdom;
 	/*
 	 * Note that these step definitions and helper methods just serve as a guide to help
 	 * you get started. You may change the code if required.
@@ -107,15 +107,20 @@ public class DiscardDominoStepDefinitions {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Player currentPl = game.getPlayer(0);
 		Kingdom kingdom = currentPl.getKingdom();
-		DominoInKingdom domino = new DominoInKingdom(0,0,kingdom,getdominoByID(domID));
-		kingdom.addTerritory(domino);
+		dominoInKingdom = new DominoInKingdom(0,0,kingdom,getdominoByID(domID));
+		kingdom.addTerritory(dominoInKingdom);
 		
 	}
 
 	@When("the player attempts to discard the selected domino")
 	public void the_player_attempts_to_discard_the_selected_domino() {
-		DiscardDominoController.attempt_discard_selected_domino();
-		throw new cucumber.api.PendingException(); // Remove this line once your controller method is implemented
+		boolean CanBePlaced=DiscardDominoController.attempt_discard_selected_domino(dominoInKingdom);
+		if(CanBePlaced) {
+			dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
+		}
+		else {
+			dominoInKingdom.getDomino().setStatus(DominoStatus.Discarded);
+		}
 	}
 	
 
