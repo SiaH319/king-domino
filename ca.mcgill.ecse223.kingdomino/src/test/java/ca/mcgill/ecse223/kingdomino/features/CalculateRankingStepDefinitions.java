@@ -90,14 +90,7 @@ public class CalculateRankingStepDefinitions {
 	@Given("the players have no tiebreak")
 	public void the_players_have_no_tiebreak() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		getPlayer("green",game).setBonusScore(20);
-		getPlayer("green",game).setPropertyScore(20);
-		getPlayer("yellow",game).setBonusScore(15);
-		getPlayer("yellow",game).setPropertyScore(15);
-		getPlayer("pink",game).setBonusScore(10);
-		getPlayer("pink",game).setPropertyScore(10);
-		getPlayer("blue",game).setBonusScore(5);
-		getPlayer("blue",game).setPropertyScore(5);
+		
 	}
 	
 

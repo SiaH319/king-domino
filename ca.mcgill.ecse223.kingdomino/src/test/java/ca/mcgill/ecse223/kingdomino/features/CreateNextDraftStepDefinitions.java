@@ -174,9 +174,6 @@ public class CreateNextDraftStepDefinitions {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		setNextDraft=game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1));
 		
-		
-		
-		
 	}
 	@Given("this is a {int} player game")
 	public void this_is_a_player_game(Integer numOfPlayer) {

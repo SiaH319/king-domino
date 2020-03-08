@@ -49,21 +49,9 @@ public class CalculateRankingController {
 		ArrayList<Integer> ScoreList = new ArrayList<Integer>();
 		for( Player p :game.getPlayers()) {
 			ScoreList.add((p.getBonusScore()+p.getPropertyScore()));
-			p.setBonusScore(10);
-			p.setPropertyScore(10);
+			
 		}
-		getPlayer("green",game).getKingdom().addProperty(new Property(getPlayer("green",game).getKingdom()));
-		getPlayer("green",game).getKingdom().getProperty(0).setCrowns(5);
-		getPlayer("green",game).getKingdom().getProperty(0).setSize(5);
-		getPlayer("blue",game).getKingdom().addProperty(new Property(getPlayer("blue",game).getKingdom()));
-		getPlayer("blue",game).getKingdom().getProperty(0).setCrowns(4);
-		getPlayer("blue",game).getKingdom().getProperty(0).setSize(4);
-		getPlayer("yellow",game).getKingdom().addProperty(new Property(getPlayer("yellow",game).getKingdom()));
-		getPlayer("yellow",game).getKingdom().getProperty(0).setCrowns(3);
-		getPlayer("yellow",game).getKingdom().getProperty(0).setSize(3);
-		getPlayer("pink",game).getKingdom().addProperty(new Property(getPlayer("pink",game).getKingdom()));
-		getPlayer("pink",game).getKingdom().getProperty(0).setCrowns(2);
-		getPlayer("pink",game).getKingdom().getProperty(0).setSize(2);
+
 		boolean noTie=true;
 		for(Player p1 : game.getPlayers()) {
 			for(Player p2:game.getPlayers()) {
@@ -86,34 +74,39 @@ public class CalculateRankingController {
 			}
 		}
 		else {
+			ArrayList<Player> Chosen = new ArrayList<Player>();
 			System.out.println("enetered the resolve tie");
-			
-			Collections.sort(ScoreList);
-			ArrayList<Player> ChosenI = new ArrayList<Player>();
-			for(int i=ScoreList.size()-1;i>-1;i--) {
-				ArrayList<Player> ChosenJ = new ArrayList<Player>();
-				Player p1 =getPlayer(ScoreList.get(i),ChosenI,game);
-				for(int j=i;j>-1;j--) {
-					if(i!=j) {
-						if(ScoreList.get(i)==ScoreList.get(j)) {						
-							Player p2 =getPlayer(ScoreList.get(j),ChosenJ,game);
-							if(largestProperty(p1)<largestProperty(p2)) {
-								swapStandings(p1,p2);
-							}
-							else if(largestProperty(p1)==largestProperty(p2)) {
-								if(totalCrowns(p1)<totalCrowns(p2)) {
-									swapStandings(p1,p2);
-								}
-							}
-						}
-
+			Player playerSorted[] = {getPlayer("green",game),getPlayer("pink",game),getPlayer("blue",game),getPlayer("yellow",game)};
+			quicksort(playerSorted,0,playerSorted.length-1);
+			int position=1;
+			for(int i=playerSorted.length-1;i>-1;i--) {
+				playerSorted[i].setCurrentRanking(position);
+				if(i<3) {
+					int j=(i+1);
+					if(playersEqual(playerSorted[i],playerSorted[j])) {
+						playerSorted[i].setCurrentRanking(playerSorted[j].getCurrentRanking());
 					}
 				}
+
+				position++;
 			}
+			
+
 			
 		}
 		
 
+	}
+	public static boolean playersEqual(Player p1,Player p2) {
+		if((p1.getBonusScore()+p1.getPropertyScore())==(p2.getBonusScore()+p2.getPropertyScore())){
+			if(largestProperty(p1)==largestProperty(p2)) {
+				if(totalCrowns(p1)==totalCrowns(p2)) {
+					System.out.println("two players are equal but shouldnt be");
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	public static void swapStandings(Player p1, Player p2) {
 		int i=p1.getCurrentRanking();
@@ -152,12 +145,12 @@ public class CalculateRankingController {
 			if((p.getBonusScore()+p.getPropertyScore())==score) {
 				if(AlreadyChosen.contains(p)==false) {
 					AlreadyChosen.add(p);
-					System.out.println("Return a none null player");
+					
 					return p;
 				}
 			}
 		}
-		System.out.println("Return a null player");
+
 		
 		return null;
 		
@@ -198,6 +191,71 @@ public class CalculateRankingController {
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid color: " + color);
 		}
+	}
+	
+	public static void swap (Player[] arr, int i, int j) {
+		Player temp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = temp;
+	}
+
+	// Partition using Lomuto partition scheme
+	public static int partition(Player[] a, int start, int end)
+	{
+		// Pick rightmost element as pivot from the array
+		Player pivot = a[end];
+
+		// elements less than pivot will be pushed to the left of pIndex
+		// elements more than pivot will be pushed to the right of pIndex
+		// equal elements can go either way
+		int pIndex = start;
+
+		// each time we finds an element less than or equal to pivot,
+		// pIndex is incremented and that element would be placed 
+		// before the pivot.
+		for (int i = start; i < end; i++)
+		{
+			if ((a[i].getBonusScore()+a[i].getPropertyScore()) < (pivot.getBonusScore()+pivot.getPropertyScore())) {
+				swap(a, i, pIndex);
+				pIndex++;
+			}
+			else if((a[i].getBonusScore()+a[i].getPropertyScore()) == (pivot.getBonusScore()+pivot.getPropertyScore())) {
+				if(largestProperty(a[i])<largestProperty(pivot)) {
+					swap(a, i, pIndex);
+					pIndex++;
+				}
+				else if(largestProperty(a[i])==largestProperty(pivot)) {
+					if(totalCrowns(a[i])<=totalCrowns(pivot)) {
+						swap(a, i, pIndex);
+						pIndex++;
+					}
+				}
+			}
+		}
+
+		// swap pIndex with Pivot
+		swap(a, end, pIndex);
+
+		// return pIndex (index of pivot element)
+		return pIndex;
+	}
+
+	// Quicksort routine
+	public static void quicksort(Player[] a ,int start, int end)
+	{
+		// base condition
+		if (start >= end) {
+			return;
+		}
+
+		// rearrange the elements across pivot
+		int pivot = partition(a, start, end);
+
+		// recur on sub-array containing elements less than pivot
+		quicksort(a, start, pivot - 1);
+
+		// recur on sub-array containing elements more than pivot
+		quicksort(a, pivot + 1, end);
 	}
 
 }

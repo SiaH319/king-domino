@@ -55,16 +55,11 @@ public class ResolveTiebreakStepDefinitions {
 	@Then("player standings should be the followings:")
 	public void player_standings_should_be_the_followings(io.cucumber.datatable.DataTable dataTable) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-//		List<Map<String, String>> valueMaps = dataTable.asMaps();
-//		for (Map<String, String> map : valueMaps) {
-//			assertEquals(Integer.parseInt(map.get("standing")),getPlayer(map.get("player"),game).getCurrentRanking());
-//		}
-		System.out.println(getPlayer("green",game).getCurrentRanking());
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		assertEquals(1,getPlayer("green",game).getCurrentRanking());
-		assertEquals(2,getPlayer("blue",game).getCurrentRanking());
-		assertEquals(3,getPlayer("yellow",game).getCurrentRanking());
-		assertEquals(4,getPlayer("pink",game).getCurrentRanking());
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		for (Map<String, String> map : valueMaps) {
+			assertEquals(Integer.parseInt(map.get("standing")),getPlayer(map.get("player"),game).getCurrentRanking());
+		}
+
 	}
 	
 	
