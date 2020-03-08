@@ -17,7 +17,7 @@ Feature: Save Game
 
   Scenario Outline: Save game overwrites existing file name
     Given the file named "<filename>" exists in the filesystem
-    When the user initiates saving the game to a file named "<filename>"
+    When the user initiates to save the game to a file named "<filename>"
     When the user agrees to overwrite the existing file named "<filename>"
     Then the file named "<filename>" shall be updated in the filesystem
 
