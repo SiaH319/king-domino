@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.BroseDominoController;
+
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
@@ -44,18 +44,18 @@ public class BrowseDominoPile {
 	@When("I initiate the browsing of all dominoes")
 	public void i_initiate_the_browsing_of_all_dominoes() {
 		Game game = new Game(48, KingdominoApplication.getKingdomino()); // program starts
-		BroseDominoController.addDefaultDominoes(game);
+		//BroseDominoController.addDefaultDominoes(game);
 	}
 
 	@Then("all the dominoes are listed in increasing order of identifiers")
 	public void all_the_dominoes_are_listed_in_increasing_order_of_identifiers() {
 		Game game = new Game(48, KingdominoApplication.getKingdomino());
-		BroseDominoController.addDefaultDominoes(game);
+		//BroseDominoController.addDefaultDominoes(game);
 	    List<Domino> dominos = game.getAllDominos();
 
 	    
 
-	    dominos.sort(Comparator.comparingDouble(Domino::getId())  );  
+	   // dominos.sort(Comparator.comparingDouble(Domino::getId())  );  
 	}
 	
 	/*s

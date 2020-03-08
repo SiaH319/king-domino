@@ -62,13 +62,16 @@ public class ProvideUserProfile {
 	}
 
 	@When("I provide my username {string} and initiate creating a new user")
-	public void i_provide_my_username_and_initiate_creating_a_new_user(String name) {
+	public void i_provide_my_username_and_initiate_creating_a_new_user(String name) throws InvalidInputException {
+		isValid = true;
 		try {
 			InitializationController.createUser(name);
 		} 		
 		catch (InvalidInputException e) {
 			e.printStackTrace();
+			isValid = false;
 		}
+		
 	}
 
 
@@ -89,28 +92,17 @@ public class ProvideUserProfile {
 		for (Map<String, String> map : valueMaps) {
 			String name = map.get("name");
 			kingdomino.addUser(name);	
-			isValid = verifyUserCreation(name);
 		}
 	}
 	
 
 	@Then("the user creation shall {string}") // user creation shall fail or succeed
-	public void the_user_creation_shall(String status) throws InvalidInputException {
-		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-		Boolean expectedResult = (status.equals("fail")); // return false if creation status == fail
+	public void the_user_creation_shall(String status) {
+		Boolean expectedResult = (!status.equals("fail")); 
 		assertEquals(expectedResult,isValid);
 		}
 	    
-	// helper class
-	private static boolean verifyUserCreation(String name)throws InvalidInputException {
-		try {
-			KingdominoApplication.getKingdomino().addUser(name);
-		} catch (RuntimeException e) {
-			return false; //creation fail
-		}
-		return true; // creation succeed
-	}
-	
+
 	/*
 	 *    Scenario: List all users
 	 */
@@ -118,8 +110,8 @@ public class ProvideUserProfile {
 	//@89: Given the following users exist:
 	@When("I initiate the browsing of all users")
 	public void i_initiate_the_browsing_of_all_users() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		kingdomino.getUsers();
 	}
 
 	@Then("the users in the list shall be in the following alphabetical order:")
@@ -133,6 +125,7 @@ public class ProvideUserProfile {
 	    // For other transformations you can register a DataTableType.
 	    throw new cucumber.api.PendingException();
 	}
+	
 	/*
 	 *   Scenario Outline: View game statistics for a user
 	 */
