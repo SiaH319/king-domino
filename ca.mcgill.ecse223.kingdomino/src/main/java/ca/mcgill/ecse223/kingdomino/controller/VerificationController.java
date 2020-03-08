@@ -99,7 +99,7 @@ public class VerificationController {
         }
         return result;
     }
-<<<<<<< HEAD
+
     /**
      * Feature 16: test if the current grid size if out of bound. It returns false if any single tile of a domino's x,y
      * coordinate is not within [-4, 4]. It also returns false when its size grows beyond 5 in either x or y direction.
@@ -108,10 +108,6 @@ public class VerificationController {
      * @return true if grid size is valid, false otherwise
      */
     public static boolean verifyGridSize(List<KingdomTerritory> territories){
-=======
-
-    public static boolean verifyGridSize(List<KingdomTerritory> territories) {
->>>>>>> ac7e4e7a53c4268fa24104162c2028c50c70431b
         boolean result = true;
         int x_max = -10;
         int x_min = 10;
