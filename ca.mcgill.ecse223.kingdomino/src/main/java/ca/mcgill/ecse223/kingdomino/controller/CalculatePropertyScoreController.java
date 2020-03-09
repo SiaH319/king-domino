@@ -14,7 +14,7 @@ import ca.mcgill.ecse223.kingdomino.controller.GameController;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 //import ca.mcgill.ecse223.kingdomino.controller.IdentifyPropertiesController;
-import ca.mcgill.ecse223.kingdomino.controller.RepeatedStepsController;
+//import ca.mcgill.ecse223.kingdomino.controller.RepeatedStepsController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
 import ca.mcgill.ecse223.kingdomino.model.BonusOption;
@@ -34,38 +34,28 @@ import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import ca.mcgill.ecse223.kingdomino.model.Property;
 
 public class CalculatePropertyScoreController {
-	
-	
-	
-	public static void calculatePropertyScore(List<Property> properties,Player player) {
-		int score=0;
-		int Totalscore=0;
-		
-		 for (int i=0; i<properties.size(); i++) {
-			 Property p = properties.get(i);
-			 score = p.getSize() * p.getCrowns();
-			 
+
+	/***
+	 * author: Yuta Youness Bellali Controller method to calculate the score for a
+	 * property!
+	 * 
+	 * @param properties
+	 * @param player
+	 */
+
+	public static void calculatePropertyScore(List<Property> properties, Player player) {
+		int score = 0;
+		int Totalscore = 0;
+
+		for (int i = 0; i < properties.size(); i++) {
+			Property p = properties.get(i);
+			score = p.getSize() * p.getCrowns();
+
 			Totalscore += score;
-		 }
-		
-		
-		
+		}
+
 		player.setPropertyScore(Totalscore);
-		
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 }

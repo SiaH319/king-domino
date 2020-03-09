@@ -1,12 +1,21 @@
-package ca.mcgill.ecse223.kingdomino.controller;
+package ca.mcgill.ecse223.kingdomino.features;
 
 import java.io.BufferedReader;
+
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
+import ca.mcgill.ecse223.kingdomino.controller.GameController;
+import ca.mcgill.ecse223.kingdomino.controller.Square;
+import ca.mcgill.ecse223.kingdomino.model.BonusOption;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
+import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
@@ -16,11 +25,32 @@ import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import ca.mcgill.ecse223.kingdomino.features.CalculatePlayerScoreStepDefinition;
+import ca.mcgill.ecse223.kingdomino.model.Property;
+import ca.mcgill.ecse223.kingdomino.controller.CalculateBonusController;
+import ca.mcgill.ecse223.kingdomino.controller.CalculatePropertyScoreController;
+import ca.mcgill.ecse223.kingdomino.controller.CalculationController;
 
-public class RepeatedStepsController {
-	public void initialize_game() {
-		// Intialize empty game
-		Kingdomino kingdomino = new Kingdomino();
+public class CalculatePlayerScoreStepDefinition {
+
+	/***
+	 * Feature Calculate Player Score
+	 * 
+	 * @author Yuta Youness Bellali 
+	 * 		As a player, I want the Kingdomino app to
+	 *      automatically calculate the score for each player by summing up their
+	 *      property scores and their bonus scores. (F22)
+	 * 
+	 */
+
+	private int playerScore;
+
+	@Given("the game is initialized for calculate player score")
+	public void the_game_is_initialized_for_calculate_player_score() {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = new Game(48, kingdomino);
 		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
@@ -29,12 +59,54 @@ public class RepeatedStepsController {
 		createAllDominoes(game);
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
+		String player0Name = (game.getPlayer(0).getUser().getName());
+		GameController.setGrid(player0Name, new Square[81]);
+		GameController.setSet(player0Name, new DisjointSet(81));
+		Square[] grid = GameController.getGrid(player0Name);
+		for (int i = 4; i >= -4; i--)
+			for (int j = -4; j <= 4; j++)
+				grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
 	}
-	
-	
-	///////////////////////////////////////
-	/// -----Private Helper Methods---- ///
-	///////////////////////////////////////
+
+	@Given("the game has {string} bonus option")
+	public void the_game_has_bonus_option(String string) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		BonusOption selected = new BonusOption(string, kingdomino);
+		game.addSelectedBonusOption(selected);
+	}
+
+	@When("calculate player score is initiated")
+	public void calculate_player_score_is_initiated() {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		Player player = game.getNextPlayer();
+		Kingdom kingdom = player.getKingdom();
+		String player0Name = (player.getUser().getName());
+		DisjointSet s = GameController.getSet(player0Name);
+		Square[] grid = GameController.getGrid(player0Name);
+		CalculationController.identifyPropertoes(s, grid, player.getKingdom());
+		List<Property> p = kingdom.getProperties();
+		CalculatePropertyScoreController.calculatePropertyScore(p, player);
+		CalculateBonusController.CalculateBonusScore(game, player);
+
+		int propertyScore = player.getPropertyScore();
+		int bonusScore = player.getBonusScore();
+		this.playerScore = propertyScore + bonusScore;
+		System.out.println(propertyScore);
+
+	}
+
+	@Then("the total score should be {int}")
+	public void the_total_score_should_be(Integer int1) {
+
+		assertEquals(int1.intValue(), playerScore);
+
+	}
+
+///////////////////////////////////////
+/// -----Private Helper Methods---- ///
+///////////////////////////////////////
 
 	private void addDefaultUsersAndPlayers(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
@@ -138,4 +210,5 @@ public class RepeatedStepsController {
 			throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
 		}
 	}
+
 }

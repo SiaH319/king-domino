@@ -18,82 +18,71 @@ import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.User;
 
 public class CalculatePropertyAttributeController {
-	
-	
-	/*This properties are already set in the previous method. This method will 
-	 * go through all the properties and determine its size as well as the number
-	 * of crowns. A domino can be part of two properties so cannot assume that 
-	 * one domino = size 2. So basically need to count the number of tiles in each
-	 * property.
+
+	/***
+	 * @author Yuta Youness Bellali This controller class calculates the size of a
+	 *         property as well as the number of crowns in a property.
+	 * 
+	 * @param property
 	 */
-	//find size of each property
-	
-	
+
 	public static void CalculatePropertySize(Property property) {
-	
-		
-		
+
 		TerrainType type = property.getPropertyType();
-		
-		int sizeProperty=0;
+
+		int sizeProperty = 0;
 		boolean sameTypeL;
 		boolean sameTypeR;
-		
-		//check the number of tiles in a property with the same type
-		
+
+		// check the number of tiles in a property with the same type
 		List<Domino> dominos = property.getIncludedDominos();
-		
-		for (int j=0; j < dominos.size(); j++) {
-			
+
+		for (int j = 0; j < dominos.size(); j++) {
+
 			Domino tempDomino = dominos.get(j);
-			
-			//check if left tile is same type as property type
+
+			// check if left tile is same type as property type
 			sameTypeL = (tempDomino.getLeftTile() == type);// not sure
 			if (sameTypeL == true) {
-			sizeProperty++;
+				sizeProperty++;
 			}
-			
-			//check if right tile is same type as property type
+
+			// check if right tile is same type as property type
 			sameTypeR = (tempDomino.getRightTile() == type);// not sure
-			if (sameTypeR == true) { 
-		    sizeProperty++;
+			if (sameTypeR == true) {
+				sizeProperty++;
+			}
+
 		}
-		
-		
-				
-		}
-		
+
 		property.setSize(sizeProperty);
 	}
-		
+
 	public void CalculatePropertyCrown(Kingdom currentKingdom) {
-		
-			for(int i =0; i < currentKingdom.numberOfProperties(); i++) {
-				
-				List<Property> properties = currentKingdom.getProperties();
-				
-				Property tempProperty = properties.get(i);
-				
-			
-				//go through all the dominos to get the number of crowns
-				
-				List<Domino> dominos = tempProperty.getIncludedDominos();
-				int totalNumberOfCrown = 0;
-				
-				for (int j=0; j < dominos.size(); j++) {
-					
-					Domino tempDomino = dominos.get(j);
-					
-					totalNumberOfCrown = totalNumberOfCrown + tempDomino.getLeftCrown();
-					totalNumberOfCrown = totalNumberOfCrown + tempDomino.getRightCrown();
-		
-	}
-				
-				
-				tempProperty.setCrowns(totalNumberOfCrown);
-				
+
+		for (int i = 0; i < currentKingdom.numberOfProperties(); i++) {
+
+			List<Property> properties = currentKingdom.getProperties();
+
+			Property tempProperty = properties.get(i);
+
+			// go through all the dominos to get the number of crowns
+			List<Domino> dominos = tempProperty.getIncludedDominos();
+			int totalNumberOfCrown = 0;
+
+			for (int j = 0; j < dominos.size(); j++) {
+
+				Domino tempDomino = dominos.get(j);
+
+				totalNumberOfCrown = totalNumberOfCrown + tempDomino.getLeftCrown();
+				totalNumberOfCrown = totalNumberOfCrown + tempDomino.getRightCrown();
+
 			}
-			
+
+			tempProperty.setCrowns(totalNumberOfCrown);
+
+		}
+
 	}
-	
+
 }
