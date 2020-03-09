@@ -38,8 +38,6 @@ public class MoveCurrentDominoStepDefinition {
         DominoSelection selected = domino.getDominoSelection();
         Player player1 = selected.getPlayer();
         DominoController.initialMoveDominoToKingdom(player1, domino.getId());
-        // selected.delete();
-        // assertEquals(null, selected);
     }
 
     @Then("domino {int} should be tentative placed at position 0:0 of {string}'s kingdom with ErroneouslyPreplaced status")
@@ -90,8 +88,15 @@ public class MoveCurrentDominoStepDefinition {
 
     @Then("the domino {int} is still tentatively placed at position {int}:{int}")
     public void the_domino_id_is_still_tentatively_placed_at_position_posx_posy(int dominoid, int posx, int posy) {
-   //     boolean isPlaced = DominoController.placeDomino(game, currentPlayer, dominoid, posx, posy, DirectionKind.Up);
-       // assertEquals(true, isPlaced);
+        Domino domino = getdominoByID(dominoid);
+        Player p = domino.getDominoSelection().getPlayer();
+        currentPlayer = p;
+        DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(dominoid,p.getKingdom());
+
+        if(dik!=null){
+            assertEquals(posx,dik.getX());
+            assertEquals(posy, dik.getY());
+        }
     }
 
     @Then("the domino should still have status {string}")
