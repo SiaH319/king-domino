@@ -9,11 +9,18 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.DiscardDominoController;
+import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
+import ca.mcgill.ecse223.kingdomino.controller.GameController;
+import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
+import ca.mcgill.ecse223.kingdomino.model.Draft;
+import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
@@ -26,55 +33,106 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 public class DiscardDominoStepDefinitions {
-
+	DominoInKingdom dominoInKingdom;
 	/*
 	 * Note that these step definitions and helper methods just serve as a guide to help
 	 * you get started. You may change the code if required.
 	 */
 
+	@Given("the game is initialized for discard domino")
+	public void the_game_is_initialized_for_discard_domino() {
+		// Intialize empty game
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+        Game game = new Game(48, kingdomino);
+        game.setNumberOfPlayers(4);
+        kingdomino.setCurrentGame(game);
+        // Populate game
+        addDefaultUsersAndPlayers(game);
+        createAllDominoes(game);
+        game.setNextPlayer(game.getPlayer(0));
+        KingdominoApplication.setKingdomino(kingdomino);
+        String player0Name = (game.getPlayer(0).getUser().getName());
+        GameController.setGrid(player0Name, new Square[81]);
+        GameController.setSet(player0Name, new DisjointSet(81));
+        Square[] grid = GameController.getGrid(player0Name);
+        for (int i = 4; i >= -4; i--)
+            for (int j = -4; j <= 4; j++)
+                grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+	}
 	
 
-/*	@Given("the player's kingdom has the following dominoes:")
-	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		List<Map<String, String>> valueMaps = dataTable.asMaps();
-		for (Map<String, String> map : valueMaps) {
-			// Get values from cucumber table
-			Integer id = Integer.decode(map.get("id"));
-			DirectionKind dir = getDirection(map.get("dominodir"));
-			Integer posx = Integer.decode(map.get("posx"));
-			Integer posy = Integer.decode(map.get("posy"));
 
-			// Add the domino to a player's kingdom
-			Domino dominoToPlace = getdominoByID(id);
-			Kingdom kingdom = game.getPlayer(0).getKingdom();
-			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
-			domInKingdom.setDirection(dir);
-			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
-		}
-		}
-	*/
+	//@Given("the player's kingdom has the following dominoes:")
+//	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
+//		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+//		List<Map<String, String>> valueMaps = dataTable.asMaps();
+//		for (Map<String, String> map : valueMaps) {
+//			// Get values from cucumber table
+//			Integer id = Integer.decode(map.get("id"));
+//			DirectionKind dir = getDirection(map.get("dominodir"));
+//			Integer posx = Integer.decode(map.get("posx"));
+//			Integer posy = Integer.decode(map.get("posy"));
+//
+//			// Add the domino to a player's kingdom
+//			Domino dominoToPlace = getdominoByID(id);
+//			Kingdom kingdom = game.getPlayer(0).getKingdom();
+//			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
+//			domInKingdom.setDirection(dir);
+//			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
+//		}
+//	}
 
 	@Given("domino {int} is in the current draft")
 	public void domino_is_in_the_current_draft(Integer domID) {
-		// TODO: Write code here that turns the phrase above into concrete actions
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Draft current=game.getCurrentDraft();
+		
+		boolean added=false;
+		if(current==null) {
+			Draft newDraft=new Draft(DraftStatus.FaceUp,game);
+			game.setCurrentDraft(newDraft);
+			current=game.getCurrentDraft();
+			current.addIdSortedDomino(getdominoByID(domID));
+		}
+		else {
+			current.addIdSortedDomino(getdominoByID(domID));
+		}
+		
+		
+		
 	}
 
 	@Given("the current player has selected domino {int}")
 	public void the_current_player_has_selected_domino(Integer domID) {
-		// TODO: Write code here that turns the phrase above into concrete actions
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Draft current = game.getCurrentDraft();
+		DominoSelection selectedD= new DominoSelection(game.getPlayer(0),getdominoByID(domID),current);
+		game.getPlayer(0).setDominoSelection(selectedD);
+		getdominoByID(domID).setDominoSelection(selectedD);
+	
 	}
 
 	@Given("the player preplaces domino {int} at its initial position")
 	public void the_player_preplaces_domino_at_its_initial_position(Integer domID) {
-		// TODO: Write code here that turns the phrase above into concrete actions
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Player currentPl = game.getPlayer(0);
+		Kingdom kingdom = currentPl.getKingdom();
+		dominoInKingdom = new DominoInKingdom(0,0,kingdom,getdominoByID(domID));
+		kingdom.addTerritory(dominoInKingdom);
+		
 	}
 
 	@When("the player attempts to discard the selected domino")
 	public void the_player_attempts_to_discard_the_selected_domino() {
-		// TODO: Call your Controller method here.
-		throw new cucumber.api.PendingException(); // Remove this line once your controller method is implemented
+		boolean CanBePlaced=DiscardDominoController.attempt_discard_selected_domino(dominoInKingdom);
+		if(CanBePlaced) {
+			dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
+		}
+		else {
+			dominoInKingdom.getDomino().setStatus(DominoStatus.Discarded);
+		}
 	}
+	
 
 	@Then("domino {int} shall have status {string}")
 	public void domino_shall_have_status(Integer domID, String domStatus) {
