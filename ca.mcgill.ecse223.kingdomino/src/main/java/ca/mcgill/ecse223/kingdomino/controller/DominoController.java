@@ -66,8 +66,6 @@ public class DominoController {
         return dominoSelection;
     }
 
-    //Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-    static Game game;
     static Player currentPlayer;
 
 
@@ -124,9 +122,12 @@ public class DominoController {
     }
 
     /**
-     * Controller implemented for Feature 11: Move Current Domino
+     * Feature 11: Move Current Domino
+     * As a player, I wish to evaluate a provisional placement of my current
+     * domino by moving the domino around into my kingdom (up, down, left, right).
      * @param player
      * @param dominoId
+     * @author Violet Wei
      */
     public static void initialMoveDominoToKingdom(Player player, int dominoId){
         Kingdom kingdom = player.getKingdom();
@@ -138,11 +139,13 @@ public class DominoController {
     }
 
     /**
-     * Controller implemented for Feature 11: Move Current Domino
+     * Feature 11: Move Current Domino
+     * As a player, I wish to evaluate a provisional placement of my current
+     * domino by moving the domino around into my kingdom (up, down, left, right).
      * up 0, right 1, down 2, left 3
      * @param player
      * @param dominoId
-     * @param movement
+     * @param movement, expressed by int
      * @author Violet Wei
      * @return true if successful or false if fail
      */
@@ -190,19 +193,6 @@ public class DominoController {
         return true;
     }
 
-    public static int convertMovementStringToInt(String movement){
-        int mov = -1;
-        if(movement.equals("up") || movement.equals("Up") ) {
-            mov = 0;
-        } else if(movement.equals("right") || movement.equals("Right") ) {
-            mov = 1;
-        }else if(movement.equals("down") || movement.equals("Down") ) {
-            mov = 2;
-        }if(movement.equals("left") || movement.equals("Left") ) {
-            mov = 3;
-        }
-        return mov;
-    }
     /**
      * Feature 12: As a player, I wish to evaluate a provisional placement of my current domino in my kingdom
      * by rotating it (clockwise or counter-clockwise).
@@ -246,6 +236,10 @@ public class DominoController {
                     "adjacency rules");
     }
 
+
+    /////////////////////////////        //////
+    ///// ///Helper Methods/////        //////
+    ///////////////////////////        //////
     private int[] rightTilePositionAfterRotation(int x_right, int y_right, int rotationDir, DominoInKingdom.DirectionKind oldDir){
         int[] pos = new int[2]; //x,y
         switch(oldDir){
@@ -287,6 +281,20 @@ public class DominoController {
                 break;
         }
         return pos;
+    }
+
+    public static int convertMovementStringToInt(String movement){
+        int mov = -1;
+        if(movement.equals("up") || movement.equals("Up") ) {
+            mov = 0;
+        } else if(movement.equals("right") || movement.equals("Right") ) {
+            mov = 1;
+        }else if(movement.equals("down") || movement.equals("Down") ) {
+            mov = 2;
+        }if(movement.equals("left") || movement.equals("Left") ) {
+            mov = 3;
+        }
+        return mov;
     }
 
     private static DominoInKingdom.DirectionKind findDirAfterRotation(int rotationDir, DominoInKingdom.DirectionKind oldDir){
