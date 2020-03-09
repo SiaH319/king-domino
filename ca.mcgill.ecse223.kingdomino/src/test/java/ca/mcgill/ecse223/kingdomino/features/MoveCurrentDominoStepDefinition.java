@@ -1,6 +1,7 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+
 import ca.mcgill.ecse223.kingdomino.controller.DominoController;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
@@ -11,6 +12,12 @@ import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.After;
+
+import ca.mcgill.ecse223.kingdomino.controller.*;
+import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
+import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
+
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -18,7 +25,9 @@ import io.cucumber.java.en.When;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 
@@ -171,6 +180,7 @@ public class MoveCurrentDominoStepDefinition {
         assertEquals(true, isPlaced);
     }
     
+
     @Then("the domino should still have status {string}")
     public void the_domino_should_still_have_status_dstatus(String dstatus) {
         DominoStatus doStatus = getDominoStatus(dstatus);
@@ -253,6 +263,7 @@ public class MoveCurrentDominoStepDefinition {
                 throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
         }
     }
+
 
 	private void createAllDominoes(Game game) {
 		try {

@@ -141,7 +141,8 @@ public class SaveLoadGameController {
         List<Integer> claimedTiles = new ArrayList<>();
         List<Integer> unclaimedTiles = new ArrayList<>();
 
-        Square[] grid = KingdominoController.getGrid();
+        String name = currentGame.getNextPlayer().getUser().getName();
+        Square[] grid = GameController.getGrid(name);
         for (int i = 4; i >= -4; i--)
             for (int j = -4; j <= 4; j++)
                 grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
@@ -504,8 +505,9 @@ public class SaveLoadGameController {
         createAllDominoes(game);
         game.setNextPlayer(game.getPlayer(0));
         KingdominoApplication.setKingdomino(kingdomino);
-        KingdominoController.setGrid(new Square[81]);
-        Square[] grid = KingdominoController.getGrid();
+        String name = game.getPlayer(0).getUser().getName();
+        GameController.setGrid(name,new Square[81]);
+        Square[] grid = GameController.getGrid(name);
         for (int i = 4; i >= -4; i--)
             for (int j = -4; j <= 4; j++)
                 grid[Square.convertPositionToInt(i, j)] = new Square(i, j);

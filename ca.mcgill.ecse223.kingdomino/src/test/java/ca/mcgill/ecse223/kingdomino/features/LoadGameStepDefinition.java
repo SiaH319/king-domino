@@ -12,10 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.controller.SaveLoadGameController;
-import ca.mcgill.ecse223.kingdomino.controller.Square;
-import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
+import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -53,8 +50,9 @@ public class LoadGameStepDefinition {
        createAllDominoes(game);
        game.setNextPlayer(game.getPlayer(0));
        KingdominoApplication.setKingdomino(kingdomino);
-       KingdominoController.setGrid(new Square[81]);
-        Square[] grid = KingdominoController.getGrid();
+		String name = game.getPlayer(0).getUser().getName();
+		GameController.setGrid(name,new Square[81]);
+		Square[] grid = GameController.getGrid(name);
         for(int i = 4; i >=-4; i-- )
             for(int j = -4 ; j <= 4; j++)
                 grid[Square.convertPositionToInt(i,j)] = new Square(i,j);

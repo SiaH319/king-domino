@@ -1,10 +1,7 @@
 package ca.mcgill.ecse223.kingdomino.features;
-import static org.junit.Assert.assertEquals;
 
-import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.model.*;
-import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -12,15 +9,29 @@ import io.cucumber.java.en.When;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class VerifyNoOverlappingStepDefinition {
-    private Boolean isValid;
+import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
+import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
-    @Given("the game is initialized to check domino overlapping")
-    public void the_game_is_initialized_to_check_domino_overlapping() {
-        // Intialize empty game
+import static junit.framework.TestCase.assertEquals;
+
+public class IdentifyPropertyStepDefinition {
+
+    /***
+     * Feature: Identify Properties
+     * @author Yuta Youness Bellali
+     *  I want the Kingdomino app to automatically calculate 
+  		the size of a property and 
+  		the total number of crowns in that property. (F20)
+     */
+
+    @Given("the game is initialized for identify properties")
+    public void the_game_is_initialized_for_identify_properties() {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = new Game(48, kingdomino);
         game.setNumberOfPlayers(4);
@@ -34,13 +45,15 @@ public class VerifyNoOverlappingStepDefinition {
         GameController.setGrid(player0Name, new Square[81]);
         GameController.setSet(player0Name, new DisjointSet(81));
         Square[] grid = GameController.getGrid(player0Name);
-        for(int i = 4; i >=-4; i-- )
-            for(int j = -4 ; j <= 4; j++)
-                grid[Square.convertPositionToInt(i,j)] = new Square(i,j);
+        for (int i = 4; i >= -4; i--)
+            for (int j = -4; j <= 4; j++)
+                grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
     }
+  
 
-    @Given("the following dominoes are present in a player's kingdom:")
-    public void add_domino_to_player_kingdom(io.cucumber.datatable.DataTable dataTable) {
+    @Given("the player's kingdom has the following dominoes:")
+    public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
+        System.out.println("Disjoint Set");
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = kingdomino.getCurrentGame();
         List<Map<String, String>> valueMaps = dataTable.asMaps();
@@ -59,17 +72,16 @@ public class VerifyNoOverlappingStepDefinition {
             dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
             String player0Name = (game.getPlayer(0).getUser().getName());
             Square[] grid = GameController.getGrid(player0Name);
-            int[] pos = Square.splitPlacedDomino (domInKingdom, grid);
+            int[] pos = Square.splitPlacedDomino(domInKingdom, grid);
             DisjointSet s = GameController.getSet(player0Name);
             Castle castle = getCastle(kingdom);
-            if(grid[pos[0]].getTerrain() == grid[pos[1]].getTerrain())
-                s.union(pos[0],pos[1]);
-            GameController.unionCurrentSquare(pos[0],VerificationController.getAdjacentSquareIndexesLeft
-                    (castle, grid, domInKingdom),s);
-            GameController.unionCurrentSquare(pos[1],VerificationController.getAdjacentSquareIndexesRight
-                    (castle, grid, domInKingdom),s);
+            if (grid[pos[0]].getTerrain() == grid[pos[1]].getTerrain())
+                s.union(pos[0], pos[1]);
+            GameController.unionCurrentSquare(pos[0],
+                    VerificationController.getAdjacentSquareIndexesLeft(castle, grid, domInKingdom), s);
+            GameController.unionCurrentSquare(pos[1],
+                    VerificationController.getAdjacentSquareIndexesRight(castle, grid, domInKingdom), s);
         }
-
         //Print Grid
         String player0Name = (game.getPlayer(0).getUser().getName());
         Square[] grid = GameController.getGrid(player0Name);
@@ -83,45 +95,44 @@ public class VerifyNoOverlappingStepDefinition {
         }
         System.out.println("Disjoint Set");
         System.out.println(GameController.getSet(player0Name).toString(grid));
-
     }
 
-    @Given("the current player preplaced the domino with ID {int} at position <x>:<y> and direction {string}")
-    public void the_current_player_preplaced_domino_with_ID_at_position_and_direction(Integer int1, Integer int2, Integer int3, String string) {
-        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-        Game game = kingdomino.getCurrentGame();
-        Domino domino = getdominoByID(int1);
-        DominoInKingdom  dominoInKingdom = new DominoInKingdom(int2, int3, game.getNextPlayer().getKingdom(),domino);
-        dominoInKingdom.setDirection(getDirection(string));
-    }
 
-    @When("check current preplaced domino overlapping is initiated")
-    public void check_no_overlapping (){
+    @When("the properties of the player are identified")
+    public void the_properties_of_the_player_are_identified() {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = kingdomino.getCurrentGame();
         Player player = game.getNextPlayer();
-        Castle castle = getCastle(player.getKingdom());
-        List<KingdomTerritory> list= player.getKingdom().getTerritories();
-        DominoInKingdom dominoInKingdom = (DominoInKingdom)list.get(list.size() - 1);
-        String player0Name = (game.getPlayer(0).getUser().getName());
+        String player0Name = (player.getUser().getName());
+        DisjointSet s =GameController.getSet(player0Name);
         Square[] grid = GameController.getGrid(player0Name);
-        if (castle != null && dominoInKingdom != null && grid !=null)
-            isValid = VerificationController.verifyNoOverlapping(castle, grid, dominoInKingdom);
+        CalculationController.identifyPropertoes(s , grid, player.getKingdom());
     }
 
-    @Then("the current-domino\\/existing-domino overlapping is {string}")
-    public void checkResult(String result) {
-        Boolean expectedResult = (!result.equals("invalid"));
-        assertEquals(expectedResult,isValid);
+    @Then("the player shall have the following properties:")
+    public void the_player_shall_have_the_following_properties(io.cucumber.datatable.DataTable dataTable) {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        List<Property> properties = game.getPlayer(0).getKingdom().getProperties();
+        System.out.println("There are "+ properties.size()+ "properties");
+        List<Map<String, String>> valueMaps = dataTable.asMaps();
+        int successNum = 0;
+        for (Map<String, String> map : valueMaps) {
+            // Set values to cucumber table?
+            TerrainType terrainType = getTerrainTypeFromString(map.get("type"));
+            String propertyDominoes = map.get("dominoes");
+            String[] indexesFromTest = propertyDominoes.split(",");
+            for(Property p: properties){
+                int[] dominoIds = PropertyController.getDominoIdsFromProperty(p);
+                if(p.getPropertyType() == terrainType && isIdenticalDominoIndexes(indexesFromTest, dominoIds)){
+                    System.out.println("Line "+successNum+" passes");
+                    successNum++;
+
+                }
+            }
+
+        }
     }
 
-    @After
-    public void tearDown() {
-        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-        kingdomino.delete();
-        GameController.clearGrids();
-        GameController.clearSets();
-    }
     ///////////////////////////////////////
     /// -----Private Helper Methods---- ///
     ///////////////////////////////////////
@@ -152,15 +163,22 @@ public class VerifyNoOverlappingStepDefinition {
         }
         return c;
     }
-
-
+    private Boolean isIdenticalDominoIndexes(String[] indexesFromTest, int[] indexesFromProperty){
+        int[] IdsFromTest = new int[indexesFromTest.length];
+        for(int i = 0 ; i < IdsFromTest.length; i++)
+            IdsFromTest[i] = Integer.parseInt(indexesFromTest[i]);
+        boolean result = true;
+        for(int i = 0 ; i < IdsFromTest.length; i++)
+            result = result && (IdsFromTest[i] == indexesFromProperty[i]);
+        return result;
+    }
     private void addDefaultUsersAndPlayers(Game game) {
         String[] userNames = { "User1", "User2", "User3", "User4" };
         for (int i = 0; i < userNames.length; i++) {
             User user = game.getKingdomino().addUser(userNames[i]);
             Player player = new Player(game);
             player.setUser(user);
-            player.setColor(Player.PlayerColor.values()[i]);
+            player.setColor(PlayerColor.values()[i]);
             Kingdom kingdom = new Kingdom(player);
             new Castle(0, 0, kingdom, player);
         }
@@ -200,6 +218,25 @@ public class VerifyNoOverlappingStepDefinition {
         throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
     }
 
+    private TerrainType getTerrainTypeFromString(String terrain) {
+        switch (terrain) {
+            case "wheat":
+                return TerrainType.WheatField;
+            case "forest":
+                return TerrainType.Forest;
+            case "mountain":
+                return TerrainType.Mountain;
+            case "grass":
+                return TerrainType.Grass;
+            case "swamp":
+                return TerrainType.Swamp;
+            case "lake":
+                return TerrainType.Lake;
+            default:
+                throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+        }
+    }
+
     private TerrainType getTerrainType(String terrain) {
         switch (terrain) {
             case "W":
@@ -218,45 +255,43 @@ public class VerifyNoOverlappingStepDefinition {
                 throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
         }
     }
-
-    private DominoInKingdom.DirectionKind getDirection(String dir) {
+    private DirectionKind getDirection(String dir) {
         switch (dir) {
             case "up":
-                return DominoInKingdom.DirectionKind.Up;
+                return DirectionKind.Up;
             case "down":
-                return DominoInKingdom.DirectionKind.Down;
+                return DirectionKind.Down;
             case "left":
-                return DominoInKingdom.DirectionKind.Left;
+                return DirectionKind.Left;
             case "right":
-                return DominoInKingdom.DirectionKind.Right;
+                return DirectionKind.Right;
             default:
                 throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
         }
     }
 
-    private Domino.DominoStatus getDominoStatus(String status) {
+    private DominoStatus getDominoStatus(String status) {
         switch (status) {
             case "inPile":
-                return Domino.DominoStatus.InPile;
+                return DominoStatus.InPile;
             case "excluded":
-                return Domino.DominoStatus.Excluded;
+                return DominoStatus.Excluded;
             case "inCurrentDraft":
-                return Domino.DominoStatus.InCurrentDraft;
+                return DominoStatus.InCurrentDraft;
             case "inNextDraft":
-                return Domino.DominoStatus.InNextDraft;
+                return DominoStatus.InNextDraft;
             case "erroneouslyPreplaced":
-                return Domino.DominoStatus.ErroneouslyPreplaced;
+                return DominoStatus.ErroneouslyPreplaced;
             case "correctlyPreplaced":
-                return Domino.DominoStatus.CorrectlyPreplaced;
+                return DominoStatus.CorrectlyPreplaced;
             case "placedInKingdom":
-                return Domino.DominoStatus.PlacedInKingdom;
+                return DominoStatus.PlacedInKingdom;
             case "discarded":
-                return Domino.DominoStatus.Discarded;
+                return DominoStatus.Discarded;
             default:
                 throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
         }
     }
-
     private Castle getCastle (Kingdom kingdom) {
         for(KingdomTerritory territory: kingdom.getTerritories()){
             if(territory instanceof Castle )

@@ -2,9 +2,7 @@ package ca.mcgill.ecse223.kingdomino.features;
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.controller.Square;
-import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
+import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
@@ -32,8 +30,10 @@ public class VerifyNeighborAdjacencyStepDefinition {
         createAllDominoes(game);
         game.setNextPlayer(game.getPlayer(0));
         KingdominoApplication.setKingdomino(kingdomino);
-        KingdominoController.setGrid(new Square[81]);
-        Square[] grid = KingdominoController.getGrid();
+        String player0Name = (game.getPlayer(0).getUser().getName());
+        GameController.setGrid(player0Name, new Square[81]);
+        GameController.setSet(player0Name, new DisjointSet(81));
+        Square[] grid = GameController.getGrid(player0Name);
         for(int i = 4; i >=-4; i-- )
             for(int j = -4 ; j <= 4; j++)
                 grid[Square.convertPositionToInt(i,j)] = new Square(i,j);
@@ -47,7 +47,8 @@ public class VerifyNeighborAdjacencyStepDefinition {
         Castle castle = getCastle(player.getKingdom());
         List<KingdomTerritory> list= player.getKingdom().getTerritories();
         DominoInKingdom dominoInKingdom = (DominoInKingdom)list.get(list.size() - 1);
-        Square[] grid = KingdominoController.getGrid();
+        String player0Name = (game.getPlayer(0).getUser().getName());
+        Square[] grid = GameController.getGrid(player0Name);
         if (castle != null && dominoInKingdom != null && grid !=null)
             isValid = VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom);
     }
@@ -62,7 +63,8 @@ public class VerifyNeighborAdjacencyStepDefinition {
     public void tearDown() {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         kingdomino.delete();
-        KingdominoController.setGrid(null);
+        GameController.clearGrids();
+        GameController.clearSets();
     }
     ///////////////////////////////////////
     /// -----Private Helper Methods---- ///
