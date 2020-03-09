@@ -146,5 +146,18 @@ public class DominoController {
         return true;
     }
 
+    /**
+     * Feature 13: As a player, I wish to place my selected domino to my kingdom. If I am satisfied with its placement,
+     * and its current position respects the adjacency rules, I wish to finalize the placement.
+     * (Actual checks of adjacency conditions are implemented as separate features)
+     */
+    public static void placeDomino(Player player, int id){
+        Domino domino = player.getDominoSelection().getDomino();
+        if(domino.getId() == id && domino.getStatus() == DominoStatus.CorrectlyPreplaced){
+            domino.setStatus(DominoStatus.PlacedInKingdom);
+        } else
+            throw new java.lang.IllegalArgumentException("The current domino placement does not respect the " +
+                    "adjacency rules");
+    }
 
 }
