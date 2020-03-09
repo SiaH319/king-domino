@@ -12,6 +12,7 @@ import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
+import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -175,6 +176,14 @@ public class PlaceDominoStepDefinition{
             assertEquals(int3, y_pos);
             assertEquals(getDirection(string2), dir);
         }
+
+    @After
+    public void tearDown() {
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+        kingdomino.delete();
+        GameController.clearGrids();
+        GameController.clearSets();
+    }
 
     ///////////////////////////////////////
     /// -----Private Helper Methods---- ///
