@@ -139,9 +139,11 @@ public class BrowseDominoPile {
 	public void list_of_dominoes_with_IDs_should_be_shown(String string) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
-
-		for (Domino domino: currentDominoes) {
-			String expected = ""+domino.getId();
+		List<Domino> dominos = game.getAllDominos();
+		String expected = "";
+		//for (Domino domino: currentDominoes) {
+		for (Domino domino: dominos) {
+			expected = expected + ""+domino.getId();
 			//int actual = Integer.valueOf(string);
 			assertEquals(expected,string);
 		}
@@ -217,7 +219,5 @@ public class BrowseDominoPile {
 		if (result.equalsIgnoreCase("WheatField")) 
 			return "wheat";
 		return result;
-
 	}
-
 }
