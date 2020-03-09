@@ -16,6 +16,10 @@ import io.cucumber.junit.CucumberOptions;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.CalculateRankingController;
 import ca.mcgill.ecse223.kingdomino.controller.CreateNextDraftController;
+import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
+import ca.mcgill.ecse223.kingdomino.controller.GameController;
+import ca.mcgill.ecse223.kingdomino.controller.Square;
+import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -25,6 +29,7 @@ import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
+import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
@@ -44,7 +49,7 @@ public class CalculateRankingStepDefinitions {
 	
 	@Given("the game is initialized for calculate ranking")
 	public void the_game_is_initialised_for_calculate_ranking() {
-		Kingdomino kingdomino = new Kingdomino();
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = new Game(48, kingdomino);
 		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
@@ -53,6 +58,15 @@ public class CalculateRankingStepDefinitions {
 		createAllDominoes(game);
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
+		for(Player p:game.getPlayers()) {
+		String player0Name = (p.getUser().getName());
+		GameController.setGrid(player0Name, new Square[81]);
+		GameController.setSet(player0Name, new DisjointSet(81));
+		Square[] grid = GameController.getGrid(player0Name);
+		for (int i = 4; i >= -4; i--)
+			for (int j = -4; j <= 4; j++)
+				grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+		}
 	}
 	
 	
@@ -83,6 +97,26 @@ public class CalculateRankingStepDefinitions {
 			DominoInKingdom domInKingdom2 = new DominoInKingdom(posx2, posy2, kingdom, dominoToPlace2);
 			domInKingdom2.setDirection(dir2);
 			dominoToPlace2.setStatus(DominoStatus.PlacedInKingdom);
+			String player0Name = (current.getUser().getName());
+            Square[] grid = GameController.getGrid(player0Name);
+            int[] pos = Square.splitPlacedDomino(domInKingdom1, grid);
+            DisjointSet s = GameController.getSet(player0Name);
+            Castle castle = getCastle(kingdom);
+            if (grid[pos[0]].getTerrain() == grid[pos[1]].getTerrain())
+                s.union(pos[0], pos[1]);
+            GameController.unionCurrentSquare(pos[0],
+                    VerificationController.getAdjacentSquareIndexesLeft(castle, grid, domInKingdom1), s);
+            GameController.unionCurrentSquare(pos[1],
+                   VerificationController.getAdjacentSquareIndexesRight(castle, grid, domInKingdom1), s);
+            int[] pos2 = Square.splitPlacedDomino(domInKingdom2, grid);
+            DisjointSet s2 = GameController.getSet(player0Name);
+            
+            if (grid[pos2[0]].getTerrain() == grid[pos2[1]].getTerrain())
+                s.union(pos2[0], pos2[1]);
+            GameController.unionCurrentSquare(pos2[0],
+                    VerificationController.getAdjacentSquareIndexesLeft(castle, grid, domInKingdom2), s2);
+            GameController.unionCurrentSquare(pos2[1],
+                   VerificationController.getAdjacentSquareIndexesRight(castle, grid, domInKingdom2), s2);
 		}
 	}
 	
@@ -180,6 +214,13 @@ public class CalculateRankingStepDefinitions {
 		}
 		throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
 	}
+    private Castle getCastle (Kingdom kingdom) {
+        for(KingdomTerritory territory: kingdom.getTerritories()){
+            if(territory instanceof Castle )
+                return (Castle)territory;
+        }
+        return null;
+    }
 	
 	
 	private ArrayList<Integer> getListOfIDs(String aListOfIDs){
