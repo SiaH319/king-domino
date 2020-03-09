@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
+import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
@@ -19,4 +20,11 @@ public class KingdomController {
         return null;
     }
 
+    public static Castle getCastle (Kingdom kingdom) {
+        for(KingdomTerritory territory: kingdom.getTerritories()){
+            if(territory instanceof Castle )
+                return (Castle)territory;
+        }
+        return null;
+    }
 }
