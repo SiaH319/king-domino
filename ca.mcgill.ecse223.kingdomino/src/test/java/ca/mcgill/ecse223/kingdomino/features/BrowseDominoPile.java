@@ -113,39 +113,22 @@ public class BrowseDominoPile {
 	 */
 	@When("I initiate the browsing of all dominoes of {string} terrain type")
 	public void i_initiate_the_browsing_of_all_dominoes_of_terrain_type(String string) {
-		if (string == "wheat") {
-			currentDominoes = getDominoController.getAllDominobyTerrainType("WheatField");
-		}
-		else if (string == "mountain") {
-			currentDominoes = getDominoController.getAllDominobyTerrainType("Mountain");
-		}
-		else if (string == "lake") {
-			currentDominoes= getDominoController.getAllDominobyTerrainType("Lake");
-		}
-
-		else if (string == "grass") {
-			currentDominoes = getDominoController.getAllDominobyTerrainType("Grass");
-		}
-		else if (string == "forset") {
-			currentDominoes = getDominoController.getAllDominobyTerrainType("Forest");
-		}
-		else if (string == "swamp") {
-			currentDominoes =getDominoController.getAllDominobyTerrainType("Swamp");
-		}
-
+			currentDominoes = getAllDominobyTerrainType(string);
 	}
+	
+	
 
 	@Then("list of dominoes with IDs {string} should be shown")
 	public void list_of_dominoes_with_IDs_should_be_shown(String string) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
 		List<Domino> dominos = game.getAllDominos();
-		String expected = "";
-		//for (Domino domino: currentDominoes) {
-		for (Domino domino: dominos) {
-			expected = expected + ""+domino.getId();
-			//int actual = Integer.valueOf(string);
-			assertEquals(expected,string);
+		String[] ids = string.split(",");
+		int k = 0;//ids.length;
+		for (Domino domino: dominos) { // for (Domino domino: currentDominoes)
+			string = ids[k];
+			assertEquals(""+domino.getId(),string);
+			k++;
 		}
 	}
 
@@ -209,9 +192,33 @@ public class BrowseDominoPile {
 			return TerrainType.Swamp;
 		case "L":
 			return TerrainType.Lake;
+		case "wheat":
+			return TerrainType.WheatField;
+		case "forest":
+			return TerrainType.Forest;
+		case "mountain":
+			return TerrainType.Mountain;
+		case "grass":
+			return TerrainType.Grass;
+		case "swamp":
+			return TerrainType.Swamp;
+		case "lake":
+			return TerrainType.Lake;
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
 		}
+	}
+
+	
+	private List<Domino> getAllDominobyTerrainType(String terrainString) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		List<Domino> dominoList = null;
+		TerrainType terrain = getTerrainType(terrainString);
+		for(Domino domino: game.getAllDominos()) {
+			if((domino.getRightTile()).equals(terrain) || (domino.getLeftTile()).equals(terrain))
+				dominoList.add(domino);
+		}
+		return dominoList;
 	}
 
 	private String getTerrainString(TerrainType terrain) {
