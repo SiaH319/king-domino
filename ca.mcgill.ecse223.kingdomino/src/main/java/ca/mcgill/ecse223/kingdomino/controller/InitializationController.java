@@ -46,8 +46,7 @@ public class InitializationController {
 	public static void initializeUser(String string) throws InvalidInputException{
 		if (User.getWithName(string) == null &&
 				KingdominoApplication.getKingdomino()!=null&&
-				string.matches("[a-z0-9]+")
-		) {
+				string.matches("[a-z0-9]+")) {
 			KingdominoApplication.getKingdomino().addUser(string);
 		}
 		// no duplicate name

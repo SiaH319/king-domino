@@ -51,4 +51,64 @@ public class getDominoController {
 	public static int getDominoTotalCrown(Domino domino) {
 		return domino.getLeftCrown() + domino.getRightCrown();
 	}
+	
+	public static TerrainType getTerrainType(String terrain) {
+		switch (terrain) {
+		case "W":
+			return TerrainType.WheatField;
+		case "F":
+			return TerrainType.Forest;
+		case "M":
+			return TerrainType.Mountain;
+		case "G":
+			return TerrainType.Grass;
+		case "S":
+			return TerrainType.Swamp;
+		case "L":
+			return TerrainType.Lake;
+		case "wheat":
+			return TerrainType.WheatField;
+		case "forest":
+			return TerrainType.Forest;
+		case "mountain":
+			return TerrainType.Mountain;
+		case "grass":
+			return TerrainType.Grass;
+		case "swamp":
+			return TerrainType.Swamp;
+		case "lake":
+			return TerrainType.Lake;
+		default:
+			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+		}
+	}
+	
+	public static String getTerrainTypeString(TerrainType terrain) {
+		switch (terrain) {
+		case WheatField:
+			return "wheat";
+		case Forest:
+			return "forest";
+		case Mountain:
+			return "mountain";
+		case Grass:
+			return "grass";
+		case Swamp:
+			return "swamp";
+		case Lake:
+			return "lake";
+		default:
+			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+		}
+	}
+
+	public static Domino getdominoByID(int id) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		for (Domino domino : game.getAllDominos()) {
+			if (domino.getId() == id) {
+				return domino;
+			}
+		}
+		throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
+	}
 }

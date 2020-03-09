@@ -1,11 +1,14 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
 import java.io.BufferedReader;
+import ca.mcgill.ecse223.kingdomino.controller.getDominoController;
+
 import java.io.FileReader;
 import java.io.IOException;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
+import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.Player;
@@ -14,6 +17,7 @@ import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
 public class addDefaultController {
+	
 	public static void addDefaultUsersAndPlayers(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
 		for (int i = 0; i < userNames.length; i++) {
@@ -136,8 +140,31 @@ public class addDefaultController {
 		}
 		*/
 
+		
 	}
 
-
+	public static void createAllDominoes(Game game) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
+			String line = "";
+			String delimiters = "[:\\+()]";
+			while ((line = br.readLine()) != null) {
+				String[] dominoString = line.split(delimiters); // {id, leftTerrain, rightTerrain, crowns}
+				int dominoId = Integer.decode(dominoString[0]);
+				TerrainType leftTerrain = getDominoController.getTerrainType(dominoString[1]);
+				TerrainType rightTerrain = getDominoController.getTerrainType(dominoString[2]);
+				int numCrown = 0;
+				if (dominoString.length > 3) {
+					numCrown = Integer.decode(dominoString[3]);
+				}
+				new Domino(dominoId, leftTerrain, rightTerrain, numCrown, game);
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new java.lang.IllegalArgumentException(
+					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
+		}
+	}
 
 }

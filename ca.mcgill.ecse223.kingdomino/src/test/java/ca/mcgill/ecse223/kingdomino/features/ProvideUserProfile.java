@@ -66,7 +66,6 @@ public class ProvideUserProfile {
 			e.printStackTrace();
 			isValid = false;
 		}
-
 	}
 
 

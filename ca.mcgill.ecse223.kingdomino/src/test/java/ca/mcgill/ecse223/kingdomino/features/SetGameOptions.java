@@ -58,7 +58,6 @@ public class SetGameOptions {
 		game.hasAllDrafts();
 		game.hasPlayers();
 		//game.setNumberOfPlayers(game.getNumberOfPlayers());
-
 	}
 
 
@@ -67,19 +66,16 @@ public class SetGameOptions {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
 		game.setNumberOfPlayers(numplayer);
-
-
 		Integer actual = game.getNumberOfPlayers();
 		assertEquals(numplayer,actual);
 	}
 
-	// When Harmony "<isUsingHarmony>" selected as bonus option
+	
 	@When("Harmony {string} selected as bonus option")
 	public void harmony_selected_as_bonus_option(String isUsingHarmony) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
 		game.addSelectedBonusOption(new BonusOption(isUsingHarmony,kingdomino));
-
 	}
 
 
@@ -121,8 +117,6 @@ public class SetGameOptions {
 			}
 		}
 	}
-
-
 }
 
 
