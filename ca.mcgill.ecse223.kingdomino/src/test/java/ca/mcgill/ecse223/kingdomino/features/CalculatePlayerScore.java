@@ -8,6 +8,9 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
+import ca.mcgill.ecse223.kingdomino.controller.GameController;
+import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.model.BonusOption;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
@@ -26,44 +29,62 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import ca.mcgill.ecse223.kingdomino.features.CalculatePlayerScore;
 import ca.mcgill.ecse223.kingdomino.features.CalculatePropertyScore;
-
+import ca.mcgill.ecse223.kingdomino.model.Property;
+import ca.mcgill.ecse223.kingdomino.controller.CalculateBonusController;
+import ca.mcgill.ecse223.kingdomino.controller.CalculatePropertyScoreController;
+import ca.mcgill.ecse223.kingdomino.controller.CalculationController;
 public class CalculatePlayerScore {
 	
 	private int playerScore;
 	
 	@Given("the game is initialized for calculate player score")
 	public void the_game_is_initialized_for_calculate_player_score() {
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		// Populate game
-		addDefaultUsersAndPlayers(game);
-		createAllDominoes(game);
-		game.setNextPlayer(game.getPlayer(0));
-		KingdominoApplication.setKingdomino(kingdomino);
+		 Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+	        Game game = new Game(48, kingdomino);
+	        game.setNumberOfPlayers(4);
+	        kingdomino.setCurrentGame(game);
+	        // Populate game
+	        addDefaultUsersAndPlayers(game);
+	        createAllDominoes(game);
+	        game.setNextPlayer(game.getPlayer(0));
+	        KingdominoApplication.setKingdomino(kingdomino);
+	        String player0Name = (game.getPlayer(0).getUser().getName());
+	        GameController.setGrid(player0Name, new Square[81]);
+	        GameController.setSet(player0Name, new DisjointSet(81));
+	        Square[] grid = GameController.getGrid(player0Name);
+	        for (int i = 4; i >= -4; i--)
+	            for (int j = -4; j <= 4; j++)
+	                grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
 	}
 	
 	
 
 	@Given("the game has {string} bonus option")
 	public void the_game_has_bonus_option(String string) {
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
 		BonusOption selected = new BonusOption(string,kingdomino);
-		game.addSelectedBonusOptionAt(selected,0);
+		game.addSelectedBonusOption(selected);
 	}
 
 	@When("calculate player score is initiated")
 	public void calculate_player_score_is_initiated() {
 	 Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-	 Game game = kingdomino.getCurrentGame();
-	 Player player = game.getNextPlayer();
+      Game game = kingdomino.getCurrentGame();
+      Player player = game.getNextPlayer();
+      Kingdom kingdom = player.getKingdom();
+      String player0Name = (player.getUser().getName());
+      DisjointSet s =GameController.getSet(player0Name);
+      Square[] grid = GameController.getGrid(player0Name);
+      CalculationController.identifyPropertoes(s , grid, player.getKingdom());
+	 List<Property> p = kingdom.getProperties();
+	 CalculatePropertyScoreController.calculatePropertyScore(p, player);
+	 CalculateBonusController.CalculateBonusScore(game, player);
+	 
 	 int propertyScore = player.getPropertyScore();
 	 int bonusScore = player.getBonusScore();
 	 this.playerScore = propertyScore + bonusScore;//???
+	 System.out.println(propertyScore);
 		
 	   // throw new cucumber.api.PendingException();
 	}

@@ -34,7 +34,7 @@ public class DiscardDominoStepDefinitions {
 
 	
 
-	@Given("the player's kingdom has the following dominoes:")
+/*	@Given("the player's kingdom has the following dominoes:")
 	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
@@ -52,7 +52,8 @@ public class DiscardDominoStepDefinitions {
 			domInKingdom.setDirection(dir);
 			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
 		}
-	}
+		}
+	*/
 
 	@Given("domino {int} is in the current draft")
 	public void domino_is_in_the_current_draft(Integer domID) {

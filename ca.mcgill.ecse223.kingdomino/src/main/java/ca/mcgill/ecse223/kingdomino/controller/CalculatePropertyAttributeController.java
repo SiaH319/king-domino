@@ -28,23 +28,20 @@ public class CalculatePropertyAttributeController {
 	 */
 	//find size of each property
 	
-	public static void CalculatePropertySize(Kingdom currentKingdom) {
 	
-	for(int i =0; i < currentKingdom.numberOfProperties(); i++) {
+	public static void CalculatePropertySize(Property property) {
+	
 		
-		List<Property> properties = currentKingdom.getProperties();
 		
-		Property tempProperty = properties.get(i);
+		TerrainType type = property.getPropertyType();
 		
-		TerrainType type = tempProperty.getPropertyType();
-		
-		int sizeProperty = 0;
+		int sizeProperty=0;
 		boolean sameTypeL;
 		boolean sameTypeR;
 		
 		//check the number of tiles in a property with the same type
 		
-		List<Domino> dominos = tempProperty.getIncludedDominos();
+		List<Domino> dominos = property.getIncludedDominos();
 		
 		for (int j=0; j < dominos.size(); j++) {
 			
@@ -52,20 +49,22 @@ public class CalculatePropertyAttributeController {
 			
 			//check if left tile is same type as property type
 			sameTypeL = (tempDomino.getLeftTile() == type);// not sure
-			if (sameTypeL == true) sizeProperty ++;
+			if (sameTypeL == true) {
+			sizeProperty++;
+			}
 			
 			//check if right tile is same type as property type
 			sameTypeR = (tempDomino.getRightTile() == type);// not sure
-			if (sameTypeR == true) sizeProperty ++;
-		    
+			if (sameTypeR == true) { 
+		    sizeProperty++;
 		}
 		
-		tempProperty.setSize(sizeProperty);
+		
 				
 		}
 		
+		property.setSize(sizeProperty);
 	}
-	
 		
 	public void CalculatePropertyCrown(Kingdom currentKingdom) {
 		

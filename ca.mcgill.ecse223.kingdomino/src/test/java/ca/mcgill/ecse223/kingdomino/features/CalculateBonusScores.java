@@ -11,16 +11,22 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.controller.CalculateBonusController;
-
+import ca.mcgill.ecse223.kingdomino.controller.CalculationController;
+import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
+import ca.mcgill.ecse223.kingdomino.controller.GameController;
+import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.IdentifyPropertiesController;
+//import ca.mcgill.ecse223.kingdomino.controller.IdentifyPropertiesController;
 import ca.mcgill.ecse223.kingdomino.controller.RepeatedStepsController;
+import ca.mcgill.ecse223.kingdomino.controller.Square;
+import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
 import ca.mcgill.ecse223.kingdomino.model.BonusOption;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
+import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
 import ca.mcgill.ecse223.kingdomino.model.TerrainType;
@@ -28,6 +34,7 @@ import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
+import ca.mcgill.ecse223.kingdomino.model.Property;
 
 
 public class CalculateBonusScores {
@@ -35,16 +42,22 @@ public class CalculateBonusScores {
 	@Given("the game is initialized for calculate bonus scores")
 	public void the_game_is_initialized_for_calculate_bonus_scores() {
 	    // Write code here that turns the phrase above into concrete actions
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		// Populate game
-		addDefaultUsersAndPlayers(game);
-		createAllDominoes(game);
-		game.setNextPlayer(game.getPlayer(0));
-		KingdominoApplication.setKingdomino(kingdomino);
-		
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+        Game game = new Game(48, kingdomino);
+        game.setNumberOfPlayers(4);
+        kingdomino.setCurrentGame(game);
+        // Populate game
+        addDefaultUsersAndPlayers(game);
+        createAllDominoes(game);
+        game.setNextPlayer(game.getPlayer(0));
+        KingdominoApplication.setKingdomino(kingdomino);
+        String player0Name = (game.getPlayer(0).getUser().getName());
+        GameController.setGrid(player0Name, new Square[81]);
+        GameController.setSet(player0Name, new DisjointSet(81));
+        Square[] grid = GameController.getGrid(player0Name);
+        for (int i = 4; i >= -4; i--)
+            for (int j = -4; j <= 4; j++)
+                grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
 	   // throw new cucumber.api.PendingException();
 	}
 	
@@ -52,17 +65,34 @@ public class CalculateBonusScores {
 	public void the_player_s_kingdom_also_includes_the_domino_at_position_with_the_direction(Integer int1, Integer int2, Integer int3, String string) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = kingdomino.getCurrentGame();
+        Kingdom kingdom = game.getNextPlayer().getKingdom();
         Domino domino = getdominoByID(int1);
         DominoInKingdom  dominoInKingdom = new DominoInKingdom(int2, int3, game.getNextPlayer().getKingdom(),domino);
         dominoInKingdom.setDirection(getDirection(string));
-	}
+        domino.setStatus(DominoStatus.PlacedInKingdom);
+        
+        String player0Name = (game.getPlayer(0).getUser().getName());
+        Square[] grid = GameController.getGrid(player0Name);
+        int[] pos = Square.splitPlacedDomino(dominoInKingdom, grid);
+        DisjointSet s = GameController.getSet(player0Name);
+        Castle castle = getCastle(kingdom);
+        if (grid[pos[0]].getTerrain() == grid[pos[1]].getTerrain())
+            s.union(pos[0], pos[1]);
+        GameController.unionCurrentSquare(pos[0],
+                VerificationController.getAdjacentSquareIndexesLeft(castle, grid, dominoInKingdom), s);
+        GameController.unionCurrentSquare(pos[1],
+               VerificationController.getAdjacentSquareIndexesRight(castle, grid, dominoInKingdom), s);
+    }
+   
+	
+
 
 	@Given("Middle Kingdom is selected as bonus option")
 	public void middle_Kingdom_is_selected_as_bonus_option() {
 	    // Write code here that turns the phrase above into concrete actions
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
-		BonusOption bonus = new BonusOption("middleKingdom", kingdomino);
+		BonusOption bonus = new BonusOption("middle Kingdom", kingdomino);
 		game.addSelectedBonusOption(bonus);
 		
 		
@@ -110,7 +140,42 @@ public class CalculateBonusScores {
 ///////////////////////////////////////
 /// -----Private Helper Methods---- ///
 ///////////////////////////////////////
-
+private char printTerrain(TerrainType terrainType){
+char c;
+switch(terrainType){
+case WheatField:
+c = 'W';
+break;
+case Mountain:
+c = 'M';
+break;
+case Lake:
+c = 'L';
+break;
+case Forest:
+c = 'F';
+break;
+case Grass:
+c = 'G';
+break;
+case Swamp:
+c = 'S';
+break;
+default:
+c = '/';
+break;
+}
+return c;
+}
+private Boolean isIdenticalDominoIndexes(String[] indexesFromTest, int[] indexesFromProperty){
+int[] IdsFromTest = new int[indexesFromTest.length];
+for(int i = 0 ; i < IdsFromTest.length; i++)
+IdsFromTest[i] = Integer.parseInt(indexesFromTest[i]);
+boolean result = true;
+for(int i = 0 ; i < IdsFromTest.length; i++)
+result = result && (IdsFromTest[i] == indexesFromProperty[i]);
+return result;
+}
 private void addDefaultUsersAndPlayers(Game game) {
 String[] userNames = { "User1", "User2", "User3", "User4" };
 for (int i = 0; i < userNames.length; i++) {
@@ -157,6 +222,25 @@ return domino;
 throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
 }
 
+private TerrainType getTerrainTypeFromString(String terrain) {
+switch (terrain) {
+case "wheat":
+return TerrainType.WheatField;
+case "forest":
+return TerrainType.Forest;
+case "mountain":
+return TerrainType.Mountain;
+case "grass":
+return TerrainType.Grass;
+case "swamp":
+return TerrainType.Swamp;
+case "lake":
+return TerrainType.Lake;
+default:
+throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+}
+}
+
 private TerrainType getTerrainType(String terrain) {
 switch (terrain) {
 case "W":
@@ -175,7 +259,6 @@ default:
 throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
 }
 }
-
 private DirectionKind getDirection(String dir) {
 switch (dir) {
 case "up":
@@ -212,5 +295,12 @@ return DominoStatus.Discarded;
 default:
 throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
 }
+}
+private Castle getCastle (Kingdom kingdom) {
+for(KingdomTerritory territory: kingdom.getTerritories()){
+if(territory instanceof Castle )
+return (Castle)territory;
+}
+return null;
 }
 }
