@@ -110,6 +110,7 @@ public class PlaceDominoStepDefinition{
             int playerIndex=  getPlayerIndex(game, playerColor);
             Player p = game.getPlayer(playerIndex);
             Domino domino = getdominoByID(id);
+            domino.setStatus(Domino.DominoStatus.InCurrentDraft);
             Draft draft = GameController.findDraftByDominoId(game, id);
             if (KingdominoApplication.getKingdomino().getCurrentGame().getCurrentDraft() == null) {
                 draft = new Draft(Draft.DraftStatus.FaceDown, KingdominoApplication.getKingdomino().getCurrentGame());
@@ -207,7 +208,7 @@ public class PlaceDominoStepDefinition{
                 return PlayerColor.Blue;
             if(color.equals("green"))
                 return PlayerColor.Green;
-            if(color.equals("Yellow"))
+            if(color.equals("yellow"))
                 return PlayerColor.Yellow;
             return null;
         }

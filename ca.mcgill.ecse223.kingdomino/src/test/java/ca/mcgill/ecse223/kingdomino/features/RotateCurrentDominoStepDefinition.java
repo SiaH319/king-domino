@@ -1,9 +1,6 @@
 package ca.mcgill.ecse223.kingdomino.features;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
-import ca.mcgill.ecse223.kingdomino.controller.GameController;
-import ca.mcgill.ecse223.kingdomino.controller.Square;
-import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
+import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
@@ -15,6 +12,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 public class RotateCurrentDominoStepDefinition {
     @Given("the game is initialized for rotate current domino")
@@ -81,43 +80,82 @@ public class RotateCurrentDominoStepDefinition {
 
     @When("{string} requests to rotate the domino with {string}")
     public void player_request_to_rotate_domino(String pcolor, String rotation){
-
+        Player.PlayerColor playerColor = getPlayerColor(pcolor);
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+        Game game = kingdomino.getCurrentGame();
+        int playerIndex=  getPlayerIndex(game, playerColor);
+        Player p = game.getPlayer(playerIndex);
+        Domino domino = p.getDominoSelection().getDomino();
+        //Castle
+        Castle castle = getCastle(p.getKingdom());;
+        //Grid
+        Square[] grid = GameController.getGrid(p.getUser().getName());
+        //Territories
+        List<KingdomTerritory> territories = p.getKingdom().getTerritories();
+        //DIK
+        DominoInKingdom dik= KingdomController.getDominoInKingdomByDominoId(domino.getId(),p.getKingdom());
+        int rotationd = convertRotationToInt(rotation);
+        DominoController.rotateExistingDomino(castle,grid,territories,dik,rotationd);
     }
 
     @Then("the domino {int} is still tentatively placed at {int}:{int} but with new direction {string}")
-    public void the_domino_is_still_tentatively_placed_at_but_with_new_direction(Integer int1, Integer int2, Integer int3, String string) {
+    public void the_domino_is_still_tentatively_placed_at_but_with_new_direction(Integer id, Integer x, Integer y, String dir) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        Domino domino = getdominoByID(id);
+        Player p = domino.getDominoSelection().getPlayer();
+        DominoInKingdom dik= KingdomController.getDominoInKingdomByDominoId(domino.getId(),p.getKingdom());
+        if(dik == null) throw new java.lang.IllegalArgumentException("Domino In Kingdom not found: ");
+        assertEquals((int)x, dik.getX());
+        assertEquals((int)y, dik.getY());
+        assertEquals(getDirection(dir),dik.getDirection());
     }
 
     @Then("the domino {int} should have status {string}")
-    public void the_domino_should_have_status(Integer int1, String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+    public void the_domino_should_have_status(Integer id, String dstatus) {
+        Domino domino = getdominoByID(id);
+        Player p = domino.getDominoSelection().getPlayer();
+        DominoInKingdom dik= KingdomController.getDominoInKingdomByDominoId(domino.getId(),p.getKingdom());
+        if(dik == null) throw new java.lang.IllegalArgumentException("Domino In Kingdom not found: ");
+        assertEquals(getDominoStatus(dstatus),dik.getDomino().getStatus());
     }
 
     //Scenario Outline: Player attempts to rotate the tentatively placed domino but fails due to board size restrictions
     @Given("domino {int} has status {string}")
     public void domino_has_status(Integer int1, String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        Domino dom = getdominoByID(int1);
+        dom.setStatus(getDominoStatus(string));
     }
 
     @Then("domino {int} is tentatively placed at the same position {int}:{int} with the same direction {string}")
-    public void domino_is_tentatively_placed_at_the_same_position_with_the_same_direction(Integer int1, Integer int2, Integer int3, String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+    public void domino_is_tentatively_placed_at_the_same_position_with_the_same_direction(Integer id, Integer x, Integer y, String dir) {
+        Domino domino = getdominoByID(id);
+        Player p = domino.getDominoSelection().getPlayer();
+        DominoInKingdom dik= KingdomController.getDominoInKingdomByDominoId(domino.getId(),p.getKingdom());
+        if(dik == null) throw new java.lang.IllegalArgumentException("Domino In Kingdom not found: ");
+        assertEquals((int)x, dik.getX());
+        assertEquals((int)y, dik.getY());
+        assertEquals(getDirection(dir),dik.getDirection());
     }
 
     @Then("domino {int} should still have status {string}")
-    public void domino_should_still_have_status(Integer int1, String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+    public void domino_should_still_have_status(Integer id, String dstatus) {
+        Domino domino = getdominoByID(id);
+        Player p = domino.getDominoSelection().getPlayer();
+        DominoInKingdom dik= KingdomController.getDominoInKingdomByDominoId(domino.getId(),p.getKingdom());
+        if(dik == null) throw new java.lang.IllegalArgumentException("Domino In Kingdom not found: ");
+        assertEquals(getDominoStatus(dstatus),dik.getDomino().getStatus());
     }
 
     ///////////////////////////////////////
     /// -----Private Helper Methods---- ///
     ///////////////////////////////////////
+    private int convertRotationToInt(String rotation){
+        if(rotation.equals("clockwise"))
+            return 1;
+        if(rotation.equals("counterclockwise"))
+            return -1;
+        return 0;
+    }
     private int getPlayerIndex(Game game, Player.PlayerColor playerColor){
         List<Player> players = game.getPlayers();
         int i = 0;
@@ -137,7 +175,7 @@ public class RotateCurrentDominoStepDefinition {
             return Player.PlayerColor.Blue;
         if(color.equals("green"))
             return Player.PlayerColor.Green;
-        if(color.equals("Yellow"))
+        if(color.equals("yellow"))
             return Player.PlayerColor.Yellow;
         return null;
     }
@@ -261,6 +299,8 @@ public class RotateCurrentDominoStepDefinition {
             case "inNextDraft":
                 return Domino.DominoStatus.InNextDraft;
             case "erroneouslyPreplaced":
+                return Domino.DominoStatus.ErroneouslyPreplaced;
+            case "ErroneouslyPreplaced":
                 return Domino.DominoStatus.ErroneouslyPreplaced;
             case "correctlyPreplaced":
                 return Domino.DominoStatus.CorrectlyPreplaced;

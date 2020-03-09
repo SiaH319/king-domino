@@ -8,7 +8,6 @@ import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
-import com.sun.deploy.security.SelectableSecurityManager;
 
 /**
  * This class implements the controller methods for Domino
@@ -150,13 +149,14 @@ public class DominoController {
         DominoInKingdom.DirectionKind oldDir = dominoInKingdom.getDirection();
         DominoInKingdom.DirectionKind newDir = findDirAfterRotation(rotationDir,oldDir);
         dominoInKingdom.setDirection(newDir);
-        if(VerificationController.verifyGridSize(territories)){
+
+        if(VerificationController.verifyGridSize(territories) || dominoInKingdom.getDomino().getStatus() == DominoStatus.InCurrentDraft){
             if(VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom) &&
                     (VerificationController.verifyCastleAdjacency(castle,dominoInKingdom) ||
                             VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))
                 dominoInKingdom.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
             else
-                dominoInKingdom.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
+                dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
         } else{
             dominoInKingdom.setDirection(oldDir);
         }
