@@ -28,7 +28,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import ca.mcgill.ecse223.kingdomino.model.Property;
-import ca.mcgill.ecse223.kingdomino.controller.CalculatePropertyScoreController;
 import ca.mcgill.ecse223.kingdomino.controller.CalculationController;
 
 public class CalculatePlayerScoreStepDefinition {
@@ -84,7 +83,7 @@ public class CalculatePlayerScoreStepDefinition {
 		Square[] grid = GameController.getGrid(player0Name);
 		CalculationController.identifyPropertoes(s, grid, player.getKingdom());
 		List<Property> p = kingdom.getProperties();
-		CalculatePropertyScoreController.calculatePropertyScore(p, player);
+		CalculationController.calculatePropertyScore(p, player);
 		CalculationController.CalculateBonusScore(game, player);
 
 		int propertyScore = player.getPropertyScore();
