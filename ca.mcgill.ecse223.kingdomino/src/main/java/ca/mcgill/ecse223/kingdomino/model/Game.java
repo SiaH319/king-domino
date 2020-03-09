@@ -2,16 +2,20 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package ca.mcgill.ecse223.kingdomino.model;
+import java.io.Serializable;
 import java.util.*;
 
 // line 12 "../../../../../Kingdomino.ump"
-public class Game {
+public class Game implements Serializable {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //Game Attributes
+  // line 6 "../../../../../KingdominoPersistence.ump"
+  private static final long serialVersionUID = -5952891179517584957L;
+
+  // Game Attributes
   private int numberOfPlayers;
   private int maxPileSize;
 
@@ -38,10 +42,12 @@ public class Game {
     allDrafts = new ArrayList<Draft>();
     selectedBonusOptions = new ArrayList<BonusOption>();
     boolean didAddKingdomino = setKingdomino(aKingdomino);
-    if (!didAddKingdomino)
-    {
+    if (!didAddKingdomino) {
       throw new RuntimeException("Unable to create allGame due to kingdomino");
     }
+  }
+
+  public Game() {
   }
 
   //------------------------
@@ -564,5 +570,10 @@ public class Game {
             "  " + "nextDraft = "+(getNextDraft()!=null?Integer.toHexString(System.identityHashCode(getNextDraft())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "topDominoInPile = "+(getTopDominoInPile()!=null?Integer.toHexString(System.identityHashCode(getTopDominoInPile())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "kingdomino = "+(getKingdomino()!=null?Integer.toHexString(System.identityHashCode(getKingdomino())):"null");
+  }
+
+  // line 7 "../../../../../KingdominoPersistence.ump"
+  public void reinitialize() {
+    
   }
 }
