@@ -4,8 +4,7 @@
 package ca.mcgill.ecse223.kingdomino.model;
 
 // line 71 "../../../../../Kingdomino.ump"
-public class DominoInKingdom extends KingdomTerritory
-{
+public class DominoInKingdom extends KingdomTerritory {
 
   //------------------------r
   // ENUMERATIONS
@@ -27,12 +26,10 @@ public class DominoInKingdom extends KingdomTerritory
   // CONSTRUCTOR
   //------------------------
 
-  public DominoInKingdom(int aX, int aY, Kingdom aKingdom, Domino aDomino)
-  {
+  public DominoInKingdom(int aX, int aY, Kingdom aKingdom, Domino aDomino) {
     super(aX, aY, aKingdom);
     direction = DirectionKind.Up;
-    if (!setDomino(aDomino))
-    {
+    if (!setDomino(aDomino)) {
       throw new RuntimeException("Unable to create DominoInKingdom due to aDomino");
     }
   }
@@ -72,8 +69,8 @@ public class DominoInKingdom extends KingdomTerritory
     }
     return new int[]{x_right, y_right};
   }
-  public boolean setDirection(DirectionKind aDirection)
-  {
+
+  public boolean setDirection(DirectionKind aDirection) {
     boolean wasSet = false;
     direction = aDirection;
     wasSet = true;
@@ -83,36 +80,31 @@ public class DominoInKingdom extends KingdomTerritory
   /**
    * Measured wrt. the left tile of the domino
    */
-  public DirectionKind getDirection()
-  {
+  public DirectionKind getDirection() {
     return direction;
   }
+
   /* Code from template association_GetOne */
-  public Domino getDomino()
-  {
+  public Domino getDomino() {
     return domino;
   }
+
   /* Code from template association_SetUnidirectionalOne */
-  public boolean setDomino(Domino aNewDomino)
-  {
+  public boolean setDomino(Domino aNewDomino) {
     boolean wasSet = false;
-    if (aNewDomino != null)
-    {
+    if (aNewDomino != null) {
       domino = aNewDomino;
       wasSet = true;
     }
     return wasSet;
   }
 
-  public void delete()
-  {
+  public void delete() {
     domino = null;
     super.delete();
   }
 
-
-  public String toString()
-  {
+  public String toString() {
     return super.toString() + "["+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "direction" + "=" + (getDirection() != null ? !getDirection().equals(this)  ? getDirection().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "domino = "+(getDomino()!=null?Integer.toHexString(System.identityHashCode(getDomino())):"null");
