@@ -3,6 +3,7 @@ import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
 import ca.mcgill.ecse223.kingdomino.controller.GameController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
+import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
@@ -13,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class RotateCurrentDominoStepDefinition {
     @Given("the game is initialized for rotate current domino")
@@ -40,14 +42,41 @@ public class RotateCurrentDominoStepDefinition {
 
     @Given("{string}'s kingdom has following dominoes:")
     public void s_kingdom_has_following_dominoes(String string, io.cucumber.datatable.DataTable dataTable) {
-        // Write code here that turns the phrase above into concrete actions
-        // For automatic transformation, change DataTable to one of
-        // E, List<E>, List<List<E>>, List<Map<K,V>>, Map<K,V> or
-        // Map<K, List<V>>. E,K,V must be a String, Integer, Float,
-        // Double, Byte, Short, Long, BigInteger or BigDecimal.
-        //
-        // For other transformations you can register a DataTableType.
-        throw new cucumber.api.PendingException();
+        Player.PlayerColor playerColor = getPlayerColor(string);
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+        Game game = kingdomino.getCurrentGame();
+        int playerIndex=  getPlayerIndex(game, playerColor);
+        Player p = game.getPlayer(playerIndex);
+
+
+        // Change Datatable to a list of maps (map == column)
+        List<Map<String, String>> valueMaps = dataTable.asMaps(String.class, String.class);
+
+        for (Map<String, String> map : valueMaps) {
+            // Get values from cucumber table
+            Integer id = Integer.decode(map.get("id"));
+            DominoInKingdom.DirectionKind dir = getDirection(map.get("dir"));
+            Integer posx = Integer.decode(map.get("posx"));
+            Integer posy = Integer.decode(map.get("posy"));
+
+            // Add the domino to a player's kingdom
+            Domino dominoToPlace = getdominoByID(id);
+            Kingdom kingdom = p.getKingdom();
+            DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
+            domInKingdom.setDirection(dir);
+            dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
+            String player0Name = p.getUser().getName();
+            Square[] grid = GameController.getGrid(player0Name);
+            int[] pos = Square.splitPlacedDomino (domInKingdom, grid);
+            DisjointSet s = GameController.getSet(player0Name);
+            Castle castle = getCastle(kingdom);
+            if(grid[pos[0]].getTerrain() == grid[pos[1]].getTerrain())
+                s.union(pos[0],pos[1]);
+            GameController.unionCurrentSquare(pos[0], VerificationController.getAdjacentSquareIndexesLeft
+                    (castle, grid, domInKingdom),s);
+            GameController.unionCurrentSquare(pos[1],VerificationController.getAdjacentSquareIndexesRight
+                    (castle, grid, domInKingdom),s);
+        }
     }
 
     @When("{string} requests to rotate the domino with {string}")

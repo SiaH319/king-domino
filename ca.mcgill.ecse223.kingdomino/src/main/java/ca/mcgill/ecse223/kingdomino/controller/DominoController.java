@@ -4,20 +4,11 @@ import java.io.*;
 import java.util.*;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.model.Castle;
-import ca.mcgill.ecse223.kingdomino.model.Domino;
-import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
-import ca.mcgill.ecse223.kingdomino.model.Draft;
-import ca.mcgill.ecse223.kingdomino.model.Game;
-import ca.mcgill.ecse223.kingdomino.model.Kingdom;
-import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
-import ca.mcgill.ecse223.kingdomino.model.Player;
-import ca.mcgill.ecse223.kingdomino.model.TerrainType;
-import ca.mcgill.ecse223.kingdomino.model.User;
+import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
-import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
+import com.sun.deploy.security.SelectableSecurityManager;
 
 /**
  * This class implements the controller methods for Domino
@@ -147,9 +138,37 @@ public class DominoController {
     }
 
     /**
+     * Feature 12: As a player, I wish to evaluate a provisional placement of my current domino in my kingdom
+     * by rotating it (clockwise or counter-clockwise).
+     * rotationDir 1 for clockwise, -1 for anticlockwise
+     * @author Cecilia Jiang
+     * @param dominoInKingdom
+     * @param rotationDir
+     */
+    public static void rotateExistingDomino(Castle castle, Square[] grid, List<KingdomTerritory> territories,
+                                            DominoInKingdom dominoInKingdom, int rotationDir){
+        DominoInKingdom.DirectionKind oldDir = dominoInKingdom.getDirection();
+        DominoInKingdom.DirectionKind newDir = findDirAfterRotation(rotationDir,oldDir);
+        dominoInKingdom.setDirection(newDir);
+        if(VerificationController.verifyGridSize(territories)){
+            if(VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom) &&
+                    (VerificationController.verifyCastleAdjacency(castle,dominoInKingdom) ||
+                            VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))
+                dominoInKingdom.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
+            else
+                dominoInKingdom.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
+        } else{
+            dominoInKingdom.setDirection(oldDir);
+        }
+    }
+
+    /**
      * Feature 13: As a player, I wish to place my selected domino to my kingdom. If I am satisfied with its placement,
      * and its current position respects the adjacency rules, I wish to finalize the placement.
      * (Actual checks of adjacency conditions are implemented as separate features)
+     * @param player
+     * @param id which is id of the domino to place
+     * @author: Cecilia Jiang
      */
     public static void placeDomino(Player player, int id){
         Domino domino = player.getDominoSelection().getDomino();
@@ -158,6 +177,84 @@ public class DominoController {
         } else
             throw new java.lang.IllegalArgumentException("The current domino placement does not respect the " +
                     "adjacency rules");
+    }
+
+    private int[] rightTilePositionAfterRotation(int x_right, int y_right, int rotationDir, DominoInKingdom.DirectionKind oldDir){
+        int[] pos = new int[2]; //x,y
+        switch(oldDir){
+            case Left:
+                if(rotationDir == 1){
+                    pos[0] = x_right + 1;
+                    pos[1] = y_right + 1;
+                }else if(rotationDir == -1){
+                    pos[0] = x_right + 1;
+                    pos[1] = y_right - 1;
+                }
+                break;
+            case Up:
+                if(rotationDir == 1){
+                    pos[0] = x_right + 1;
+                    pos[1] = y_right - 1;
+                }else if(rotationDir == -1){
+                    pos[0] = x_right - 1;
+                    pos[1] = y_right - 1;
+                }
+                break;
+            case Down:
+                if(rotationDir == 1){
+                    pos[0] = x_right - 1;
+                    pos[1] = y_right + 1;
+                }else if(rotationDir == -1){
+                    pos[0] = x_right + 1;
+                    pos[1] = y_right - 1;
+                }
+                break;
+            case Right:
+                if(rotationDir == 1){
+                    pos[0] = x_right - 1;
+                    pos[1] = y_right - 1;
+                }else if(rotationDir == -1){
+                    pos[0] = x_right - 1;
+                    pos[1] = y_right + 1;
+                }
+                break;
+        }
+        return pos;
+    }
+
+    private static DominoInKingdom.DirectionKind findDirAfterRotation(int rotationDir, DominoInKingdom.DirectionKind oldDir){
+        DominoInKingdom.DirectionKind dir = DominoInKingdom.DirectionKind.Up;
+        switch(oldDir){
+            case Left:
+                if(rotationDir == 1){
+                    dir = DominoInKingdom.DirectionKind.Up;
+                }else if(rotationDir == -1){
+                    dir = DominoInKingdom.DirectionKind.Down;
+                }
+                break;
+            case Up:
+                if(rotationDir == 1){
+                    dir = DominoInKingdom.DirectionKind.Right;
+                }else if(rotationDir == -1){
+                    dir = DominoInKingdom.DirectionKind.Left;
+                }
+                break;
+            case Down:
+                if(rotationDir == 1){
+                    dir = DominoInKingdom.DirectionKind.Left;
+                }else if(rotationDir == -1){
+                    dir = DominoInKingdom.DirectionKind.Right;
+                }
+                break;
+            case Right:
+                if(rotationDir == 1){
+                    dir = DominoInKingdom.DirectionKind.Down;
+                }else if(rotationDir == -1){
+                    dir = DominoInKingdom.DirectionKind.Up;
+                }
+                break;
+        }
+        return dir;
     }
 
 }
