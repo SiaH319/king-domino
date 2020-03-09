@@ -39,6 +39,7 @@ public class DiscardDominoStepDefinitions {
 	 * you get started. You may change the code if required.
 	 */
 
+<<<<<<< HEAD
 	@Given("the game is initialized for discard domino")
 	public void the_game_is_initialized_for_discard_domino() {
 		// Intialize empty game
@@ -81,6 +82,30 @@ public class DiscardDominoStepDefinitions {
 //			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
 //		}
 //	}
+=======
+	
+
+/*	@Given("the player's kingdom has the following dominoes:")
+	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		for (Map<String, String> map : valueMaps) {
+			// Get values from cucumber table
+			Integer id = Integer.decode(map.get("id"));
+			DirectionKind dir = getDirection(map.get("dominodir"));
+			Integer posx = Integer.decode(map.get("posx"));
+			Integer posy = Integer.decode(map.get("posy"));
+
+			// Add the domino to a player's kingdom
+			Domino dominoToPlace = getdominoByID(id);
+			Kingdom kingdom = game.getPlayer(0).getKingdom();
+			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
+			domInKingdom.setDirection(dir);
+			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
+		}
+		}
+	*/
+>>>>>>> master
 
 	@Given("domino {int} is in the current draft")
 	public void domino_is_in_the_current_draft(Integer domID) {
