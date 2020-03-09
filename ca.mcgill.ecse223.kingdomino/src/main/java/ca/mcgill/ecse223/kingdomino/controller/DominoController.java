@@ -125,22 +125,84 @@ public class DominoController {
 
     /**
      * Controller implemented for Feature 11: Move Current Domino
-     * @param game
+     * @param player
      * @param dominoId
-     * @return
-     * @author Violet Wei
      */
-    public static boolean moveCurrentDomino(Game game, Player player, int dominoId) {
-        Domino domino = getdominoByID(dominoId);
-        Draft draft = game.getCurrentDraft();
-        DominoSelection dominoSelection = new DominoSelection(player, domino, draft);
-        if (domino.setDominoSelection(null) || draft.removeSelection(dominoSelection)) {
-            domino.setStatus(DominoStatus.ErroneouslyPreplaced);
-            DominoInKingdom dominoInKingdom = new DominoInKingdom(0, 0, new Kingdom(player), domino);
+    public static void initialMoveDominoToKingdom(Player player, int dominoId){
+        Kingdom kingdom = player.getKingdom();
+        DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(dominoId, kingdom);
+        if(dik != null){
+            dik.setY(0);
+            dik.setX(0);
+        }
+    }
+
+    /**
+     * Controller implemented for Feature 11: Move Current Domino
+     * up 0, right 1, down 2, left 3
+     * @param player
+     * @param dominoId
+     * @param movement
+     * @author Violet Wei
+     * @return true if successful or false if fail
+     */
+    public static boolean moveCurrentDomino(Player player, int dominoId, int movement) {
+        Kingdom kingdom = player.getKingdom();
+        DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(dominoId, kingdom);
+        int oldx =dik.getX();
+        int oldy = dik.getY();
+        int newx = -1; int newy = -1;
+        Domino domino;
+        if(dik != null){
+            domino = dik.getDomino();
+            switch(movement){
+                case 0:
+                    newx = oldx;
+                    newy = oldy + 1;
+                    break;
+                case 1:
+                    newx = oldx + 1;
+                    newy = oldy;
+                    break;
+                case 2:
+                    newx = oldx;
+                    newy = oldy - 1;
+                    break;
+                case 3:
+                    newx = oldx - 1;
+                    newy = oldy;
+                    break;
+            }
+            dik.setX(newx); dik.setY(newy);
+            Castle castle = KingdomController.getCastle(kingdom);
+            Square[] grid = GameController.getGrid(player.getUser().getName());
+            if(domino.getStatus() == DominoStatus.InCurrentDraft || VerificationController.verifyGridSize(kingdom.getTerritories())){
+                if(VerificationController.verifyNoOverlapping(castle, grid, dik) &&
+                        (VerificationController.verifyNeighborAdjacency(castle,grid,dik) || VerificationController.verifyCastleAdjacency(castle,dik)))
+                    domino.setStatus(DominoStatus.CorrectlyPreplaced);
+                else
+                    domino.setStatus(DominoStatus.ErroneouslyPreplaced);
+            }else{
+                dik.setX(oldx); dik.setY(oldy);
+                return false;
+            }
         }
         return true;
     }
 
+    public static int convertMovementStringToInt(String movement){
+        int mov = -1;
+        if(movement.equals("up") || movement.equals("Up") ) {
+            mov = 0;
+        } else if(movement.equals("right") || movement.equals("Right") ) {
+            mov = 1;
+        }else if(movement.equals("down") || movement.equals("Down") ) {
+            mov = 2;
+        }if(movement.equals("left") || movement.equals("Left") ) {
+            mov = 3;
+        }
+        return mov;
+    }
     /**
      * Feature 12: As a player, I wish to evaluate a provisional placement of my current domino in my kingdom
      * by rotating it (clockwise or counter-clockwise).

@@ -30,61 +30,14 @@ public class MoveCurrentDominoStepDefinition {
     Game game = new Game(48, kingdomino);
     Player currentPlayer;
     int dominoID;
-    int x, y;
-    DirectionKind dKind;
-    DominoStatus ds;
 
-    @Given("the game is initialized for move current domino")
-    public void the_game_is_initialized_for_move_current_domino() {
-        // Intialize empty game
-        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-        Game game = new Game(48, kingdomino);
-        game.setNumberOfPlayers(4);
-        kingdomino.setCurrentGame(game);
-        // Populate game
-        addDefaultUsersAndPlayers(game);
-        createAllDominoes(game);
-        game.setNextPlayer(game.getPlayer(0));
-        KingdominoApplication.setKingdomino(kingdomino);
-        for(int index = 0; index< game.getNumberOfPlayers(); index++) {
-            String player0Name = (game.getPlayer(index).getUser().getName());
-            GameController.setGrid(player0Name, new Square[81]);
-            GameController.setSet(player0Name, new DisjointSet(81));
-            Square[] grid = GameController.getGrid(player0Name);
-            for (int i = 4; i >= -4; i--)
-                for (int j = -4; j <= 4; j++)
-                    grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
-        }
-    }
-
-    /* Scenario Outline: Initial tentative place of the domino */
-    @Given("it is {string}'s turn")
-    public void it_is_players_turn(String player) {
-        PlayerColor pColor = getPlayerColor(player);
-        List<Player> players = game.getPlayers();
-        for (int i = 0; i < players.size(); i++) {
-            if(players.get(i).getColor() == pColor) {
-                currentPlayer = players.get(i);
-            }
-        }
-        assertNotNull(currentPlayer);
-    }
-
-
-    @Given("{string} has selected domino {int}")
-    public void player_has_selected_domino_id(String player, int dominoid) {
-        DominoSelection ds = currentPlayer.getDominoSelection();
-        Domino domino = getdominoByID(dominoid);
-        DominoSelection selected = domino.getDominoSelection();
-        dominoID = dominoid;
-        //game.getCurrentDraft().addSelection(currentPlayer, domino);
-        assertEquals(selected, ds);
-    }
 
     @When("{string} removes his king from the domino {int}")
     public void player_removes_his_king_from_the_domino_id(String player, int dominoid) {
         Domino domino = getdominoByID(dominoid);
         DominoSelection selected = domino.getDominoSelection();
+        Player player1 = selected.getPlayer();
+        DominoController.initialMoveDominoToKingdom(player1, domino.getId());
         // selected.delete();
         // assertEquals(null, selected);
     }
@@ -92,7 +45,8 @@ public class MoveCurrentDominoStepDefinition {
     @Then("domino {int} should be tentative placed at position 0:0 of {string}'s kingdom with ErroneouslyPreplaced status")
     public void domino_id_should_be_tentative_placed_at_position_0_0_of_players_kingdom_with_errorneouslypreplace_status(int dominoid, String player) {
         Domino domino = getdominoByID(dominoid);
-        Kingdom kingdom = currentPlayer.getKingdom();
+        Player p = domino.getDominoSelection().getPlayer();
+        Kingdom kingdom = p.getKingdom();
         DominoInKingdom dk = new DominoInKingdom(0, 0, kingdom, domino);
         domino.setStatus(DominoStatus.ErroneouslyPreplaced);
         assertNotNull(dk);
@@ -100,86 +54,44 @@ public class MoveCurrentDominoStepDefinition {
 
     /* Scenario Outline: Player moves tentatively placed domino to a new neighboring tile successfully */
 
-    @Given("{string}'s kingdom has following dominoes:")
-    public void players_kingdom_has_following_dominoes(String player, io.cucumber.datatable.DataTable dataTable) {
-        PlayerColor playerColor = getPlayerColor(player);
-        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-        Game game = kingdomino.getCurrentGame();
-        int playerIndex=  getPlayerIndex(game, playerColor);
-        Player p = game.getPlayer(playerIndex);
-
-
-        // Change Datatable to a list of maps (map == column)
-        List<Map<String, String>> valueMaps = dataTable.asMaps(String.class, String.class);
-
-        for (Map<String, String> map : valueMaps) {
-            // Get values from cucumber table
-            Integer id = Integer.decode(map.get("domino"));
-            DominoInKingdom.DirectionKind dir = getDirection(map.get("dominodir"));
-            Integer posx = Integer.decode(map.get("posx"));
-            Integer posy = Integer.decode(map.get("posy"));
-
-            // Add the domino to a player's kingdom
-            Domino dominoToPlace = getdominoByID(id);
-            Kingdom kingdom = p.getKingdom();
-            DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
-            domInKingdom.setDirection(dir);
-            dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
-            String player0Name = p.getUser().getName();
-            Square[] grid = GameController.getGrid(player0Name);
-            int[] pos = Square.splitPlacedDomino (domInKingdom, grid);
-            DisjointSet s = GameController.getSet(player0Name);
-            Castle castle = getCastle(kingdom);
-            if(grid[pos[0]].getTerrain() == grid[pos[1]].getTerrain())
-                s.union(pos[0],pos[1]);
-            GameController.unionCurrentSquare(pos[0], VerificationController.getAdjacentSquareIndexesLeft
-                    (castle, grid, domInKingdom),s);
-            GameController.unionCurrentSquare(pos[1],VerificationController.getAdjacentSquareIndexesRight
-                    (castle, grid, domInKingdom),s);
-        }
-    }
-
-    @Given("domino {int} is tentatively placed at position {int}:{int} with direction {string}")
-    public void domino_id_is_tentatively_placed_at_position_posx_posy_with_direction_dir(int int1, int int2, int int3, String string) {
-        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-        Game game = kingdomino.getCurrentGame();
-        Domino domino = getdominoByID(int1);
-        DominoInKingdom  dominoInKingdom = new DominoInKingdom(int2, int3, game.getNextPlayer().getKingdom(),domino);
-        dominoInKingdom.setDirection(getDirection(string));
-    }
-
     @When("{string} requests to move the domino {string}")
-    public void player_requests_to_move_the_domino_movement(String player, String movement) {
-        boolean isMoved = DominoController.moveCurrentDomino(game, currentPlayer, dominoID, x, y, dKind, DominoStatus.CorrectlyPreplaced);
-        assertEquals(true, isMoved);
+    public void player_requests_to_move_the_domino_movement(String playerColor, String movement) {
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+        Game game = kingdomino.getCurrentGame();
+
+        int playerIndex=  getPlayerIndex(game, getPlayerColor(playerColor));
+        Player p = game.getPlayer(playerIndex);
+        Domino domino = p.getDominoSelection().getDomino();
+        boolean isMoved = DominoController.moveCurrentDomino(p, domino.getId(),
+                DominoController.convertMovementStringToInt(movement));
     }
 
     @Then("the domino {int} should be tentatively placed at position {int}:{int} with direction {string}")
-    public void the_domino_id_should_be_tentatively_placed_at_position_nposx_nposy_with_direction_dir(int dominoid, int nposx, int nposy, String dir) {
-        boolean isPlacedCorectly = DominoController.moveCurrentDomino(game, currentPlayer, dominoid, nposx, nposy, getDirection(dir), DominoStatus.CorrectlyPreplaced);
-        assertEquals(true, isPlacedCorectly);
+    public void the_domino_id_should_be_tentatively_placed_at_position_nposx_nposy_with_direction_dir
+            (int dominoid, int x, int y, String dir) {
+        Domino domino = getdominoByID(dominoid);
+        Player p = domino.getDominoSelection().getPlayer();
+        currentPlayer = p;
+        DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(dominoid,p.getKingdom());
+
+        if(dik!=null){
+            assertEquals(x,dik.getX());
+            assertEquals(y, dik.getY());
+            assertEquals(getDirection(dir), dik.getDirection());
+        }
+
     }
 
     @Then("the new status of the domino is {string}")
     public void the_new_status_of_the_domino_is_dstatus(String dstatus) {
-        ds = getDominoStatus(dstatus);
-        boolean setNewStatus = DominoController.moveCurrentDomino(game, currentPlayer, dominoID, x, y, dKind, ds);
-        assertEquals(true, setNewStatus);
-    }
-
-    /* Scenario Outline: Player attempts to move the tentatively placed domino but fails due to board size restrictions */
-    @Given("domino {int} has status {string}")
-    public void domino_id_has_status_dstatus(int dominoid, String dstatus) {
-        Domino dominoToPlace = getdominoByID(dominoid);
-        dominoToPlace.setStatus(getDominoStatus(dstatus));
-        assertEquals(getDominoStatus(dstatus), dominoToPlace.getStatus());
+        assertEquals(getDominoStatus(dstatus), currentPlayer.getDominoSelection().getDomino().getStatus());
     }
 
 
     @Then("the domino {int} is still tentatively placed at position {int}:{int}")
     public void the_domino_id_is_still_tentatively_placed_at_position_posx_posy(int dominoid, int posx, int posy) {
-        boolean isPlaced = DominoController.placeDomino(game, currentPlayer, dominoid, posx, posy, DirectionKind.Up);
-        assertEquals(true, isPlaced);
+   //     boolean isPlaced = DominoController.placeDomino(game, currentPlayer, dominoid, posx, posy, DirectionKind.Up);
+       // assertEquals(true, isPlaced);
     }
 
     @Then("the domino should still have status {string}")
