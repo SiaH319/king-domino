@@ -8,6 +8,10 @@ import java.lang.Object.*;
 import java.util.List;
 
 public class InitializationController {
+	/**
+	 *  initialize the setup
+	 *  @author: Sia Ham
+	 */
 	public static User findUserByName(String name, Kingdomino kingdomino){
 		List<User> users = kingdomino.getUsers();
 		for(User user: users){

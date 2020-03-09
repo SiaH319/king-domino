@@ -8,7 +8,10 @@ import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 
 public class getDominoController {
-
+	/**
+	 *  get dominoes by features
+	 *  @author: Sia Ham
+	 */
 	public static Domino getDominobyId(Integer id) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Domino result = null;

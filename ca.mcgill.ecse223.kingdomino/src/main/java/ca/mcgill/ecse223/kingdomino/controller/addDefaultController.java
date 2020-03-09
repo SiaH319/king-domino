@@ -2,10 +2,8 @@ package ca.mcgill.ecse223.kingdomino.controller;
 
 import java.io.BufferedReader;
 import ca.mcgill.ecse223.kingdomino.controller.getDominoController;
-
 import java.io.FileReader;
 import java.io.IOException;
-
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
@@ -17,7 +15,10 @@ import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
 public class addDefaultController {
-	
+	/**
+	 *  setup the default format
+	 *  @author: Sia Ham
+	 */
 	public static void addDefaultUsersAndPlayers(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
 		for (int i = 0; i < userNames.length; i++) {
