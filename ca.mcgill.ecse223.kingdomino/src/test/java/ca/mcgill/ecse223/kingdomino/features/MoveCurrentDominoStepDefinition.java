@@ -134,8 +134,13 @@ public class MoveCurrentDominoStepDefinition {
 
     @When("{string} requests to move the domino {string}")
     public void player_requests_to_move_the_domino_movement(String player, String movement) {
+        List<KingdomTerritory> territories= currentPlayer.getKingdom().getTerritories();
         boolean isMoved = DominoController.moveCurrentDomino(game, currentPlayer, dominoID, x, y, dKind, DominoStatus.CorrectlyPreplaced);
-        assertEquals(true, isMoved);
+        if (!VerificationController.verifyGridSize(territories)) {
+            assertEquals(false, isMoved);
+        } else {
+            assertEquals(true, isMoved);
+        }
     }
 
     @Then("the domino {int} should be tentatively placed at position {int}:{int} with direction {string}")

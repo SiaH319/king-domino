@@ -138,6 +138,10 @@ public class DominoController {
      * @author Violet Wei
      */
     public static boolean moveCurrentDomino(Game game, Player player, int dominoId, int posx, int posy, DirectionKind dk, DominoStatus ds) {
+        List<KingdomTerritory> territories= player.getKingdom().getTerritories();
+        if (!VerificationController.verifyGridSize(territories)) {
+            return false;
+        }
         Domino dominoToPlace = getdominoByID(dominoId);
         Draft draft = game.getCurrentDraft();
         Kingdom kingdom = player.getKingdom();
@@ -145,10 +149,6 @@ public class DominoController {
         domInKingdom.setDirection(dk);
         dominoToPlace.setStatus(ds);
         Square[] grid = KingdominoController.getGrid();
-        List<KingdomTerritory> territories= player.getKingdom().getTerritories();
-        if (!VerificationController.verifyGridSize(territories)) {
-            return false;
-        }
         return true;
     }
 
