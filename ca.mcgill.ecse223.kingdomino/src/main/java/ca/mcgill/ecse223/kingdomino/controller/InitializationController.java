@@ -9,6 +9,7 @@ import ca.mcgill.ecse223.kingdomino.model.Player;
 import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
+import java.lang.Object.*;
 
 public class InitializationController {
 	public static void initializeGame() throws InvalidInputException{
@@ -30,9 +31,14 @@ public class InitializationController {
 	}
 	
 	public static void initializeUser(String string) throws InvalidInputException{
-		if ( User.getWithName(string) == null) {
+		if (User.getWithName(string) == null &&
+			KingdominoApplication.getKingdomino()!=null&&
+					string.matches("[a-z0-9]+")
+			) {
 			KingdominoApplication.getKingdomino().addUser(string);
 		}
+		// no duplicate name
+		
 		else {
 			throw new InvalidInputException("There already is a same user");
 		}
@@ -40,13 +46,6 @@ public class InitializationController {
 		
 	}
 
-	public static void createUser(String name) throws InvalidInputException {
-		try {
-			KingdominoApplication.getKingdomino().addUser(name);
-		} catch (RuntimeException e) {
-			throw new InvalidInputException("The username " + name + " already exists");
-		}
-	}
 
 	//private helper class
 	public static class InvalidInputException extends Exception {

@@ -2,6 +2,7 @@ package ca.mcgill.ecse223.kingdomino.features;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.InitializationController;
+import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -57,7 +58,7 @@ public class SetGameOptions {
 		game.hasAllDrafts();
 		game.hasPlayers();
 		//game.setNumberOfPlayers(game.getNumberOfPlayers());
-		
+
 	}
 
 
@@ -66,8 +67,8 @@ public class SetGameOptions {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
 		game.setNumberOfPlayers(numplayer);
-		
-		
+
+
 		Integer actual = game.getNumberOfPlayers();
 		assertEquals(numplayer,actual);
 	}
@@ -78,7 +79,7 @@ public class SetGameOptions {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
 		game.addSelectedBonusOption(new BonusOption(isUsingHarmony,kingdomino));
-		
+
 	}
 
 
@@ -120,6 +121,8 @@ public class SetGameOptions {
 			}
 		}
 	}
-	}
+
+
+}
 
 
