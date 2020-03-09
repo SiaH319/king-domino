@@ -9,8 +9,8 @@ import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 
 public class getDominoController {
 	
-	public static Domino getDominobyId(int id) {
-		Game game = new Game(48, KingdominoApplication.getKingdomino());
+	public static Domino getDominobyId(Integer id) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Domino result = null;
 		for(Domino domino: game.getAllDominos()) {
 			if(domino.getId() == id) 

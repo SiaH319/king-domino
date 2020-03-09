@@ -65,11 +65,9 @@ public class BrowseDominoPile {
 	}
 
 
-
 	/*
 	 * Scenario Outline: Select and observe an individual domino
 	 */
-
 	@When("I provide a domino ID {int}")
 	public void i_provide_a_domino_ID(Integer id) {
 		Game game = new Game(48, KingdominoApplication.getKingdomino());
@@ -85,13 +83,11 @@ public class BrowseDominoPile {
 	}
 
 
-
 	@Then("the listed domino has {string} right terrain")
 	public void the_listed_domino_has_right_terrain(String string) {
 		String excepeted = currentDomino.getRightTile().toString();
 		assertEquals(excepeted,string);
 	}
-
 
 
 	@Then("the listed domino has {int} crowns")
