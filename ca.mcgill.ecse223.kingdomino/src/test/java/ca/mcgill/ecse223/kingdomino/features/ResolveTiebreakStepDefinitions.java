@@ -16,6 +16,9 @@ import io.cucumber.junit.CucumberOptions;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.CalculateRankingController;
 import ca.mcgill.ecse223.kingdomino.controller.CreateNextDraftController;
+import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
+import ca.mcgill.ecse223.kingdomino.controller.GameController;
+import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -42,7 +45,7 @@ import io.cucumber.java.en.When;
 public class ResolveTiebreakStepDefinitions {
 	@Given("the game is initialized for resolve tiebreak")
 	public void the_game_is_initiated_for_resolve_tiebreak() {
-		Kingdomino kingdomino = new Kingdomino();
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = new Game(48, kingdomino);
 		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
@@ -51,6 +54,15 @@ public class ResolveTiebreakStepDefinitions {
 		createAllDominoes(game);
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
+		for(Player p:game.getPlayers()) {
+		String player0Name = (p.getUser().getName());
+		GameController.setGrid(player0Name, new Square[81]);
+		GameController.setSet(player0Name, new DisjointSet(81));
+		Square[] grid = GameController.getGrid(player0Name);
+		for (int i = 4; i >= -4; i--)
+			for (int j = -4; j <= 4; j++)
+				grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+		}
 	}
 	@Then("player standings should be the followings:")
 	public void player_standings_should_be_the_followings(io.cucumber.datatable.DataTable dataTable) {
