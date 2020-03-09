@@ -4,9 +4,11 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.GameController;
 import ca.mcgill.ecse223.kingdomino.controller.InitializationController;
 import ca.mcgill.ecse223.kingdomino.controller.addDefaultController;
 import ca.mcgill.ecse223.kingdomino.controller.getDominoController;
@@ -113,7 +115,9 @@ public class BrowseDominoPile {
 	 */
 	@When("I initiate the browsing of all dominoes of {string} terrain type")
 	public void i_initiate_the_browsing_of_all_dominoes_of_terrain_type(String string) {
-			currentDominoes = getAllDominobyTerrainType(string);
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+			currentDominoes = GameController.getAllDominobyTerrainType(string, game);
 	}
 	
 	
@@ -125,7 +129,7 @@ public class BrowseDominoPile {
 		List<Domino> dominos = game.getAllDominos();
 		String[] ids = string.split(",");
 		int k = 0;//ids.length;
-		for (Domino domino: dominos) { // for (Domino domino: currentDominoes)
+		for (Domino domino: currentDominoes) { // for (Domino domino: currentDominoes)
 			string = ids[k];
 			assertEquals(""+domino.getId(),string);
 			k++;
@@ -207,18 +211,6 @@ public class BrowseDominoPile {
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
 		}
-	}
-
-	
-	private List<Domino> getAllDominobyTerrainType(String terrainString) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		List<Domino> dominoList = null;
-		TerrainType terrain = getTerrainType(terrainString);
-		for(Domino domino: game.getAllDominos()) {
-			if((domino.getRightTile()).equals(terrain) || (domino.getLeftTile()).equals(terrain))
-				dominoList.add(domino);
-		}
-		return dominoList;
 	}
 
 	private String getTerrainString(TerrainType terrain) {
