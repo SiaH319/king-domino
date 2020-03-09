@@ -10,11 +10,13 @@ import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
 import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
+import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
 import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
+import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
@@ -135,16 +137,38 @@ public class DominoController {
      * @return
      * @author Violet Wei
      */
-    public static boolean moveCurrentDomino(Game game, Player player, int dominoId) {
-        Domino domino = getdominoByID(dominoId);
+    public static boolean moveCurrentDomino(Game game, Player player, int dominoId, int posx, int posy, DirectionKind dk, DominoStatus ds) {
+        Domino dominoToPlace = getdominoByID(dominoId);
         Draft draft = game.getCurrentDraft();
-        DominoSelection dominoSelection = new DominoSelection(player, domino, draft);
-        if (domino.setDominoSelection(null) || draft.removeSelection(dominoSelection)) {
-            domino.setStatus(DominoStatus.ErroneouslyPreplaced);
-            DominoInKingdom dominoInKingdom = new DominoInKingdom(0, 0, new Kingdom(player), domino);
+        Kingdom kingdom = player.getKingdom();
+        DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
+        domInKingdom.setDirection(dk);
+        dominoToPlace.setStatus(ds);
+        Square[] grid = KingdominoController.getGrid();
+        List<KingdomTerritory> territories= player.getKingdom().getTerritories();
+        if (!VerificationController.verifyGridSize(territories)) {
+            return false;
         }
         return true;
     }
 
+    public static boolean placeDomino(Game game, Player player, int dominoId, int posx, int posy, DirectionKind dk) {
+        Domino dominoToPlace = getdominoByID(dominoId);
+        Draft draft = game.getCurrentDraft();
+        Kingdom kingdom = player.getKingdom();
+        DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
+        domInKingdom.setDirection(dk);
+        Square[] grid = KingdominoController.getGrid();
+        
+        return true;
+    }
+
+    private static Castle getCastle (Kingdom kingdom) {
+        for(KingdomTerritory territory: kingdom.getTerritories()){
+            if(territory instanceof Castle )
+                return (Castle)territory;
+        }
+        return null;
+    }
 
 }
