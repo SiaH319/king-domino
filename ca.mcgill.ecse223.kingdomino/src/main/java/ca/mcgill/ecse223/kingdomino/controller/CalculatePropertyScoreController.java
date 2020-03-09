@@ -13,8 +13,6 @@ import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
 import ca.mcgill.ecse223.kingdomino.controller.GameController;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-//import ca.mcgill.ecse223.kingdomino.controller.IdentifyPropertiesController;
-//import ca.mcgill.ecse223.kingdomino.controller.RepeatedStepsController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
 import ca.mcgill.ecse223.kingdomino.model.BonusOption;
