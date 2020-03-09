@@ -44,7 +44,7 @@ public class CalculationController {
                 for(String index: containedSquareIndexes){
                     int squareIndex = Integer.parseInt(index);
                     p_Crown += grid[squareIndex].getCrown();
-                    p_size++;
+                  p_size++;
                     p.setPropertyType(grid[squareIndex].getTerrain());
                     int id = grid[squareIndex].getDominoId();
                     p.addIncludedDomino(getdominoByID(id));
