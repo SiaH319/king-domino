@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
+import ca.mcgill.ecse223.kingdomino.controller.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -7,20 +8,12 @@ import io.cucumber.java.en.When;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 
-import ca.mcgill.ecse223.kingdomino.controller.CalculateBonusController;
-import ca.mcgill.ecse223.kingdomino.controller.CalculationController;
-import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
-import ca.mcgill.ecse223.kingdomino.controller.GameController;
-import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 //import ca.mcgill.ecse223.kingdomino.controller.IdentifyPropertiesController;
 //import ca.mcgill.ecse223.kingdomino.controller.RepeatedStepsController;
-import ca.mcgill.ecse223.kingdomino.controller.Square;
-import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
 import ca.mcgill.ecse223.kingdomino.model.BonusOption;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
@@ -35,20 +28,15 @@ import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
-import ca.mcgill.ecse223.kingdomino.model.Property;
 
 public class CalculateBonusScoresStepDefinition {
 
-	/***
-	 * 
-	 * Feature: Calculate Bonus Scores
-	 * 
-	 * @author Yuta Youness Bellali 
-	 * 	As a player, I want the Kingdomino app to
-	 *  automatically calculate the bonus scores (for Harmony and middle
-	 *  Kingdom) if those bonus scores were selected as agame option. (F21)
+	/**
+	 * Feature 21: Calculate Bonus Scores
+	 * As a player, I want the Kingdomino app to automatically calculate the bonus scores (for Harmony and
+	 * middle Kingdom) if those bonus scores were selected as a game option.
+	 * @author Yuta Youness Bellali
 	 */
-
 	@Given("the game is initialized for calculate bonus scores")
 	public void the_game_is_initialized_for_calculate_bonus_scores() {
 
@@ -110,7 +98,7 @@ public class CalculateBonusScoresStepDefinition {
 		Game game = kingdomino.getCurrentGame();
 		Player player = game.getNextPlayer();
 		Kingdom kingdom = player.getKingdom();
-		CalculateBonusController.CalculateBonusScore(game, player);
+		CalculationController.CalculateBonusScore(game, player);
 
 	}
 

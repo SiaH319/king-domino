@@ -5,7 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
@@ -15,7 +15,6 @@ import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.model.BonusOption;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
-import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
@@ -28,9 +27,7 @@ import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import ca.mcgill.ecse223.kingdomino.features.CalculatePlayerScoreStepDefinition;
 import ca.mcgill.ecse223.kingdomino.model.Property;
-import ca.mcgill.ecse223.kingdomino.controller.CalculateBonusController;
 import ca.mcgill.ecse223.kingdomino.controller.CalculatePropertyScoreController;
 import ca.mcgill.ecse223.kingdomino.controller.CalculationController;
 
@@ -88,7 +85,7 @@ public class CalculatePlayerScoreStepDefinition {
 		CalculationController.identifyPropertoes(s, grid, player.getKingdom());
 		List<Property> p = kingdom.getProperties();
 		CalculatePropertyScoreController.calculatePropertyScore(p, player);
-		CalculateBonusController.CalculateBonusScore(game, player);
+		CalculationController.CalculateBonusScore(game, player);
 
 		int propertyScore = player.getPropertyScore();
 		int bonusScore = player.getBonusScore();
