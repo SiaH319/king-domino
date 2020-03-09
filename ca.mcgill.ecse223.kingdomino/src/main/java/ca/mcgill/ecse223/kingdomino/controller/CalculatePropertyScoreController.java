@@ -14,6 +14,15 @@ public class CalculatePropertyScoreController {
 	 * @param player
 	 */
 
+	/**
+	 * Feature 20: Calculate Property Scores
+	 * As a player, I want the Kingdomino app to automatically calculate the score for each of my property based upon
+	 * the size of that property and the number of crowns.
+	 * @author Yuta Youness Bellali
+	 * @author
+	 * @param properties
+	 * @param player
+	 */
 	public static void calculatePropertyScore(List<Property> properties, Player player) {
 		int score = 0;
 		int Totalscore = 0;

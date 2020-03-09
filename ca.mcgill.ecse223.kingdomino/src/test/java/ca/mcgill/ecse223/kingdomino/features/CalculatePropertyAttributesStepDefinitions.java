@@ -24,11 +24,9 @@ import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import ca.mcgill.ecse223.kingdomino.controller.CalculatePropertyAttributeController;
 import ca.mcgill.ecse223.kingdomino.controller.CalculationController;
 import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
 import ca.mcgill.ecse223.kingdomino.controller.GameController;
-import ca.mcgill.ecse223.kingdomino.controller.PropertyController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
 
 public class CalculatePropertyAttributesStepDefinitions {
