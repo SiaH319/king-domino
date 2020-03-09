@@ -14,11 +14,66 @@ import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
  * @author Violet
  */
 public class DominoController {
+    /////////////////////////////        //////
+    ////////////QueryMethods////        //////
+    ///////////////////////////        //////
+    private static TerrainType getTerrainType(String terrain) {
+        switch (terrain) {
+            case "W":
+                return TerrainType.WheatField;
+            case "F":
+                return TerrainType.Forest;
+            case "M":
+                return TerrainType.Mountain;
+            case "G":
+                return TerrainType.Grass;
+            case "S":
+                return TerrainType.Swamp;
+            case "L":
+                return TerrainType.Lake;
+            default:
+                throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+        }
+    }
+
+    private static Domino getdominoByID(int id) {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        for (Domino domino : game.getAllDominos()) {
+            if (domino.getId() == id) {
+                return domino;
+            }
+        }
+        throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
+    }
+
+    public static Draft getNextDraft(String nextDraft, Game game) {
+        Draft draft = new Draft(DraftStatus.Sorted, game);
+        String[] dominoids = nextDraft.split(",");
+        for (int i = 0; i < dominoids.length; i++) {
+            draft.addIdSortedDomino(getdominoByID(Integer.parseInt(dominoids[i])));
+        }
+        draft.setDraftStatus(DraftStatus.Sorted);
+        return draft;
+    }
+
+    public static List<Domino> getNextDraftDominos(Draft draft) {
+        List<Domino> nextDraftDominos = draft.getIdSortedDominos();
+        return nextDraftDominos;
+    }
+
+    public static List<DominoSelection> getDominoSelection(Draft draft) {
+        List<DominoSelection> dominoSelection = draft.getSelections();
+        return dominoSelection;
+    }
 
     //Game game = KingdominoApplication.getKingdomino().getCurrentGame();
     static Game game;
     static Player currentPlayer;
 
+
+    /////////////////////////////        //////
+    ///// ///Feature Methods////        //////
+    ///////////////////////////        //////
     /**
      * Controller implemented for Feature 10: Choose Next Domino
      * @param game
@@ -67,57 +122,6 @@ public class DominoController {
         }
         return true;
     }
-
-    
-    private static TerrainType getTerrainType(String terrain) {
-		switch (terrain) {
-		case "W":
-			return TerrainType.WheatField;
-		case "F":
-			return TerrainType.Forest;
-		case "M":
-			return TerrainType.Mountain;
-		case "G":
-			return TerrainType.Grass;
-		case "S":
-			return TerrainType.Swamp;
-		case "L":
-			return TerrainType.Lake;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
-		}
-	}
-
-    private static Domino getdominoByID(int id) {
-        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        for (Domino domino : game.getAllDominos()) {
-            if (domino.getId() == id) {
-                return domino;
-            }
-        }
-        throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
-    }
-
-    public static Draft getNextDraft(String nextDraft, Game game) {
-        Draft draft = new Draft(DraftStatus.Sorted, game);
-        String[] dominoids = nextDraft.split(",");
-        for (int i = 0; i < dominoids.length; i++) {
-            draft.addIdSortedDomino(getdominoByID(Integer.parseInt(dominoids[i])));
-        }
-        draft.setDraftStatus(DraftStatus.Sorted);
-        return draft;
-    }
-
-    public static List<Domino> getNextDraftDominos(Draft draft) {
-        List<Domino> nextDraftDominos = draft.getIdSortedDominos();
-        return nextDraftDominos;
-    }
-
-    public static List<DominoSelection> getDominoSelection(Draft draft) {
-        List<DominoSelection> dominoSelection = draft.getSelections();
-        return dominoSelection;
-    }
-
 
     /**
      * Controller implemented for Feature 11: Move Current Domino
