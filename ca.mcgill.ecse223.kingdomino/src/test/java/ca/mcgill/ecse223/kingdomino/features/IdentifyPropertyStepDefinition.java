@@ -22,12 +22,16 @@ import static junit.framework.TestCase.assertEquals;
 
 public class IdentifyPropertyStepDefinition {
 
-    // scenario 1
+    /***
+     * Feature: Identify Properties
+     * @author Yuta Youness Bellali
+     *  I want the Kingdomino app to automatically calculate 
+  		the size of a property and 
+  		the total number of crowns in that property. (F20)
+     */
 
     @Given("the game is initialized for identify properties")
     public void the_game_is_initialized_for_identify_properties() {
-        // Intialize empty game
-        // Intialize empty game
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = new Game(48, kingdomino);
         game.setNumberOfPlayers(4);
@@ -45,7 +49,7 @@ public class IdentifyPropertyStepDefinition {
             for (int j = -4; j <= 4; j++)
                 grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
     }
-    // Write code here that turns the phrase above into concrete actions
+  
 
     @Given("the player's kingdom has the following dominoes:")
     public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
@@ -93,9 +97,9 @@ public class IdentifyPropertyStepDefinition {
         System.out.println(GameController.getSet(player0Name).toString(grid));
     }
 
+
     @When("the properties of the player are identified")
     public void the_properties_of_the_player_are_identified() {
-        // Write code here that turns the phrase above into concrete actions
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = kingdomino.getCurrentGame();
         Player player = game.getNextPlayer();
