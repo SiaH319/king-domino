@@ -84,15 +84,15 @@ public class MoveCurrentDominoStepDefinition {
 
 
     @Then("the domino {int} is still tentatively placed at position {int}:{int}")
-    public void the_domino_id_is_still_tentatively_placed_at_position_posx_posy(int dominoid, int x, int y) {
+    public void the_domino_id_is_still_tentatively_placed_at_position_posx_posy(int dominoid, int posx, int posy) {
         Domino domino = getdominoByID(dominoid);
         Player p = domino.getDominoSelection().getPlayer();
         currentPlayer = p;
         DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(dominoid,p.getKingdom());
 
         if(dik!=null){
-            assertEquals(x,dik.getX());
-            assertEquals(y, dik.getY());
+            assertEquals(posx,dik.getX());
+            assertEquals(posy, dik.getY());
         }
     }
 
