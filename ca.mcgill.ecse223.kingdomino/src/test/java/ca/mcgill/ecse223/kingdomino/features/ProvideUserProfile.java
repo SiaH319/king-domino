@@ -13,30 +13,23 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.List;
 import java.util.Map;
 
-import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.controller.InitializationController.InvalidInputException;
 import ca.mcgill.ecse223.kingdomino.model.*;
-import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
-import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
-import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 
 
 public class ProvideUserProfile {
 	/**
 	 *  Feature: Provide User Profile
 	 *  @author: Sia Ham
-	 *  As a player, 
-	 *  I wish to use my unique user name in when a game starts. 
+	 *  As a player,
+	 *  I wish to use my unique user name in when a game starts.
 	 *  I also want the Kingdomino app to maintain my game statistics
-	 *   (e.g. number of games played, won, etc.). 
+	 *   (e.g. number of games played, won, etc.).
 	 *   I also wish wish to view all users.
 	 */
 	private boolean isValid;
-
+	private int gamePlayed;
+	private int gameWon;
 	/*
 	 * Background
 	 */
@@ -48,8 +41,8 @@ public class ProvideUserProfile {
 
 
 	/*
-	 *   Scenario Outline: Create the first user   
-	 *   Examples: 
+	 *   Scenario Outline: Create the first user
+	 *   Examples:
   			| name      |
       		| first user |
 	 */
@@ -68,7 +61,7 @@ public class ProvideUserProfile {
 		isValid = true;
 		try {
 			InitializationController.initializeUser(name);
-		} 		
+		}
 		catch (InvalidInputException e) {
 			e.printStackTrace();
 			isValid = false;
@@ -80,7 +73,7 @@ public class ProvideUserProfile {
 	@Then("the user {string} shall be in the list of users")
 	public void the_user_shall_be_in_the_list_of_users(String name) {
 		String actual = User.getWithName(name).getName();
-		assertEquals(name, actual);	
+		assertEquals(name, actual);
 	}
 
 
@@ -93,14 +86,14 @@ public class ProvideUserProfile {
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		for (Map<String, String> map : valueMaps) {
 			String name = map.get("name");
-			kingdomino.addUser(name);	
+			kingdomino.addUser(name);
 		}
 	}
 
 
 	@Then("the user creation shall {string}") // user creation shall fail or succeed
 	public void the_user_creation_shall(String status) {
-		Boolean expectedStatus = (!status.equals("fail")); 
+		Boolean expectedStatus = (!status.equals("fail"));
 		assertEquals(expectedStatus,isValid);
 	}
 
@@ -129,7 +122,6 @@ public class ProvideUserProfile {
 			Integer won = Integer.decode(map.get("wonGames"));
 			user.setPlayedGames(played);
 			user.setWonGames(won);
-			
 		}
 		will be fixed
 		*/
@@ -150,40 +142,43 @@ public class ProvideUserProfile {
 			Integer won = Integer.decode(map.get("wonGames"));
 			assertNotNull(played);
 			assertNotNull(won);
-			
+
 			int size = kingdomino.getUsers().size();;
-			 user = user.getWithName(map.get("name"));
+			user = user.getWithName(map.get("name"));
 			// users has their game statistics
-			user.setWonGames(played);
-			user.setPlayedGames(won);}
+			user.setWonGames(won);
+			user.setPlayedGames(played);}
 	}
 
 	@When("I initiate querying the game statistics for a user {string}")
-	public void i_initiate_querying_the_game_statistics_for_a_user(String string) {
+	public void i_initiate_querying_the_game_statistics_for_a_user(String name) throws InvalidInputException {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-		for (User user: kingdomino.getUsers()) {
-			user.getPlayedGames();
-			user.getWonGames();
-		}
+		User user= InitializationController.findUserByName(name,kingdomino);
+		if(user == null) throw new InvalidInputException("User does not exist");
+		gamePlayed = InitializationController.getNumOfGamesPlayedByUser(user);
+		gameWon = InitializationController.getNumOfGamesWonByUser(user);
 	}
 
-	@Then("the number of games played by and games won by the user shall be the following:")
-	public void the_number_of_games_played_by_and_games_won_by_the_user_shall_be_the_following(io.cucumber.datatable.DataTable dataTable) {
+	@Then("the number of games played by {string} shall be {int}")
+	public void the_number_of_games_played_by_and_games_won_by_the_user_shall_be_the_following(String name, Integer gamePlayedNum) throws InvalidInputException {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-		List<Map<String, String>> valueMaps = dataTable.asMaps();
-		for (Map<String, String> map : valueMaps) {
-			// Get values from cucumber table
-			User user = kingdomino.addUser(map.get("name"));
-			Integer played = Integer.decode(map.get("playedGames"));
-			Integer won = Integer.decode(map.get("wonGames"));
-			
-			Integer expectedPlayed = user.getPlayedGames();
-			Integer expectedWon = user.getWonGames();
-
-			assertEquals(expectedPlayed,played);
-			assertEquals(expectedWon,won);
-		}
-
-
+		assertEquals((int)gamePlayedNum,gamePlayed);
 	}
+
+	@Then("the number of games won by {string} shall be {int}")
+	public void the_number_of_games_won_by_shall_be(String name, Integer gameWonNum) throws InvalidInputException {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		User user = InitializationController.findUserByName(name, kingdomino);
+		if(user == null) throw new InvalidInputException("User does not exist");
+		assertEquals((int)gameWonNum,gameWon);
+	}
+
+	@After
+	public void tearDown() {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		kingdomino.delete();
+		gamePlayed = 0;
+		gameWon = 0;
+	}
+
 }

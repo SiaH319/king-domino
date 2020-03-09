@@ -25,7 +25,7 @@ public class addDefaultController {
 			new Castle(0, 0, kingdom, player);
 		}
 	}
-	
+
 	public static void addAllDominoesInOrder(Game game) {
 		//Game game = new Game(48, KingdominoApplication.getKingdomino());
 		TerrainType W = TerrainType.WheatField;
@@ -34,7 +34,7 @@ public class addDefaultController {
 		TerrainType G = TerrainType.Grass;
 		TerrainType S = TerrainType.Swamp;
 		TerrainType M = TerrainType.Mountain;
-		
+
 		game.addAllDomino(1, W, W, 0);
 		game.addAllDomino(2, W, W, 0);
 		game.addAllDomino(3, F, F, 0);
@@ -44,7 +44,7 @@ public class addDefaultController {
 		game.addAllDomino(7, L, L, 0);
 		game.addAllDomino(8, L, L, 0);
 		game.addAllDomino(9, L, L, 0);
-		
+
 		game.addAllDomino(10, G, G, 0);
 		game.addAllDomino(11, G, G, 0);
 		game.addAllDomino(12, S, S, 0);
@@ -55,7 +55,7 @@ public class addDefaultController {
 		game.addAllDomino(17, F, L, 0);
 		game.addAllDomino(18, F, G, 0);
 		game.addAllDomino(19, F, W, 1);
-		
+
 		game.addAllDomino(20, L, W, 1);
 		game.addAllDomino(21, G, W, 1);
 		game.addAllDomino(22, S, W, 1);
@@ -66,7 +66,7 @@ public class addDefaultController {
 		game.addAllDomino(27, W, F, 1);
 		game.addAllDomino(28, L, F, 1);
 		game.addAllDomino(29, G, F, 1);
-		
+
 		game.addAllDomino(30, W, L, 1);
 		game.addAllDomino(31, W, L, 1);
 		game.addAllDomino(32, F, L, 1);
@@ -77,7 +77,7 @@ public class addDefaultController {
 		game.addAllDomino(37, L, G, 1);
 		game.addAllDomino(38, W, S, 1);
 		game.addAllDomino(39, G, S, 1);
-		
+
 		game.addAllDomino(40, W, M, 1);
 		game.addAllDomino(41, W, G, 2);
 		game.addAllDomino(42, L, G, 2);
@@ -113,36 +113,31 @@ public class addDefaultController {
 					String[] s4 = s3[1].split(")");
 					crown = s4[0];
 				}
-			
 				if (left == "W") leftTile = TerrainType.WheatField;
 				else if (left == "F") leftTile = TerrainType.Forest;
 				else if (left == "L") leftTile = TerrainType.Lake;
 				else if (left == "G") leftTile = TerrainType.Grass;
 				else if (left == "S") leftTile = TerrainType.Swamp;
 				else if (left == "M") leftTile = TerrainType.Mountain;
-					
-			
 				if (right == "W") rightTile = TerrainType.WheatField;
 				else if (right == "F") rightTile = TerrainType.Forest;
 				else if (right == "L") rightTile = TerrainType.Lake;
 				else if (right == "G") rightTile = TerrainType.Grass;
 				else if (right == "S") rightTile = TerrainType.Swamp;
 				else if (right == "M") rightTile = TerrainType.Mountain;
-					
-			
 			game.hasAllDominos();
 			game.addAllDomino(Integer.parseInt(id), leftTile, rightTile, Integer.parseInt(crown));
 				// read next line
 			line = reader.readLine();
-		} 
+		}
 			reader.close();
 			}catch (IOException e) {
 			e.printStackTrace();
 		}
 		*/
-				
+
 	}
 
 
-	
+
 }
