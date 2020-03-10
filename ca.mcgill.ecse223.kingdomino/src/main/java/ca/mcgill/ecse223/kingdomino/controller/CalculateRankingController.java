@@ -38,7 +38,7 @@ import ca.mcgill.ecse223.kingdomino.model.Property;
 import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 /**
- * TODO Put here a description of what this class does.
+ * This controller class is essential in order to calculate the ranking of the players in the game. It ranks the player according to their score.
  *
  * @author Mohamad.
  *         Created Mar 7, 2020.

@@ -5,10 +5,9 @@ import java.util.*;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.*;
 
+/**Note that there are several calculation methods in this controller class.
 
-/**
- * @author Violet
- */
+
 public class CalculationController {
     /////////////////////////////        //////
     ///// ///Feature Methods////        //////
@@ -70,7 +69,6 @@ public class CalculationController {
      * As a player, I want the Kingdomino app to automatically calculate the score for each of my property based upon
      * the size of that property and the number of crowns.
      * @author Yuta Youness Bellali
-     * @author
      * @param properties
      * @param player
      */
