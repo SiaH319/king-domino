@@ -32,11 +32,11 @@ import ca.mcgill.ecse223.kingdomino.controller.Square;
 public class CalculatePropertyAttributesStepDefinitions {
 
 	/***
-	 * @Yuta Youness Bellali 
+	 *
 	 * I want the Kingdomino app to automatically calculate
 	 * the size of a property and the total number of crowns in that property.
 	 * 	(F20)
-	 * 
+	 * @author Yuta Youness Bellali 
 	 */
 
 	private Player player;
