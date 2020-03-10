@@ -53,6 +53,12 @@ public class CalculateRankingController {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		ArrayList<Integer> ScoreList = new ArrayList<Integer>();
 		for( Player p :game.getPlayers()) {
+			String player0Name = (p.getUser().getName());
+		    Square[] grid = GameController.getGrid(player0Name);
+			DisjointSet s = GameController.getSet(player0Name);
+			CalculationController.identifyPropertoes(s, grid, p.getKingdom());
+			CalculatePropertyScoreController.calculatePropertyScore(p.getKingdom().getProperties(),p);
+			CalculationController.CalculateBonusScore(game, p);
 			ScoreList.add((p.getBonusScore()+p.getPropertyScore()));
 			
 		}
@@ -90,6 +96,7 @@ public class CalculateRankingController {
 					int j=(i+1);
 					if(playersEqual(playerSorted[i],playerSorted[j])) {
 						playerSorted[i].setCurrentRanking(playerSorted[j].getCurrentRanking());
+						position--;
 					}
 				}
 
@@ -126,6 +133,33 @@ public class CalculateRankingController {
 		p2.setCurrentRanking(i);
 		p1.setCurrentRanking(j);
 	}
+    private static char printTerrain(TerrainType terrainType){
+        char c;
+        switch(terrainType){
+            case WheatField:
+                c = 'W';
+                break;
+            case Mountain:
+                c = 'M';
+                break;
+            case Lake:
+                c = 'L';
+                break;
+            case Forest:
+                c = 'F';
+                break;
+            case Grass:
+                c = 'G';
+                break;
+            case Swamp:
+                c = 'S';
+                break;
+            default:
+                c = '/';
+                break;
+        }
+        return c;
+    }
 	/**
 	 * 
 	 * Helpler method, gets the size of largets property

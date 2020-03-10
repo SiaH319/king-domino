@@ -14,11 +14,8 @@ import org.junit.runner.RunWith;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.CalculateRankingController;
 import ca.mcgill.ecse223.kingdomino.controller.CreateNextDraftController;
-import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
-import ca.mcgill.ecse223.kingdomino.controller.GameController;
-import ca.mcgill.ecse223.kingdomino.controller.Square;
+import ca.mcgill.ecse223.kingdomino.controller.OrderAndRevealController;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -40,50 +37,9 @@ import io.cucumber.java.en.When;
  * TODO Put here a description of what this class does.
  *
  * @author Mohamad.
- *         Created Mar 7, 2020.
+ *         Created Mar 8, 2020.
  */
-public class ResolveTiebreakStepDefinitions {
-	@Given("the game is initialized for resolve tiebreak")
-	public void the_game_is_initiated_for_resolve_tiebreak() {
-		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		// Populate game
-		addDefaultUsersAndPlayers(game);
-		createAllDominoes(game);
-		game.setNextPlayer(game.getPlayer(0));
-		KingdominoApplication.setKingdomino(kingdomino);
-		for(Player p:game.getPlayers()) {
-		String player0Name = (p.getUser().getName());
-		GameController.setGrid(player0Name, new Square[81]);
-		GameController.setSet(player0Name, new DisjointSet(81));
-		Square[] grid = GameController.getGrid(player0Name);
-		for (int i = 4; i >= -4; i--)
-			for (int j = -4; j <= 4; j++)
-				grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
-		}
-	}
-	@Then("player standings should be the followings:")
-	public void player_standings_should_be_the_followings(io.cucumber.datatable.DataTable dataTable) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		List<Map<String, String>> valueMaps = dataTable.asMaps();
-		for (Map<String, String> map : valueMaps) {
-			assertEquals(Integer.parseInt(map.get("standing")),getPlayer(map.get("player"),game).getCurrentRanking());
-		}
-
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+public class OrderAndRevealNextDraftStepDefinitions {
 	private void addDefaultUsersAndPlayers(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
 		for (int i = 0; i < userNames.length; i++) {
@@ -161,56 +117,106 @@ public class ResolveTiebreakStepDefinitions {
 		return myList;
 		
 	}
-	private DirectionKind getDirection(String dir) {
-		switch (dir) {
-		case "up":
-			return DirectionKind.Up;
-		case "down":
-			return DirectionKind.Down;
-		case "left":
-			return DirectionKind.Left;
-		case "right":
-			return DirectionKind.Right;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
+	
+	
+	@Given("the game is initialized for order next draft of dominoes")
+	public void the_game_is_initiated_for_order_next_draft_of_dominoes(){
+		Kingdomino kingdomino = new Kingdomino();
+		Game game = new Game(48, kingdomino);
+		game.setNumberOfPlayers(4);
+		kingdomino.setCurrentGame(game);
+		// Populate game
+		addDefaultUsersAndPlayers(game);
+		createAllDominoes(game);
+		game.setNextPlayer(game.getPlayer(0));
+		KingdominoApplication.setKingdomino(kingdomino);
+	}
+	@Given("the next draft is {string}")
+	public void the_next_draft_is(String listOfIDs) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		ArrayList<Integer> myList =getListOfIDs(listOfIDs);
+		Draft nextDraft = new Draft(DraftStatus.FaceDown,game);
+		game.setNextDraft(nextDraft);
+		for(int i=0;i<myList.size();i++) {
+			Domino domino = getdominoByID(myList.get(i));
+			domino.setStatus(DominoStatus.InNextDraft);
+			nextDraft.addIdSortedDomino(getdominoByID(myList.get(i)));
 		}
 	}
-	private Player getPlayer(String color,Game game) {
-		switch(color) {
-		case "green":
-			for( Player p :game.getPlayers()) {
-				if(p.getColor().equals(PlayerColor.Green)) {
-					return p;
-				}
-			}
-		case "pink":
-			for( Player p :game.getPlayers()) {
-				if(p.getColor().equals(PlayerColor.Pink)) {
-					return p;
-				}
-			}
-		case "blue":
-			for( Player p :game.getPlayers()) {
-				if(p.getColor().equals(PlayerColor.Blue)) {
-					return p;
-				}
-			}
-		case "yellow":
-			for( Player p :game.getPlayers()) {
-				if(p.getColor().equals(PlayerColor.Yellow)) {
-					return p;
-				}
-			}
-		case "yelow":
-			for( Player p :game.getPlayers()) {
-				if(p.getColor().equals(PlayerColor.Yellow)) {
-					return p;
-				}
-			}
+	
+	@Given("the dominoes in next draft are facing down")
+	public void the_dominoes_in_the_next_draft_are_facing_down(){
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Draft nextDraft=game.getNextDraft();
+		nextDraft.setDraftStatus(DraftStatus.FaceDown);
+	}
+	
+	@When("the ordering of the dominoes in the next draft is initiated")
+	public void the_ordering_of_the_dominoes_in_the_next_draft_is_initiated() {
+		OrderAndRevealController.orderInitiated();
+	}
+	@Then("the status of the next draft is sorted")
+	public void the_status_of_the_next_draft_is_sorted() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		assertEquals(DraftStatus.Sorted,game.getNextDraft().getDraftStatus());
+	}
+	@Then("the order of dominoes in the draft will be {string}")
+	public void the_order_of_dominoes_in_the_draft_will_be(String listOfIDs) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		ArrayList<Integer> expected =getListOfIDs(listOfIDs);
+		ArrayList<Integer> actual = new ArrayList<Integer>();
+		for(Domino d:game.getNextDraft().getIdSortedDominos()) {
+			System.out.println("d has id :"+d.getId());
+			actual.add(d.getId());
+		}
+		assertEquals(expected.size(),actual.size());
+		for(int i=0;i<expected.size();i++) {
+			assertEquals((int)expected.get(i),(int)actual.get(i));
+		}
+	}
+	
+	@Given("the game is initialized for reveal next draft of dominoes")
+	public void the_game_is_initialized_for_reveal_next_draft_of_dominoes() {
+		Kingdomino kingdomino = new Kingdomino();
+		Game game = new Game(48, kingdomino);
+		game.setNumberOfPlayers(4);
+		kingdomino.setCurrentGame(game);
+		// Populate game
+		addDefaultUsersAndPlayers(game);
+		createAllDominoes(game);
+		game.setNextPlayer(game.getPlayer(0));
+		KingdominoApplication.setKingdomino(kingdomino);
+	}
+	@Given("the dominoes in next draft are sorted")
+	public void the_dominoes_in_next_draft_are_sorted() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Draft nextDraft=game.getNextDraft();
+		nextDraft.setDraftStatus(DraftStatus.Sorted);
+	}
+	@When("the revealing of the dominoes in the next draft is initiated")
+	public void the_revealing_of_the_dominoes_in_the_next_draft_is_initiated() {
+		OrderAndRevealController.revealInitiated();
+	}
 		
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid color: " + color);
-		}
+	@Then("the status of the next draft is face up")
+	public void the_status_of_the_next_draft_is_face_up() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		assertEquals(DraftStatus.FaceUp,game.getNextDraft().getDraftStatus());
 	}
+		
+		
 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 }

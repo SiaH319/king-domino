@@ -1,7 +1,6 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -9,21 +8,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.junit.runner.RunWith;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.CalculateRankingController;
-import ca.mcgill.ecse223.kingdomino.controller.CreateNextDraftController;
+import ca.mcgill.ecse223.kingdomino.controller.DiscardDominoController;
 import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
 import ca.mcgill.ecse223.kingdomino.controller.GameController;
+import ca.mcgill.ecse223.kingdomino.controller.ShuffleDominoesController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
 import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Game;
@@ -40,12 +37,13 @@ import io.cucumber.java.en.When;
  * TODO Put here a description of what this class does.
  *
  * @author Mohamad.
- *         Created Mar 7, 2020.
+ *         Created Mar 9, 2020.
  */
-public class ResolveTiebreakStepDefinitions {
-	@Given("the game is initialized for resolve tiebreak")
-	public void the_game_is_initiated_for_resolve_tiebreak() {
-		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+public class ShuffleDominosStepDefinitions {
+	int numberOfPlayers;
+	@Given("the game is initialized for shuffle dominoes")
+	public void the_game_is_initialized_for_shuffle_dominoes() {
+		Kingdomino kingdomino = new Kingdomino();
 		Game game = new Game(48, kingdomino);
 		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
@@ -54,31 +52,78 @@ public class ResolveTiebreakStepDefinitions {
 		createAllDominoes(game);
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
-		for(Player p:game.getPlayers()) {
-		String player0Name = (p.getUser().getName());
-		GameController.setGrid(player0Name, new Square[81]);
-		GameController.setSet(player0Name, new DisjointSet(81));
-		Square[] grid = GameController.getGrid(player0Name);
-		for (int i = 4; i >= -4; i--)
-			for (int j = -4; j <= 4; j++)
-				grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
-		}
 	}
-	@Then("player standings should be the followings:")
-	public void player_standings_should_be_the_followings(io.cucumber.datatable.DataTable dataTable) {
+	
+		
+	@Given("there are {int} players playing")
+	public void there_are_players_playing(Integer numPlayers) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		List<Map<String, String>> valueMaps = dataTable.asMaps();
-		for (Map<String, String> map : valueMaps) {
-			assertEquals(Integer.parseInt(map.get("standing")),getPlayer(map.get("player"),game).getCurrentRanking());
-		}
-
+		numberOfPlayers=(int)numPlayers;
+		game.setNumberOfPlayers(numPlayers);
+		
 	}
 	
+	@When("the shuffling of dominoes is initiated")
+	public void the_shuffling_of_dominoes_is_initiated() {
+		ShuffleDominoesController.shuffle();
+		
+	}
+	@When("I initiate to arrange the domino in the fixed order {string}")
+	public void I_initiate_to_arrange_the_domino_in_the_fixed_order(String orderedList) {
+		ShuffleDominoesController.fixedOrder(orderedList);
+	}
 	
+	@Then("the first draft shall exist")
+	public void the_first_draft_shall_exist() {
+		
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		int size = game.getAllDrafts().size();
+		assertEquals(1,size);
+	}
 	
+	@Then("the first draft should have {int} dominoes on the board face down")
+	public void the_first_draft_should_have_dominoes_on_the_board_face_down(Integer expectedDominoesInDraft) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		int actualDominoesInDraft =game.getAllDraft(0).getIdSortedDominos().size();
+		assertEquals((int)expectedDominoesInDraft,actualDominoesInDraft);
+	}
 	
+	@Then("there should be {int} dominoes left in the draw pile")
+	public void there_should_be_dominoes_left_in_the_draw_pile(Integer ExpectedSizeOfPile) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		int actualSizeOfPile=0;
+		Domino Current =game.getTopDominoInPile();
+		while(Current!=null) {
+			actualSizeOfPile+=1;
+			Current=Current.getNextDomino();
+		}
+		assertEquals((int)ExpectedSizeOfPile,actualSizeOfPile);
+	}
 	
-	
+	@Then("the draw pile should consist of everything in {string} except the first {int} dominoes with their order preserved")
+	public void the_draw_pile_should_consist_of_everything_in_except_the_first_dominoes_with_their_order_preserved(String orderedList,Integer numOfDominoes) {
+		ArrayList<Integer> expectedList =getListOfIDs(orderedList);
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		int actualSizeOfPile=0;
+		Domino Current =game.getTopDominoInPile();
+		while(Current!=null) {
+			actualSizeOfPile+=1;
+			Current=Current.getNextDomino();
+		}
+		assertEquals((expectedList.size()-numOfDominoes),actualSizeOfPile);
+		ArrayList<Integer> actualList = new ArrayList<Integer>();
+		Current=game.getTopDominoInPile();
+		for(int i=0;i<actualSizeOfPile;i++) {
+			actualList.add(Current.getId());
+			Current=Current.getNextDomino();
+		}
+		for(int i=4;i<expectedList.size();i++) {
+			assertEquals((int)expectedList.get(i),(int)actualList.get(i-4));
+		}
+		
+		
+		
+	}
 	
 	
 	
@@ -153,7 +198,7 @@ public class ResolveTiebreakStepDefinitions {
 	private ArrayList<Integer> getListOfIDs(String aListOfIDs){
 		boolean beforeIsDigit =false;
 		ArrayList<Integer> myList = new ArrayList<Integer>();
-		String [] ids = aListOfIDs.split(",");
+		String [] ids = aListOfIDs.split(", ");
 		for(int i=0; i<ids.length;i++) {
 			myList.add(Integer.parseInt(ids[i]));
 		}
@@ -161,56 +206,4 @@ public class ResolveTiebreakStepDefinitions {
 		return myList;
 		
 	}
-	private DirectionKind getDirection(String dir) {
-		switch (dir) {
-		case "up":
-			return DirectionKind.Up;
-		case "down":
-			return DirectionKind.Down;
-		case "left":
-			return DirectionKind.Left;
-		case "right":
-			return DirectionKind.Right;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
-		}
-	}
-	private Player getPlayer(String color,Game game) {
-		switch(color) {
-		case "green":
-			for( Player p :game.getPlayers()) {
-				if(p.getColor().equals(PlayerColor.Green)) {
-					return p;
-				}
-			}
-		case "pink":
-			for( Player p :game.getPlayers()) {
-				if(p.getColor().equals(PlayerColor.Pink)) {
-					return p;
-				}
-			}
-		case "blue":
-			for( Player p :game.getPlayers()) {
-				if(p.getColor().equals(PlayerColor.Blue)) {
-					return p;
-				}
-			}
-		case "yellow":
-			for( Player p :game.getPlayers()) {
-				if(p.getColor().equals(PlayerColor.Yellow)) {
-					return p;
-				}
-			}
-		case "yelow":
-			for( Player p :game.getPlayers()) {
-				if(p.getColor().equals(PlayerColor.Yellow)) {
-					return p;
-				}
-			}
-		
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid color: " + color);
-		}
-	}
-
 }
