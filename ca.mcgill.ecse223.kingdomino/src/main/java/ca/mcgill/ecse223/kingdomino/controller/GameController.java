@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/***
+*
+*
+*@author Cecilia
+***/
+
 public class GameController {
     private static HashMap<String, Square[]> grids = new HashMap<>();
     private static HashMap<String, DisjointSet> sets = new HashMap<>();
