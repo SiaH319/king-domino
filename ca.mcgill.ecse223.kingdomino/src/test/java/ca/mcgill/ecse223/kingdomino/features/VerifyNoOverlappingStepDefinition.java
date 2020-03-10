@@ -15,6 +15,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/***
+*As a player, I want the Kingdomino app to automatically
+*check that my current domino is not overlapping with existing dominoes.
+*@author Cecilia
+*
+***/
 public class VerifyNoOverlappingStepDefinition {
     private Boolean isValid;
 
