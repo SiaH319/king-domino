@@ -7,6 +7,12 @@ import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 
 import java.util.List;
 
+/***
+*This controller class contains methods to get domino of a kingdom by its id number & to get a castle by kingdom.
+*
+*@author Cecilia
+***/
+
 public class KingdomController {
     /////////////////////////////        //////
     ////////////QueryMethods////        //////
