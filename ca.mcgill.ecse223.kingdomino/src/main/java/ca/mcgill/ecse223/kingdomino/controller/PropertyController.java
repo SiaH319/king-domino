@@ -8,6 +8,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/***
+*Property Controller Methods.
+*
+*@author Cecilia
+***/
 public class PropertyController {
     /////////////////////////////        //////
     ////////////QueryMethods////        //////

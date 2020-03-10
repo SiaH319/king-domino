@@ -30,10 +30,11 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 /**
- * TODO Put here a description of what this class does.
+ *   As a player, I want the Kingdomino app to automatically calculate the ranking 
+ *   in order to know the winner of a finished game. (F23)
  *
- * @author Mohamad.
- *         Created Mar 7, 2020.
+ * 	@author Mohamad.
+ *      Created Mar 7, 2020.
  */
 public class CalculateRankingStepDefinitions {
 	
