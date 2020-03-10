@@ -297,6 +297,50 @@ public class DominoController {
                     "adjacency rules");
     }
 
+    /**
+     * Feature 18 : Discard Domino
+     * @author Mohamad Dimassi.
+     * @param DominoInKingdom that we want to see if it can be discarded.
+     * @return true if the domino can be placed correctly placed in the kingdom, false otherwise.
+     */
+    public static boolean attempt_discard_selected_domino(DominoInKingdom dominoInKingdom) {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        Player currentPl = game.getPlayer(0);
+        Kingdom kingdom = currentPl.getKingdom();
+        Castle castle = getCastle(kingdom);
+        Domino domino=currentPl.getDominoSelection().getDomino();
+        TerrainType leftTile =domino.getLeftTile();
+        TerrainType righTile =domino.getRightTile();
+
+
+        Square[] grid = GameController.getGrid(currentPl.getUser().getName());
+
+        ArrayList<DominoInKingdom.DirectionKind> directions =new ArrayList<DominoInKingdom.DirectionKind>();
+        directions.add(DominoInKingdom.DirectionKind.Down);
+        directions.add(DominoInKingdom.DirectionKind.Left);
+        directions.add(DominoInKingdom.DirectionKind.Up);
+        directions.add(DominoInKingdom.DirectionKind.Right);
+
+        for(int x=-4;x<5;x++) {
+            for(int y=-4;y<5;y++) {
+                for(DominoInKingdom.DirectionKind dir :directions ) {
+//
+                    dominoInKingdom.setDirection(dir);
+                    dominoInKingdom.setX(x);
+                    dominoInKingdom.setY(y);
+
+                    if((VerificationController.verifyGridSize(currentPl.getKingdom().getTerritories()))  && (VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom)) && ((VerificationController.verifyCastleAdjacency(castle,dominoInKingdom)) || (VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))) {
+                        System.out.println("Found a place where we can place the domino with x= "+x+" y="+y+"direction ="+dir);
+                        System.out.println("A this x,y there is :"+ grid[Square.convertPositionToInt(x,y)].getTerrain());
+                        return true;
+                    }
+                }
+            }
+        }
+        System.out.println("couldnt place the domino anywhere");
+        return false;
+
+    }
 
     /////////////////////////////        //////
     ///// ///Helper Methods/////        //////
@@ -391,6 +435,14 @@ public class DominoController {
                 break;
         }
         return dir;
+    }
+
+    private static Castle getCastle (Kingdom kingdom) {
+        for(KingdomTerritory territory: kingdom.getTerritories()){
+            if(territory instanceof Castle )
+                return (Castle)territory;
+        }
+        return null;
     }
 
 }

@@ -5,12 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.DiscardDominoController;
 import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
+import ca.mcgill.ecse223.kingdomino.controller.DominoController;
 import ca.mcgill.ecse223.kingdomino.controller.GameController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
@@ -124,7 +122,7 @@ public class DiscardDominoStepDefinitions {
 
 	@When("the player attempts to discard the selected domino")
 	public void the_player_attempts_to_discard_the_selected_domino() {
-		boolean CanBePlaced=DiscardDominoController.attempt_discard_selected_domino(dominoInKingdom);
+		boolean CanBePlaced= DominoController.attempt_discard_selected_domino(dominoInKingdom);
 		if(CanBePlaced) {
 			dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
 		}

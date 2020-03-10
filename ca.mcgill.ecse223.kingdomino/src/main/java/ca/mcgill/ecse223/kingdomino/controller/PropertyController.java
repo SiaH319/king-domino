@@ -9,6 +9,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PropertyController {
+    /////////////////////////////        //////
+    ////////////QueryMethods////        //////
+    ///////////////////////////        //////
     /**
      * Get all domino ids from a single Property
      * @param p
@@ -35,5 +38,9 @@ public class PropertyController {
         {
             return a.getId() - b.getId();
         }
+    }
+
+    public List<Domino> getIncludedDominos(Property p) {
+        return p.getIncludedDominos();
     }
 }
