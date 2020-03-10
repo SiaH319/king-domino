@@ -40,7 +40,7 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import java.util.Random;
 
 /**
- * TODO Put here a description of what this class does.
+ * This controller will shuffle the domino in a random way to ensure that all games are different.
  *
  * @author Mohamad.
  *         Created Mar 9, 2020.
