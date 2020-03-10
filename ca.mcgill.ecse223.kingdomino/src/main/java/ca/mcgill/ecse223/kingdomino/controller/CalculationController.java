@@ -1,12 +1,10 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
 import java.util.*;
-
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.*;
 
-/**Note that there are several calculation methods in this controller class.
-
+/**Note that there are several calculation methods in this controller class.*/
 
 public class CalculationController {
     /////////////////////////////        //////
