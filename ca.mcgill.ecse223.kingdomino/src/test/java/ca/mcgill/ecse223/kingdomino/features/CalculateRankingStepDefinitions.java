@@ -11,11 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.CalculateRankingController;
-import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
-import ca.mcgill.ecse223.kingdomino.controller.GameController;
-import ca.mcgill.ecse223.kingdomino.controller.Square;
-import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
+import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -125,7 +121,7 @@ public class CalculateRankingStepDefinitions {
 	
 	@When("calculate ranking is initiated")
 	public void calculate_ranking_is_initiated() {
-		CalculateRankingController.calculateRanking();
+		CalculationController.calculateRanking();
 	}
 	
 	@Then("player standings shall be the followings:")

@@ -2,14 +2,9 @@ package ca.mcgill.ecse223.kingdomino.controller;
 import ca.mcgill.ecse223.kingdomino.model.Property;
 
 /**
-*
-*
-*@author Cecilia
-*
-
-
-
-
+ * Disjoint Set data structure to facilate property creation
+ * @author Cecilia Jiang
+ */
 
 public class DisjointSet {
     private int[] par;
