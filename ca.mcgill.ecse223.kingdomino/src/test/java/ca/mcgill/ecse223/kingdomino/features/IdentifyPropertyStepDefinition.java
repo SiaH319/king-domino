@@ -70,11 +70,7 @@ public class IdentifyPropertyStepDefinition {
             DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
             domInKingdom.setDirection(dir);
             dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
-<<<<<<< HEAD
             String player0Name = (game.getPlayer(0).getUser().getName());
-=======
-           String player0Name = (game.getPlayer(0).getUser().getName());
->>>>>>> 05871ff54d7ff4800d1de07be6a4f6596c85fb9d
             Square[] grid = GameController.getGrid(player0Name);
             int[] pos = Square.splitPlacedDomino(domInKingdom, grid);
             DisjointSet s = GameController.getSet(player0Name);
@@ -84,11 +80,7 @@ public class IdentifyPropertyStepDefinition {
             GameController.unionCurrentSquare(pos[0],
                     VerificationController.getAdjacentSquareIndexesLeft(castle, grid, domInKingdom), s);
             GameController.unionCurrentSquare(pos[1],
-<<<<<<< HEAD
                     VerificationController.getAdjacentSquareIndexesRight(castle, grid, domInKingdom), s);
-=======
-                   VerificationController.getAdjacentSquareIndexesRight(castle, grid, domInKingdom), s);
->>>>>>> 05871ff54d7ff4800d1de07be6a4f6596c85fb9d
         }
         //Print Grid
         String player0Name = (game.getPlayer(0).getUser().getName());
@@ -105,11 +97,6 @@ public class IdentifyPropertyStepDefinition {
         System.out.println(GameController.getSet(player0Name).toString(grid));
     }
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 05871ff54d7ff4800d1de07be6a4f6596c85fb9d
     @When("the properties of the player are identified")
     public void the_properties_of_the_player_are_identified() {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
@@ -311,8 +298,4 @@ public class IdentifyPropertyStepDefinition {
         }
         return null;
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 05871ff54d7ff4800d1de07be6a4f6596c85fb9d

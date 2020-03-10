@@ -12,13 +12,8 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-<<<<<<< HEAD
-//import ca.mcgill.ecse223.kingdomino.controller.IdentifyPropertiesController;
-//import ca.mcgill.ecse223.kingdomino.controller.RepeatedStepsController;
-=======
 import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.controller.VerificationController;
->>>>>>> 05871ff54d7ff4800d1de07be6a4f6596c85fb9d
 import ca.mcgill.ecse223.kingdomino.model.BonusOption;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
