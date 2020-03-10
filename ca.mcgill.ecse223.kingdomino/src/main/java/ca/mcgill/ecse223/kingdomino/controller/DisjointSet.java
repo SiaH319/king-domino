@@ -1,5 +1,16 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 import ca.mcgill.ecse223.kingdomino.model.Property;
+
+/**
+*
+*
+*@author Cecilia
+*
+
+
+
+
+
 public class DisjointSet {
     private int[] par;
     private int[] rank;
