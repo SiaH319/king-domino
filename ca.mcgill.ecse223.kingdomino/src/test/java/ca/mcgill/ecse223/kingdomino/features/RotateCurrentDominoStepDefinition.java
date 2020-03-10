@@ -15,6 +15,12 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
+/***
+*As a player, I wish to evaluate a provisional placement of my current domino in my kingdom by rotating it (clockwise or counter-clockwise) (F12)
+*
+*@author cecilia
+***/
+
 public class RotateCurrentDominoStepDefinition {
     @Given("the game is initialized for rotate current domino")
     public void initialize_the_game(){

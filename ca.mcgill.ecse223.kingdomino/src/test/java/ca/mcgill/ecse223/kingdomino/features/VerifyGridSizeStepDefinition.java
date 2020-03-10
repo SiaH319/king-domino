@@ -18,6 +18,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+/***
+*As a player, I want the Kingdomino app to automatically check if my
+*current domino is placed next to my castle
+*@author Cecilia
+*
+***/
+
 public class VerifyGridSizeStepDefinition {
     private Boolean isValid;
     @Given("the game is initialized for verify grid size")

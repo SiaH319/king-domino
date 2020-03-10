@@ -19,6 +19,9 @@ import io.cucumber.java.en.When;
 public class PlaceDominoStepDefinition{
         /**
          * F13 Step Defs: Place Dominoes
+         As a player, I wish to place my selected domino to my Kindom.
+         If I am satisfied with its placement, and its current position respects the adjacency rules,
+         I wish to finalize the placement. (Actual checks of adjacency conditions are implemented as separate features) (F13)
          * @author Ezer, Cecilia Jiang
          */
 

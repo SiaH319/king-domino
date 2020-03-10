@@ -28,8 +28,10 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 
 /**
- * TODO Put here a description of what this class does.
- *
+ * As a player, I want the Kingdomino app to automatically resolve a potential tiebreak 
+  (i.e. equal scorebetween players) 
+  by evaluating the most extended (largest)property and 
+  then the total number of crowns.
  * @author Mohamad.
  *         Created Mar 7, 2020.
  */

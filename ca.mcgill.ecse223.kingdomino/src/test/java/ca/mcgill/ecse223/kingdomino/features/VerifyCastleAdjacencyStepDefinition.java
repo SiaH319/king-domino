@@ -15,6 +15,13 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/***
+*As a player, I want the Kingdomino app to automatically check if my
+*current domino is placed next to my castle
+*@author Cecilia
+*
+***/
+
 public class VerifyCastleAdjacencyStepDefinition {
     private Boolean isValid;
 
