@@ -10,6 +10,9 @@ import ca.mcgill.ecse223.kingdomino.model.*;
  * @author Violet
  */
 public class CalculationController {
+    /////////////////////////////        //////
+    ///// ///Feature Methods////        //////
+    ///////////////////////////        //////
     /**
      * Feature 19: Calculate Bonus Scores
      * As a player, I want the Kingdomino app to automatically calculate the bonus scores (for Harmony and
@@ -160,9 +163,11 @@ public class CalculationController {
             if (middle && (allTerritories.size() == 13))
                 player.setBonusScore(15);
         }
-
     }
 
+    /////////////////////////////        //////
+    ///// ///Helper Methods/////        //////
+    ///////////////////////////        //////
     /***
      * Veryfying if castle is in the middle of Kingdom
      * @param territories

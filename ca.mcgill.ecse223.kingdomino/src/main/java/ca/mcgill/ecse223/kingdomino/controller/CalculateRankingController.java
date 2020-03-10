@@ -57,7 +57,7 @@ public class CalculateRankingController {
 		    Square[] grid = GameController.getGrid(player0Name);
 			DisjointSet s = GameController.getSet(player0Name);
 			CalculationController.identifyPropertoes(s, grid, p.getKingdom());
-			CalculatePropertyScoreController.calculatePropertyScore(p.getKingdom().getProperties(),p);
+			CalculationController.calculatePropertyScore(p.getKingdom().getProperties(),p);
 			CalculationController.CalculateBonusScore(game, p);
 			ScoreList.add((p.getBonusScore()+p.getPropertyScore()));
 			

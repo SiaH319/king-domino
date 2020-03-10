@@ -17,7 +17,7 @@ public class DominoController {
     /////////////////////////////        //////
     ////////////QueryMethods////        //////
     ///////////////////////////        //////
-    private static TerrainType getTerrainType(String terrain) {
+    static TerrainType getTerrainType(String terrain) {
         switch (terrain) {
             case "W":
                 return TerrainType.WheatField;
@@ -36,7 +36,7 @@ public class DominoController {
         }
     }
 
-    private static Domino getdominoByID(int id) {
+    public static Domino getdominoByID(int id) {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         for (Domino domino : game.getAllDominos()) {
             if (domino.getId() == id) {
@@ -66,6 +66,67 @@ public class DominoController {
         return dominoSelection;
     }
 
+    public static Domino getDominobyId(Integer id) {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        Domino result = null;
+        for(Domino domino: game.getAllDominos()) {
+            if(domino.getId() == id)
+                result = domino;
+        }
+        return result;
+    }
+
+    public static List<Domino> getAllDominobyleftTtile(TerrainType left) {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        List<Domino> dominosL = null;
+        for(Domino domino: game.getAllDominos()) {
+            if(domino.getLeftTile() == left)
+                dominosL.add(domino);
+        }
+        return dominosL;
+    }
+
+    public static List<Domino> getAllDominobyRightTile(TerrainType right) {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        List<Domino> dominosR = null;
+        for(Domino domino: game.getAllDominos()) {
+            if(domino.getRightTile() == right)
+                dominosR.add(domino);
+        }
+        return dominosR;
+    }
+
+    public static List<Domino> getAllDominobyTerrainType(String terrain) {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        List<Domino> dominos = null;
+        for(Domino domino: game.getAllDominos()) {
+            if((domino.getRightTile()).toString().equalsIgnoreCase(terrain) || (domino.getLeftTile()).toString().equalsIgnoreCase(terrain))
+                dominos.add(domino);
+        }
+        return dominos;
+    }
+    public static int getDominoTotalCrown(Domino domino) {
+        return domino.getLeftCrown() + domino.getRightCrown();
+    }
+
+    public static String getTerrainTypeString(TerrainType terrain) {
+        switch (terrain) {
+            case WheatField:
+                return "wheat";
+            case Forest:
+                return "forest";
+            case Mountain:
+                return "mountain";
+            case Grass:
+                return "grass";
+            case Swamp:
+                return "swamp";
+            case Lake:
+                return "lake";
+            default:
+                throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+        }
+    }
     static Player currentPlayer;
 
 

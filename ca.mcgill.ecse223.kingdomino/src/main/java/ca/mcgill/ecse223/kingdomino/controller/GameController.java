@@ -10,6 +10,9 @@ public class GameController {
     private static HashMap<String, Square[]> grids = new HashMap<>();
     private static HashMap<String, DisjointSet> sets = new HashMap<>();
 
+    /////////////////////////////        //////
+    ////////////QueryMethods////        //////
+    ///////////////////////////        //////
     public static void createGivenNumberOfPlayer(Game game, int playerNum){
             if(playerNum < 2 || playerNum > 4)
                 throw new IllegalArgumentException("Player Number should be between 2 and 4");

@@ -1,10 +1,9 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
 import java.io.BufferedReader;
-import ca.mcgill.ecse223.kingdomino.controller.getDominoController;
 import java.io.FileReader;
 import java.io.IOException;
-import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Game;
@@ -92,56 +91,6 @@ public class addDefaultController {
 		game.addAllDomino(46, S, M, 2);
 		game.addAllDomino(47, S, M, 2);
 		game.addAllDomino(48, W, M, 3);
-
-
-		/*
-		BufferedReader reader;
-		boolean hasCrown;
-		String left, right, crown =null;
-		TerrainType leftTile = null, rightTile =null;
-		try {
-			reader = new BufferedReader(new FileReader(
-					"alldominoes.dat"));
-			String line = reader.readLine();
-			while (line != null) {
-				hasCrown = line.contains("(");
-				String[] s1= line.split(":");
-				String id = s1[0];
-				String[] s2 = s1[1].split("+");
-				left = s2[0];
-				if (!hasCrown) {
-					right = s2[1];
-				}
-				else {
-					String[] s3 = s2[1].split("(");
-					right = s3[0];
-					String[] s4 = s3[1].split(")");
-					crown = s4[0];
-				}
-				if (left == "W") leftTile = TerrainType.WheatField;
-				else if (left == "F") leftTile = TerrainType.Forest;
-				else if (left == "L") leftTile = TerrainType.Lake;
-				else if (left == "G") leftTile = TerrainType.Grass;
-				else if (left == "S") leftTile = TerrainType.Swamp;
-				else if (left == "M") leftTile = TerrainType.Mountain;
-				if (right == "W") rightTile = TerrainType.WheatField;
-				else if (right == "F") rightTile = TerrainType.Forest;
-				else if (right == "L") rightTile = TerrainType.Lake;
-				else if (right == "G") rightTile = TerrainType.Grass;
-				else if (right == "S") rightTile = TerrainType.Swamp;
-				else if (right == "M") rightTile = TerrainType.Mountain;
-			game.hasAllDominos();
-			game.addAllDomino(Integer.parseInt(id), leftTile, rightTile, Integer.parseInt(crown));
-				// read next line
-			line = reader.readLine();
-		}
-			reader.close();
-			}catch (IOException e) {
-			e.printStackTrace();
-		}
-		*/
-
-		
 	}
 
 	public static void createAllDominoes(Game game) {
@@ -152,8 +101,8 @@ public class addDefaultController {
 			while ((line = br.readLine()) != null) {
 				String[] dominoString = line.split(delimiters); // {id, leftTerrain, rightTerrain, crowns}
 				int dominoId = Integer.decode(dominoString[0]);
-				TerrainType leftTerrain = getDominoController.getTerrainType(dominoString[1]);
-				TerrainType rightTerrain = getDominoController.getTerrainType(dominoString[2]);
+				TerrainType leftTerrain = DominoController.getTerrainType(dominoString[1]);
+				TerrainType rightTerrain = DominoController.getTerrainType(dominoString[2]);
 				int numCrown = 0;
 				if (dominoString.length > 3) {
 					numCrown = Integer.decode(dominoString[3]);
