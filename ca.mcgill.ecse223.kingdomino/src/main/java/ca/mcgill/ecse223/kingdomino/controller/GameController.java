@@ -1,10 +1,7 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
-import ca.mcgill.ecse223.kingdomino.model.Domino;
-import ca.mcgill.ecse223.kingdomino.model.Draft;
-import ca.mcgill.ecse223.kingdomino.model.Game;
-import ca.mcgill.ecse223.kingdomino.model.Player;
-
+import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.model.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +27,17 @@ public class GameController {
         }
         return null;
     }
+
+    public static List<Domino> getAllDominobyTerrainType(String terrainString, Game game) {
+        List<Domino> dominoList = new ArrayList<>();
+        TerrainType terrain = getTerrainType(terrainString);
+        for(Domino domino: game.getAllDominos()) {
+            if((domino.getRightTile()).equals(terrain) || (domino.getLeftTile()).equals(terrain))
+                dominoList.add(domino);
+        }
+        return dominoList;
+    }
+
 
     /**
      * Combine current square and all adjacent square into one set
@@ -60,6 +68,37 @@ public class GameController {
     }
     public static void clearGrids () {
         grids.clear();
+    }
+
+    private static TerrainType getTerrainType(String terrain) {
+        switch (terrain) {
+            case "W":
+                return TerrainType.WheatField;
+            case "F":
+                return TerrainType.Forest;
+            case "M":
+                return TerrainType.Mountain;
+            case "G":
+                return TerrainType.Grass;
+            case "S":
+                return TerrainType.Swamp;
+            case "L":
+                return TerrainType.Lake;
+            case "wheat":
+                return TerrainType.WheatField;
+            case "forest":
+                return TerrainType.Forest;
+            case "mountain":
+                return TerrainType.Mountain;
+            case "grass":
+                return TerrainType.Grass;
+            case "swamp":
+                return TerrainType.Swamp;
+            case "lake":
+                return TerrainType.Lake;
+            default:
+                throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+        }
     }
 
 }
