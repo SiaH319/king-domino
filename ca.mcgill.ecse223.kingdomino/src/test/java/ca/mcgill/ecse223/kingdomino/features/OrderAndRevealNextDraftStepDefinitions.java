@@ -26,7 +26,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 /**
- * TODO Put here a description of what this class does.
+ * As a player, I want the Kingdomino app to automatically order 
+  and reveal the next draft of dominos in increasing order 
+  with respect to their numbers so that I know which are the more valuable dominos.
  *
  * @author Mohamad.
  *         Created Mar 8, 2020.

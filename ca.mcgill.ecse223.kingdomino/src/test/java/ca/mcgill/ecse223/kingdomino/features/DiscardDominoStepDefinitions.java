@@ -32,9 +32,9 @@ import io.cucumber.java.en.When;
 
 public class DiscardDominoStepDefinitions {
 	DominoInKingdom dominoInKingdom;
-	/*
-	 * Note that these step definitions and helper methods just serve as a guide to help
-	 * you get started. You may change the code if required.
+	/* As a player, I wish to discard a domino if it cannot be placed to my kingdom in a valid way
+	 * 
+	 *@author mohamad
 	 */
 
 	@Given("the game is initialized for discard domino")
