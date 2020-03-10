@@ -7,20 +7,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.junit.runner.RunWith;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.CreateNextDraftController;
-import ca.mcgill.ecse223.kingdomino.controller.OrderAndRevealController;
+import ca.mcgill.ecse223.kingdomino.controller.DraftController;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
-import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
-import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Game;
@@ -153,7 +145,7 @@ public class OrderAndRevealNextDraftStepDefinitions {
 	
 	@When("the ordering of the dominoes in the next draft is initiated")
 	public void the_ordering_of_the_dominoes_in_the_next_draft_is_initiated() {
-		OrderAndRevealController.orderInitiated();
+		DraftController.orderInitiated();
 	}
 	@Then("the status of the next draft is sorted")
 	public void the_status_of_the_next_draft_is_sorted() {
@@ -195,7 +187,7 @@ public class OrderAndRevealNextDraftStepDefinitions {
 	}
 	@When("the revealing of the dominoes in the next draft is initiated")
 	public void the_revealing_of_the_dominoes_in_the_next_draft_is_initiated() {
-		OrderAndRevealController.revealInitiated();
+		DraftController.revealInitiated();
 	}
 		
 	@Then("the status of the next draft is face up")

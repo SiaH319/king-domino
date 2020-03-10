@@ -7,18 +7,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import org.junit.runner.RunWith;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.CreateNextDraftController;
+import ca.mcgill.ecse223.kingdomino.controller.DraftController;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
-import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
-import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Game;
@@ -196,7 +190,7 @@ public class CreateNextDraftStepDefinitions {
 	
 	@When("create next draft is initiated")
 	public void create_next_draft_is_initiated() {
-		CreateNextDraftController.createNewDraftIsInitiated();
+		DraftController.createNewDraftIsInitiated();
 	}
 	
 	/**
