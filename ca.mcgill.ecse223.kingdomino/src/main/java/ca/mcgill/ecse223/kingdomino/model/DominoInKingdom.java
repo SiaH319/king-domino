@@ -37,14 +37,6 @@ public class DominoInKingdom extends KingdomTerritory {
   //------------------------
   // INTERFACE
   //------------------------
-
-  /**
-   * Get domino's right tile's position as an integer pair
-   * @param x_left
-   * @param y_left
-   * @param dir
-   * @return Integer pair {x,y}
-   */
   public static int[] getRightTilePosition(int x_left, int y_left, DirectionKind dir) {
     int x_right, y_right;
     switch (dir){
