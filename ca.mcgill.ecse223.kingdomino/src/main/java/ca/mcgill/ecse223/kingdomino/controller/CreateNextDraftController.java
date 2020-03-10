@@ -38,8 +38,8 @@ import ca.mcgill.ecse223.kingdomino.model.Property;
 import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 /**
- * TODO Put here a description of what this class does.
- *
+ * 
+ *This controller method prepares/creates the next draft.
  * @author Mohamad.
  *         Created Mar 3, 2020.
  */
