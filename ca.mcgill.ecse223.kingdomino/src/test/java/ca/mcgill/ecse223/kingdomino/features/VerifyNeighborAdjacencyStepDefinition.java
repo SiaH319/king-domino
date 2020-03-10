@@ -14,6 +14,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+/***
+*As a player, I want the Kingdomino app to automatically check if my
+*current domino is placed to an adjacent territory.
+*@author Cecilia
+*
+***/
+
 public class VerifyNeighborAdjacencyStepDefinition {
     private Boolean isValid;
     private Square[] grid;
