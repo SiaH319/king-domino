@@ -2,17 +2,20 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package ca.mcgill.ecse223.kingdomino.model;
+import java.io.Serializable;
 import java.util.*;
 
 // line 12 "../../../../../Kingdomino.ump"
-public class Game
-{
+public class Game implements Serializable {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //Game Attributes
+  // line 6 "../../../../../KingdominoPersistence.ump"
+  private static final long serialVersionUID = -5952891179517584957L;
+
+  // Game Attributes
   private int numberOfPlayers;
   private int maxPileSize;
 
@@ -31,8 +34,7 @@ public class Game
   // CONSTRUCTOR
   //------------------------
 
-  public Game(int aMaxPileSize, Kingdomino aKingdomino)
-  {
+  public Game(int aMaxPileSize, Kingdomino aKingdomino) {
     numberOfPlayers = 4;
     maxPileSize = aMaxPileSize;
     players = new ArrayList<Player>();
@@ -40,66 +42,61 @@ public class Game
     allDrafts = new ArrayList<Draft>();
     selectedBonusOptions = new ArrayList<BonusOption>();
     boolean didAddKingdomino = setKingdomino(aKingdomino);
-    if (!didAddKingdomino)
-    {
+    if (!didAddKingdomino) {
       throw new RuntimeException("Unable to create allGame due to kingdomino");
     }
+  }
+
+  public Game() {
   }
 
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setNumberOfPlayers(int aNumberOfPlayers)
-  {
+  public boolean setNumberOfPlayers(int aNumberOfPlayers) {
     boolean wasSet = false;
     numberOfPlayers = aNumberOfPlayers;
     wasSet = true;
     return wasSet;
   }
 
-  public int getNumberOfPlayers()
-  {
+  public int getNumberOfPlayers() {
     return numberOfPlayers;
   }
 
-  public int getMaxPileSize()
-  {
+  public int getMaxPileSize() {
     return maxPileSize;
   }
+
   /* Code from template association_GetMany */
-  public Player getPlayer(int index)
-  {
+  public Player getPlayer(int index) {
     Player aPlayer = players.get(index);
     return aPlayer;
   }
 
-  public List<Player> getPlayers()
-  {
+  public List<Player> getPlayers() {
     List<Player> newPlayers = Collections.unmodifiableList(players);
     return newPlayers;
   }
 
-  public int numberOfPlayers()
-  {
+  public int numberOfPlayers() {
     int number = players.size();
     return number;
   }
 
-  public boolean hasPlayers()
-  {
+  public boolean hasPlayers() {
     boolean has = players.size() > 0;
     return has;
   }
 
-  public int indexOfPlayer(Player aPlayer)
-  {
+  public int indexOfPlayer(Player aPlayer) {
     int index = players.indexOf(aPlayer);
     return index;
   }
+
   /* Code from template association_GetMany */
-  public Domino getAllDomino(int index)
-  {
+  public Domino getAllDomino(int index) {
     Domino aAllDomino = allDominos.get(index);
     return aAllDomino;
   }
@@ -107,32 +104,28 @@ public class Game
   /**
    * sorted by Ids of dominos
    */
-  public List<Domino> getAllDominos()
-  {
+  public List<Domino> getAllDominos() {
     List<Domino> newAllDominos = Collections.unmodifiableList(allDominos);
     return newAllDominos;
   }
 
-  public int numberOfAllDominos()
-  {
+  public int numberOfAllDominos() {
     int number = allDominos.size();
     return number;
   }
 
-  public boolean hasAllDominos()
-  {
+  public boolean hasAllDominos() {
     boolean has = allDominos.size() > 0;
     return has;
   }
 
-  public int indexOfAllDomino(Domino aAllDomino)
-  {
+  public int indexOfAllDomino(Domino aAllDomino) {
     int index = allDominos.indexOf(aAllDomino);
     return index;
   }
+
   /* Code from template association_GetMany */
-  public Draft getAllDraft(int index)
-  {
+  public Draft getAllDraft(int index) {
     Draft aAllDraft = allDrafts.get(index);
     return aAllDraft;
   }
@@ -140,173 +133,155 @@ public class Game
   /**
    * sorted by Ids of dominos
    */
-  public List<Draft> getAllDrafts()
-  {
+  public List<Draft> getAllDrafts() {
     List<Draft> newAllDrafts = Collections.unmodifiableList(allDrafts);
     return newAllDrafts;
   }
 
-  public int numberOfAllDrafts()
-  {
+  public int numberOfAllDrafts() {
     int number = allDrafts.size();
     return number;
   }
 
-  public boolean hasAllDrafts()
-  {
+  public boolean hasAllDrafts() {
     boolean has = allDrafts.size() > 0;
     return has;
   }
 
-  public int indexOfAllDraft(Draft aAllDraft)
-  {
+  public int indexOfAllDraft(Draft aAllDraft) {
     int index = allDrafts.indexOf(aAllDraft);
     return index;
   }
+
   /* Code from template association_GetOne */
-  public Player getNextPlayer()
-  {
+  public Player getNextPlayer() {
     return nextPlayer;
   }
 
-  public boolean hasNextPlayer()
-  {
+  public boolean hasNextPlayer() {
     boolean has = nextPlayer != null;
     return has;
   }
+
   /* Code from template association_GetOne */
-  public Draft getCurrentDraft()
-  {
+  public Draft getCurrentDraft() {
     return currentDraft;
   }
 
-  public boolean hasCurrentDraft()
-  {
+  public boolean hasCurrentDraft() {
     boolean has = currentDraft != null;
     return has;
   }
+
   /* Code from template association_GetOne */
-  public Draft getNextDraft()
-  {
+  public Draft getNextDraft() {
     return nextDraft;
   }
 
-  public boolean hasNextDraft()
-  {
+  public boolean hasNextDraft() {
     boolean has = nextDraft != null;
     return has;
   }
+
   /* Code from template association_GetOne */
-  public Domino getTopDominoInPile()
-  {
+  public Domino getTopDominoInPile() {
     return topDominoInPile;
   }
 
-  public boolean hasTopDominoInPile()
-  {
+  public boolean hasTopDominoInPile() {
     boolean has = topDominoInPile != null;
     return has;
   }
+
   /* Code from template association_GetMany */
-  public BonusOption getSelectedBonusOption(int index)
-  {
+  public BonusOption getSelectedBonusOption(int index) {
     BonusOption aSelectedBonusOption = selectedBonusOptions.get(index);
     return aSelectedBonusOption;
   }
 
-  public List<BonusOption> getSelectedBonusOptions()
-  {
+  public List<BonusOption> getSelectedBonusOptions() {
     List<BonusOption> newSelectedBonusOptions = Collections.unmodifiableList(selectedBonusOptions);
     return newSelectedBonusOptions;
   }
 
-  public int numberOfSelectedBonusOptions()
-  {
+  public int numberOfSelectedBonusOptions() {
     int number = selectedBonusOptions.size();
     return number;
   }
 
-  public boolean hasSelectedBonusOptions()
-  {
+  public boolean hasSelectedBonusOptions() {
     boolean has = selectedBonusOptions.size() > 0;
     return has;
   }
 
-  public int indexOfSelectedBonusOption(BonusOption aSelectedBonusOption)
-  {
+  public int indexOfSelectedBonusOption(BonusOption aSelectedBonusOption) {
     int index = selectedBonusOptions.indexOf(aSelectedBonusOption);
     return index;
   }
+
   /* Code from template association_GetOne */
-  public Kingdomino getKingdomino()
-  {
+  public Kingdomino getKingdomino() {
     return kingdomino;
   }
+
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfPlayers()
-  {
+  public static int minimumNumberOfPlayers() {
     return 0;
   }
+
   /* Code from template association_MaximumNumberOfMethod */
-  public static int maximumNumberOfPlayers()
-  {
+  public static int maximumNumberOfPlayers() {
     return 4;
   }
+
   /* Code from template association_AddOptionalNToOne */
-  public Player addPlayer()
-  {
-    if (numberOfPlayers() >= maximumNumberOfPlayers())
-    {
+  public Player addPlayer() {
+    if (numberOfPlayers() >= maximumNumberOfPlayers()) {
       return null;
-    }
-    else
-    {
+    } else {
       return new Player(this);
     }
   }
 
-  public boolean addPlayer(Player aPlayer)
-  {
+  public boolean addPlayer(Player aPlayer) {
     boolean wasAdded = false;
-    if (players.contains(aPlayer)) { return false; }
-    if (numberOfPlayers() >= maximumNumberOfPlayers())
-    {
+    if (players.contains(aPlayer)) { 
+      return false; 
+    }
+    if (numberOfPlayers() >= maximumNumberOfPlayers()) {
       return wasAdded;
     }
-
     Game existingGame = aPlayer.getGame();
     boolean isNewGame = existingGame != null && !this.equals(existingGame);
-    if (isNewGame)
-    {
+    if (isNewGame) {
       aPlayer.setGame(this);
-    }
-    else
-    {
+    } else {
       players.add(aPlayer);
     }
     wasAdded = true;
     return wasAdded;
   }
 
-  public boolean removePlayer(Player aPlayer)
-  {
+  public boolean removePlayer(Player aPlayer) {
     boolean wasRemoved = false;
     //Unable to remove aPlayer, as it must always have a game
-    if (!this.equals(aPlayer.getGame()))
-    {
+    if (!this.equals(aPlayer.getGame())) {
       players.remove(aPlayer);
       wasRemoved = true;
     }
     return wasRemoved;
   }
+
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addPlayerAt(Player aPlayer, int index)
-  {  
+  public boolean addPlayerAt(Player aPlayer, int index) {  
     boolean wasAdded = false;
-    if(addPlayer(aPlayer))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfPlayers()) { index = numberOfPlayers() - 1; }
+    if(addPlayer(aPlayer)) {
+      if(index < 0 ) { 
+        index = 0; 
+      }
+      if(index > numberOfPlayers()) { 
+        index = numberOfPlayers() - 1; 
+      }
       players.remove(aPlayer);
       players.add(index, aPlayer);
       wasAdded = true;
@@ -314,69 +289,64 @@ public class Game
     return wasAdded;
   }
 
-  public boolean addOrMovePlayerAt(Player aPlayer, int index)
-  {
+  public boolean addOrMovePlayerAt(Player aPlayer, int index) {
     boolean wasAdded = false;
-    if(players.contains(aPlayer))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfPlayers()) { index = numberOfPlayers() - 1; }
+    if(players.contains(aPlayer)) {
+      if(index < 0 ) { 
+        index = 0; 
+      }
+      if(index > numberOfPlayers()) { 
+        index = numberOfPlayers() - 1; 
+      }
       players.remove(aPlayer);
       players.add(index, aPlayer);
       wasAdded = true;
-    } 
-    else 
-    {
+    } else {
       wasAdded = addPlayerAt(aPlayer, index);
     }
     return wasAdded;
   }
+
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfAllDominos()
-  {
+  public static int minimumNumberOfAllDominos() {
     return 0;
   }
+
   /* Code from template association_AddManyToOne */
-  public Domino addAllDomino(int aId, TerrainType aLeftTile, TerrainType aRightTile, int aRightCrown)
-  {
+  public Domino addAllDomino(int aId, TerrainType aLeftTile, TerrainType aRightTile, int aRightCrown) {
     return new Domino(aId, aLeftTile, aRightTile, aRightCrown, this);
   }
 
-  public boolean addAllDomino(Domino aAllDomino)
-  {
+  public boolean addAllDomino(Domino aAllDomino) {
     boolean wasAdded = false;
-    if (allDominos.contains(aAllDomino)) { return false; }
+    if (allDominos.contains(aAllDomino)) { 
+      return false; 
+    }
     Game existingGame = aAllDomino.getGame();
     boolean isNewGame = existingGame != null && !this.equals(existingGame);
-    if (isNewGame)
-    {
+    if (isNewGame) {
       aAllDomino.setGame(this);
-    }
-    else
-    {
+    } else {
       allDominos.add(aAllDomino);
     }
     wasAdded = true;
     return wasAdded;
   }
 
-  public boolean removeAllDomino(Domino aAllDomino)
-  {
+  public boolean removeAllDomino(Domino aAllDomino) {
     boolean wasRemoved = false;
     //Unable to remove aAllDomino, as it must always have a game
-    if (!this.equals(aAllDomino.getGame()))
-    {
+    if (!this.equals(aAllDomino.getGame())) {
       allDominos.remove(aAllDomino);
       wasRemoved = true;
     }
     return wasRemoved;
   }
+
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addAllDominoAt(Domino aAllDomino, int index)
-  {  
+  public boolean addAllDominoAt(Domino aAllDomino, int index) {  
     boolean wasAdded = false;
-    if(addAllDomino(aAllDomino))
-    {
+    if(addAllDomino(aAllDomino)) {
       if(index < 0 ) { index = 0; }
       if(index > numberOfAllDominos()) { index = numberOfAllDominos() - 1; }
       allDominos.remove(aAllDomino);
@@ -386,69 +356,60 @@ public class Game
     return wasAdded;
   }
 
-  public boolean addOrMoveAllDominoAt(Domino aAllDomino, int index)
-  {
+  public boolean addOrMoveAllDominoAt(Domino aAllDomino, int index) {
     boolean wasAdded = false;
-    if(allDominos.contains(aAllDomino))
-    {
+    if(allDominos.contains(aAllDomino)) {
       if(index < 0 ) { index = 0; }
       if(index > numberOfAllDominos()) { index = numberOfAllDominos() - 1; }
       allDominos.remove(aAllDomino);
       allDominos.add(index, aAllDomino);
       wasAdded = true;
-    } 
-    else 
-    {
+    } else {
       wasAdded = addAllDominoAt(aAllDomino, index);
     }
     return wasAdded;
   }
+
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfAllDrafts()
-  {
+  public static int minimumNumberOfAllDrafts() {
     return 0;
   }
+
   /* Code from template association_AddManyToOne */
-  public Draft addAllDraft(Draft.DraftStatus aDraftStatus)
-  {
+  public Draft addAllDraft(Draft.DraftStatus aDraftStatus) {
     return new Draft(aDraftStatus, this);
   }
 
-  public boolean addAllDraft(Draft aAllDraft)
-  {
+  public boolean addAllDraft(Draft aAllDraft) {
     boolean wasAdded = false;
-    if (allDrafts.contains(aAllDraft)) { return false; }
+    if (allDrafts.contains(aAllDraft)) { 
+      return false; 
+    }
     Game existingGame = aAllDraft.getGame();
     boolean isNewGame = existingGame != null && !this.equals(existingGame);
-    if (isNewGame)
-    {
+    if (isNewGame) {
       aAllDraft.setGame(this);
-    }
-    else
-    {
+    } else {
       allDrafts.add(aAllDraft);
     }
     wasAdded = true;
     return wasAdded;
   }
 
-  public boolean removeAllDraft(Draft aAllDraft)
-  {
+  public boolean removeAllDraft(Draft aAllDraft) {
     boolean wasRemoved = false;
     //Unable to remove aAllDraft, as it must always have a game
-    if (!this.equals(aAllDraft.getGame()))
-    {
+    if (!this.equals(aAllDraft.getGame())) {
       allDrafts.remove(aAllDraft);
       wasRemoved = true;
     }
     return wasRemoved;
   }
+
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addAllDraftAt(Draft aAllDraft, int index)
-  {  
+  public boolean addAllDraftAt(Draft aAllDraft, int index) {  
     boolean wasAdded = false;
-    if(addAllDraft(aAllDraft))
-    {
+    if(addAllDraft(aAllDraft)) {
       if(index < 0 ) { index = 0; }
       if(index > numberOfAllDrafts()) { index = numberOfAllDrafts() - 1; }
       allDrafts.remove(aAllDraft);
@@ -458,86 +419,81 @@ public class Game
     return wasAdded;
   }
 
-  public boolean addOrMoveAllDraftAt(Draft aAllDraft, int index)
-  {
+  public boolean addOrMoveAllDraftAt(Draft aAllDraft, int index) {
     boolean wasAdded = false;
-    if(allDrafts.contains(aAllDraft))
-    {
+    if(allDrafts.contains(aAllDraft)) {
       if(index < 0 ) { index = 0; }
       if(index > numberOfAllDrafts()) { index = numberOfAllDrafts() - 1; }
       allDrafts.remove(aAllDraft);
       allDrafts.add(index, aAllDraft);
       wasAdded = true;
-    } 
-    else 
-    {
+    } else {
       wasAdded = addAllDraftAt(aAllDraft, index);
     }
     return wasAdded;
   }
+
   /* Code from template association_SetUnidirectionalOptionalOne */
-  public boolean setNextPlayer(Player aNewNextPlayer)
-  {
+  public boolean setNextPlayer(Player aNewNextPlayer) {
     boolean wasSet = false;
     nextPlayer = aNewNextPlayer;
     wasSet = true;
     return wasSet;
   }
+
   /* Code from template association_SetUnidirectionalOptionalOne */
-  public boolean setCurrentDraft(Draft aNewCurrentDraft)
-  {
+  public boolean setCurrentDraft(Draft aNewCurrentDraft) {
     boolean wasSet = false;
     currentDraft = aNewCurrentDraft;
     wasSet = true;
     return wasSet;
   }
+
   /* Code from template association_SetUnidirectionalOptionalOne */
-  public boolean setNextDraft(Draft aNewNextDraft)
-  {
+  public boolean setNextDraft(Draft aNewNextDraft) {
     boolean wasSet = false;
     nextDraft = aNewNextDraft;
     wasSet = true;
     return wasSet;
   }
+
   /* Code from template association_SetUnidirectionalOptionalOne */
-  public boolean setTopDominoInPile(Domino aNewTopDominoInPile)
-  {
+  public boolean setTopDominoInPile(Domino aNewTopDominoInPile) {
     boolean wasSet = false;
     topDominoInPile = aNewTopDominoInPile;
     wasSet = true;
     return wasSet;
   }
+
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfSelectedBonusOptions()
-  {
+  public static int minimumNumberOfSelectedBonusOptions() {
     return 0;
   }
+
   /* Code from template association_AddUnidirectionalMany */
-  public boolean addSelectedBonusOption(BonusOption aSelectedBonusOption)
-  {
+  public boolean addSelectedBonusOption(BonusOption aSelectedBonusOption) {
     boolean wasAdded = false;
-    if (selectedBonusOptions.contains(aSelectedBonusOption)) { return false; }
+    if (selectedBonusOptions.contains(aSelectedBonusOption)) { 
+      return false; 
+    }
     selectedBonusOptions.add(aSelectedBonusOption);
     wasAdded = true;
     return wasAdded;
   }
 
-  public boolean removeSelectedBonusOption(BonusOption aSelectedBonusOption)
-  {
+  public boolean removeSelectedBonusOption(BonusOption aSelectedBonusOption) {
     boolean wasRemoved = false;
-    if (selectedBonusOptions.contains(aSelectedBonusOption))
-    {
+    if (selectedBonusOptions.contains(aSelectedBonusOption)) {
       selectedBonusOptions.remove(aSelectedBonusOption);
       wasRemoved = true;
     }
     return wasRemoved;
   }
+
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addSelectedBonusOptionAt(BonusOption aSelectedBonusOption, int index)
-  {  
+  public boolean addSelectedBonusOptionAt(BonusOption aSelectedBonusOption, int index) {  
     boolean wasAdded = false;
-    if(addSelectedBonusOption(aSelectedBonusOption))
-    {
+    if(addSelectedBonusOption(aSelectedBonusOption)) {
       if(index < 0 ) { index = 0; }
       if(index > numberOfSelectedBonusOptions()) { index = numberOfSelectedBonusOptions() - 1; }
       selectedBonusOptions.remove(aSelectedBonusOption);
@@ -547,36 +503,29 @@ public class Game
     return wasAdded;
   }
 
-  public boolean addOrMoveSelectedBonusOptionAt(BonusOption aSelectedBonusOption, int index)
-  {
+  public boolean addOrMoveSelectedBonusOptionAt(BonusOption aSelectedBonusOption, int index) {
     boolean wasAdded = false;
-    if(selectedBonusOptions.contains(aSelectedBonusOption))
-    {
+    if(selectedBonusOptions.contains(aSelectedBonusOption)) {
       if(index < 0 ) { index = 0; }
       if(index > numberOfSelectedBonusOptions()) { index = numberOfSelectedBonusOptions() - 1; }
       selectedBonusOptions.remove(aSelectedBonusOption);
       selectedBonusOptions.add(index, aSelectedBonusOption);
       wasAdded = true;
-    } 
-    else 
-    {
+    } else {
       wasAdded = addSelectedBonusOptionAt(aSelectedBonusOption, index);
     }
     return wasAdded;
   }
+
   /* Code from template association_SetOneToMany */
-  public boolean setKingdomino(Kingdomino aKingdomino)
-  {
+  public boolean setKingdomino(Kingdomino aKingdomino) {
     boolean wasSet = false;
-    if (aKingdomino == null)
-    {
+    if (aKingdomino == null) {
       return wasSet;
     }
-
     Kingdomino existingKingdomino = kingdomino;
     kingdomino = aKingdomino;
-    if (existingKingdomino != null && !existingKingdomino.equals(aKingdomino))
-    {
+    if (existingKingdomino != null && !existingKingdomino.equals(aKingdomino)) {
       existingKingdomino.removeAllGame(this);
     }
     kingdomino.addAllGame(this);
@@ -584,29 +533,22 @@ public class Game
     return wasSet;
   }
 
-  public void delete()
-  {
-    while (players.size() > 0)
-    {
+  public void delete() {
+    while (players.size() > 0) {
       Player aPlayer = players.get(players.size() - 1);
       aPlayer.delete();
       players.remove(aPlayer);
     }
-    
-    while (allDominos.size() > 0)
-    {
+    while (allDominos.size() > 0) {
       Domino aAllDomino = allDominos.get(allDominos.size() - 1);
       aAllDomino.delete();
       allDominos.remove(aAllDomino);
     }
-    
-    while (allDrafts.size() > 0)
-    {
+    while (allDrafts.size() > 0) {
       Draft aAllDraft = allDrafts.get(allDrafts.size() - 1);
       aAllDraft.delete();
       allDrafts.remove(aAllDraft);
     }
-    
     nextPlayer = null;
     currentDraft = null;
     nextDraft = null;
@@ -614,15 +556,12 @@ public class Game
     selectedBonusOptions.clear();
     Kingdomino placeholderKingdomino = kingdomino;
     this.kingdomino = null;
-    if(placeholderKingdomino != null)
-    {
+    if(placeholderKingdomino != null) {
       placeholderKingdomino.removeAllGame(this);
     }
   }
 
-
-  public String toString()
-  {
+  public String toString() {
     return super.toString() + "["+
             "numberOfPlayers" + ":" + getNumberOfPlayers()+ "," +
             "maxPileSize" + ":" + getMaxPileSize()+ "]" + System.getProperties().getProperty("line.separator") +
@@ -631,5 +570,10 @@ public class Game
             "  " + "nextDraft = "+(getNextDraft()!=null?Integer.toHexString(System.identityHashCode(getNextDraft())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "topDominoInPile = "+(getTopDominoInPile()!=null?Integer.toHexString(System.identityHashCode(getTopDominoInPile())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "kingdomino = "+(getKingdomino()!=null?Integer.toHexString(System.identityHashCode(getKingdomino())):"null");
+  }
+
+  // line 7 "../../../../../KingdominoPersistence.ump"
+  public void reinitialize() {
+    
   }
 }

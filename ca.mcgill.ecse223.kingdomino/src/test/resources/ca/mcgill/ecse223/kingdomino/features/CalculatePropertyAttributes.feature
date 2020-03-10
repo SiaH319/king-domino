@@ -1,9 +1,9 @@
 Feature: Calculate property attributes
-  I want the Kingdomino app to automatically calculate 
-  the size of a property and 
+  I want the Kingdomino app to automatically calculate
+  the size of a property and
   the total number of crowns in that property. (F20)
 
-  Background: 
+  Background:
     Given the game is initialized for calculate property attributes
     Given the player's kingdom has the following dominoes:
       | id | dominodir | posx | posy |
@@ -34,7 +34,7 @@ Feature: Calculate property attributes
       | wheat |    3 |      1 |
       | swamp |    2 |      1 |
 
-    Examples: 
+    Examples:
       | id | dominodir | posx | posy |
       |  1 | up        |    1 |    1 |
 
@@ -51,7 +51,7 @@ Feature: Calculate property attributes
       | swamp    |    3 |      1 |
       | mountain |    1 |      2 |
 
-    Examples: 
+    Examples:
       | id | dominodir | posx | posy |
       | 46 | right     |    1 |   -1 |
 
@@ -65,6 +65,6 @@ Feature: Calculate property attributes
       | grass |    3 |      2 |
       | swamp |    2 |      1 |
 
-    Examples: 
+    Examples:
       | id | dominodir | posx | posy |
       | 41 | right     |    1 |   -1 |

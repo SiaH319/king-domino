@@ -2,7 +2,6 @@ package ca.mcgill.ecse223.kingdomino.controller;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +39,16 @@ public class GameController {
     }
 
 
+    /**
+     * Combine current square and all adjacent square into one set
+     * @param curIndex
+     * @param adjacentIndexes
+     * @param s
+     */
+    public static void unionCurrentSquare(int curIndex, ArrayList<Integer> adjacentIndexes, DisjointSet s){
+        for (int i: adjacentIndexes)
+            s.union(curIndex, i);
+    }
     public static void setSet(String playerName, DisjointSet s) {
         sets.put(playerName, s);
     }
@@ -59,18 +68,6 @@ public class GameController {
     }
     public static void clearGrids () {
         grids.clear();
-    }
-
-    /**
-     * Combine current square and all adjacent square into one set
-     * @param curIndex
-     * @param adjacentIndexes
-     * @param s
-     */
-    public static void unionCurrentSquare(int curIndex, ArrayList<Integer> adjacentIndexes, DisjointSet s) {
-        for (int i : adjacentIndexes)
-            s.union(curIndex, i);
-
     }
 
     private static TerrainType getTerrainType(String terrain) {
