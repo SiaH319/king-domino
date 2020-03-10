@@ -27,7 +27,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 /**
- * TODO Put here a description of what this class does.
+ * As a player, I want the Kingdomino app to automatically provide 
+  the next four dominos once the previous round is finished	
  *
  * @author Mohamad.
  *         Created Feb 25, 2020.
