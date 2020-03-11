@@ -60,4 +60,25 @@ commit the code to your group’s repository in the course’s GitHub organizati
 executed by Cucumber in the context of your Controller interface. All related acceptance tests
 should successfully execute upon completing this deliverable.
 
-Task Distribution is [here]()
+Task Distribution is [here](https://drive.google.com/file/d/1FD2QnrGVEYC0vFBRpd7bsMtF4bkYY99A/view?fbclid=IwAR3HEj7ky-GXBVtZjpR7rJ2VKfPiTyUR-qVcHd9w07a81Plvxs6fXHJQSwI)
+
+## Deliverable 3
+Deliverables for Iteration 3 – State Machines 
+
+In this iteration, we provide Gherkin specification of the key phases of the gameplay as an input.
+
+- As a team, use Umple to define the state machine to control the flow of the Kingdomino game,
+
+i.e. to initialize the game, to proceed to next turn, to proceed to next player, to proceed to next
+phase (choosing next domino, placing domino to kingdom), and by evaluating score. Moreover,
+you are also allowed to use state machines to capture the behavior of other domain classes.
+
+- Generate code from the state machine(s) and commit the code to your group’s repository in the
+course’s GitHub organization.
+
+- Implement the Controller part of the assigned methods of the state machine (related to events,
+actions, guards) as a team in Java and commit the code to your group’s repository in the course’s
+GitHub organization
+
+- As a team, map the corresponding Gherkin scenarios to acceptance tests to be executed by
+Cucumber in the context of your statemachine and the underlying domain model. 
