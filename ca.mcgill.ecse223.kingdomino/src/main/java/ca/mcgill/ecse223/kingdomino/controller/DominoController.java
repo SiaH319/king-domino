@@ -136,6 +136,9 @@ public class DominoController {
     /**
      * Controller implemented for Feature 10: Choose Next Domino
      * @param game
+     * @param color
+     * @param draft
+     * @param dominoId
      * @return true if selection for next draft is different
      *         false if selection for next draft remains same
      * @author Violet Wei
@@ -259,6 +262,9 @@ public class DominoController {
      * by rotating it (clockwise or counter-clockwise).
      * rotationDir 1 for clockwise, -1 for anticlockwise
      * @author Cecilia Jiang
+     * @param castle
+     * @param grid
+     * @param territories
      * @param dominoInKingdom
      * @param rotationDir
      */
