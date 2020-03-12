@@ -16,8 +16,6 @@ Feature: Browse Domino Pile
     Then the listed domino has "<righttile>" right terrain
     Then the listed domino has <crowns> crowns
 
-
-
     Examples: 
       | id | lefttile | righttile | crowns |
       |  1 | wheat    | wheat     |      0 |
