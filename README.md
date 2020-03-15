@@ -67,11 +67,8 @@ Deliverables for Iteration 3 – State Machines
 
 In this iteration, we provide Gherkin specification of the key phases of the gameplay as an input.
 
-- As a team, use Umple to define the state machine to control the flow of the Kingdomino game,
-
-i.e. to initialize the game, to proceed to next turn, to proceed to next player, to proceed to next
-phase (choosing next domino, placing domino to kingdom), and by evaluating score. Moreover,
-you are also allowed to use state machines to capture the behavior of other domain classes.
+- As a team, use Umple to define the state machine to control the flow of the Kingdomino game, i.e. to initialize the game, to proceed to next turn, to proceed to next player, to proceed to next phase (choosing next domino, placing domino to kingdom), and by evaluating score. 
+Moreover, you are also allowed to use state machines to capture the behavior of other domain classes.
 
 - Generate code from the state machine(s) and commit the code to your group’s repository in the
 course’s GitHub organization.
@@ -82,3 +79,5 @@ GitHub organization
 
 - As a team, map the corresponding Gherkin scenarios to acceptance tests to be executed by
 Cucumber in the context of your statemachine and the underlying domain model. 
+
+Iteration 3 [wiki report](https://github.com/McGill-ECSE223-Winter2020/ecse223-group-project-04/wiki/Iteration-3-Report)
