@@ -29,7 +29,7 @@ Feature: Calculating Player Score
     Given the score of the current player is 28
     Given the current player is preplacing his/her domino with ID 30 at location 2:2 with direction "down"
     And the preplaced domino has the status "CorrectlyPreplaced"
-    When the current player discards his/her domino
+    When the current player places his/her domino
     Then the score of the current player shall be 32
 
   Scenario Outline: Update player score upon discarding a domino
