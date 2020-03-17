@@ -7,7 +7,7 @@ class Gameplay {
         Initializing {
             CreatingFirstDraft {
                 entry/{shuffleDominoPile(); createNextDraft(); orderNextDraft();}
-                draftReady -> /{revealNextDraft(); generateInitialPlayerOrder(); selectDominoForCurrentPlayer();} Initializing.SelectingFirstDomino;
+                draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
             }
             SelectingFirstDomino {
             // TODO add transitions with triggers, guards, actions, and target states
@@ -52,10 +52,6 @@ class Gameplay {
     }
     
     public void revealNextDraft() {
-        // TODO: implement this
-    }
-    
-    public void selectDominoForCurrentPlayer() {
         // TODO: implement this
     }
     
