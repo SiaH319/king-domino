@@ -8,6 +8,7 @@ Feature: Discarding Domino
     Given the current player is not the last player in the turn
     Given the player's kingdom has the following dominoes:
       | id | dominodir | posx | posy |
+      |  7 | right     |    0 |    1 |
       | 23 | up        |   -2 |    0 |
       | 21 | left      |    2 |    0 |
       | 48 | down      |   -1 |    1 |
@@ -27,6 +28,7 @@ Feature: Discarding Domino
     Given the current player is the last player in the turn
     Given the player's kingdom has the following dominoes:
       | id | dominodir | posx | posy |
+      |  7 | right     |    0 |    1 |
       | 23 | up        |   -2 |    0 |
       | 21 | left      |    2 |    0 |
       | 48 | down      |   -1 |    1 |
