@@ -10,7 +10,7 @@ Feature: Selecting First Domino
     Given the "<currentplayer>" player is selecting his/her domino with ID <chosendominoid>
     And the validation of domino selection returns "<result>"
     When the "<currentplayer>" player completes his/her domino selection
-    Then the "<nextplayer>" player shall be placing his/her domino
+    Then the "<nextplayer>" player shall be selecting his/her domino
 
     Examples: 
       | playerorder            | currentplayer | currentselection     | chosendominoid | result  | nextplayer |
