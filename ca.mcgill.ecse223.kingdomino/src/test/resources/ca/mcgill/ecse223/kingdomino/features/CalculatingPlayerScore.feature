@@ -3,7 +3,7 @@ Feature: Calculating Player Score
   Background: 
     Given the game is initialized for calculating player score
 
-  Scenario Outline: Update player score upon placing the first domino
+  Scenario: Update player score upon placing the first domino
     Given the current player has no dominoes in his/her kingdom yet
     Given the score of the current player is 0
     Given the current player is preplacing his/her domino with ID 19 at location 1:1 with direction "left"
@@ -11,7 +11,7 @@ Feature: Calculating Player Score
     When the current player places his/her domino
     Then the score of the current player shall be 1
 
-  Scenario Outline: Update player score upon placing a domino
+  Scenario: Update player score upon placing a domino
     Given the game has no bonus options selected
     Given the player's kingdom has the following dominoes:
       | id | dominodir | posx | posy |
@@ -29,10 +29,10 @@ Feature: Calculating Player Score
     Given the score of the current player is 28
     Given the current player is preplacing his/her domino with ID 30 at location 2:2 with direction "down"
     And the preplaced domino has the status "CorrectlyPreplaced"
-    When the current player discards his/her domino
+    When the current player places his/her domino
     Then the score of the current player shall be 32
 
-  Scenario Outline: Update player score upon discarding a domino
+  Scenario: Update player score upon discarding a domino
     Given the game has no bonus options selected
     Given the player's kingdom has the following dominoes:
       | id | dominodir | posx | posy |
