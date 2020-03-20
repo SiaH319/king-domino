@@ -16,6 +16,21 @@ class Gameplay {
     }
 
     /*
+     * Setter for test setup
+     */
+
+    public void setGamestatus(String status){
+        switch (status) {
+       	case "CreatingFirstDraft":
+       	    gamestatus = Gamestatus.Initializing;
+       	    gamestatusInitializing = GamestatusInitializing.CreatingFirstDraft;
+       	// TODO add further cases here to set desired state
+       	default:
+       	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
+       	}
+    }
+
+    /*
      * Guards
      */
     
