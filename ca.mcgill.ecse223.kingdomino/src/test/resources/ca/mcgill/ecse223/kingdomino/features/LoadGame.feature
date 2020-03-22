@@ -28,7 +28,7 @@ Feature: Load Game
     Examples:
       | filename                                      | player    | p1tiles       | p2tiles     | p3tiles       | p4tiles         | p1claimed | p2claimed | p3claimed | p4claimed | unclaimed        |
       | src/test/resources/kingdomino_test_game_1.mov | 4         | 1,5,39,41     | 2,9,15,10   | 3,4,17,6      |  8,42,28        | 34        | 37        | 29        | 44        | 22               |
-      | src/test/resources/kingdomino_test_game_2.mov | 1         | 1,5,39,41     | 2,9,15,10   | 3,4,17,6      |  8,42,28,44     | 34        | 37        | 29        | 22        | 7, 21, 25, 48    |
+      | src/test/resources/kingdomino_test_game_2.mov | 4         | 1,5,39,41     | 2,9,15,10   | 3,4,17,6      |  8,42,28,44     | 34        | 37        | 29        | 22        | 7, 21, 25, 48    |
     # Variables:
     # player - the player who's turn it is next. 
     # p<n>tiles - the tiles that have been placed on player <n>'s grid.
