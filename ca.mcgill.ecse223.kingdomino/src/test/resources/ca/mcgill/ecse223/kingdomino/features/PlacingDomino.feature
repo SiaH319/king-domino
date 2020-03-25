@@ -43,5 +43,4 @@ Feature: Placing Domino
     Given the current player is preplacing his/her domino with ID 6 at location 2:2 with direction "down"
     And the preplaced domino has the status "CorrectlyPreplaced"
     When the current player places his/her domino
-    Then a new draft shall be available
-    Then the draft shall be revealed
+    Then this player now shall be making his/her domino selection
