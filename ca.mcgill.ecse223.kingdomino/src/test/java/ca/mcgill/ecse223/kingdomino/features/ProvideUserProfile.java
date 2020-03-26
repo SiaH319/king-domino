@@ -10,6 +10,7 @@ import io.cucumber.java.en.When;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -112,7 +113,7 @@ public class ProvideUserProfile {
 	public void the_users_in_the_list_shall_be_in_the_following_alphabetical_order(io.cucumber.datatable.DataTable dataTable) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
-		/*
+		
 		for (Map<String, String> map : valueMaps) {
 			//Get values from cucumber table
 			List<User> users = kingdomino.getUsers();
@@ -122,8 +123,8 @@ public class ProvideUserProfile {
 			user.setPlayedGames(played);
 			user.setWonGames(won);
 		}
-		will be fixed
-		*/
+		
+		
 	}
 
 	/*

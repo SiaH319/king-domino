@@ -1,6 +1,6 @@
 Feature: Verify kingdom grid size
-  As a player, I want the Kingdomino app to automatically check if the grid of my kingdom has not yet exceeded a square of 5x5 tiles (including my castle)
-
+ As a player, I want the Kingdomino app to automatically check if my
+    current domino is placed next to my castle
   Background: 
     Given the game is initialized for verify grid size
 
