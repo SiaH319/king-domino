@@ -140,7 +140,13 @@ public class ShuffleDominoesController {
 	}
 	
 	
-	
+	/**
+	 * 
+	 * takes a string of integers, parse it and returns an arrayList of those integers
+	 * @author Mohamad
+	 * @param String aListOfIDs
+	 * @return ArrayList of Integers
+	 */
 	private static ArrayList<Integer> getListOfIDs(String aListOfIDs){
 		boolean beforeIsDigit =false;
 		ArrayList<Integer> myList = new ArrayList<Integer>();
@@ -152,6 +158,13 @@ public class ShuffleDominoesController {
 		return myList;
 		
 	}
+	/**
+	 * 
+	 * returns the number of players per draft depending on the number of players in the game
+	 * @author Mohamad
+	 * @param game
+	 * @return int 
+	 */
 	private static int numberOfDominoesPerDraft(Game game) {
 		switch(game.getNumberOfPlayers()) {
 		case 4:
@@ -164,6 +177,13 @@ public class ShuffleDominoesController {
 			throw new java.lang.IllegalArgumentException("Game has invalid number of players: " + game.getNumberOfPlayers());
 		}
 	}
+	/**
+	 * 
+	 * Given an integer, return the domino with the corresponding integer
+	 *
+	 * @param int id
+	 * @return Domino domino
+	 */
 	private static Domino getdominoByID(int id) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		for (Domino domino : game.getAllDominos()) {

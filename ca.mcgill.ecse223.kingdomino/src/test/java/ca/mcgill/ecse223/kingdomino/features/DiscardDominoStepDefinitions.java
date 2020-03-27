@@ -32,9 +32,9 @@ import io.cucumber.java.en.When;
 
 public class DiscardDominoStepDefinitions {
 	DominoInKingdom dominoInKingdom;
-	/* As a player, I wish to discard a domino if it cannot be placed to my kingdom in a valid way
+	/** As a player, I wish to discard a domino if it cannot be placed to my kingdom in a valid way
 	 * 
-	 *@author mohamad
+	 *@author Mohamad
 	 */
 
 	@Given("the game is initialized for discard domino")
@@ -60,39 +60,19 @@ public class DiscardDominoStepDefinitions {
 	
 
 
-	//@Given("the player's kingdom has the following dominoes:")
-//	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
-//		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-//		List<Map<String, String>> valueMaps = dataTable.asMaps();
-//		for (Map<String, String> map : valueMaps) {
-//			// Get values from cucumber table
-//			Integer id = Integer.decode(map.get("id"));
-//			DirectionKind dir = getDirection(map.get("dominodir"));
-//			Integer posx = Integer.decode(map.get("posx"));
-//			Integer posy = Integer.decode(map.get("posy"));
-//
-//			// Add the domino to a player's kingdom
-//			Domino dominoToPlace = getdominoByID(id);
-//			Kingdom kingdom = game.getPlayer(0).getKingdom();
-//			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
-//			domInKingdom.setDirection(dir);
-//			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
-//		}
-//	}
+
 
 	@Given("domino {int} is in the current draft")
 	public void domino_is_in_the_current_draft(Integer domID) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Draft current=game.getCurrentDraft();
-		
-		boolean added=false;
-		if(current==null) {
+		if(current==null) {// if no current draft, create one and add to it the domino
 			Draft newDraft=new Draft(DraftStatus.FaceUp,game);
 			game.setCurrentDraft(newDraft);
 			current=game.getCurrentDraft();
 			current.addIdSortedDomino(getdominoByID(domID));
 		}
-		else {
+		else {// if already exists add to it the domino
 			current.addIdSortedDomino(getdominoByID(domID));
 		}
 		
@@ -122,11 +102,11 @@ public class DiscardDominoStepDefinitions {
 
 	@When("the player attempts to discard the selected domino")
 	public void the_player_attempts_to_discard_the_selected_domino() {
-		boolean CanBePlaced= DominoController.attempt_discard_selected_domino(dominoInKingdom);
-		if(CanBePlaced) {
+		boolean CanBePlaced= DominoController.attemptDiscardSelectedDomino(dominoInKingdom);
+		if(CanBePlaced) {// if the domino can be placed then we cannot discard it, thus it has to be errornlously placed
 			dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
 		}
-		else {
+		else {// if it caanot be placed anywhere, thus it must be discarded
 			dominoInKingdom.getDomino().setStatus(DominoStatus.Discarded);
 		}
 	}

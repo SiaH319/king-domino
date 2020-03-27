@@ -14,6 +14,7 @@ public class DraftController {
     ///////////////////////////        //////
     /**
      * Tells if there can be more drafts created
+     * @author Mohamad
      * @param game
      * @return true if you can create more drafts, false otherwise
      */
@@ -21,7 +22,7 @@ public class DraftController {
         int numberOfDraftsCreated=game.getAllDrafts().size();
         int numberOfPlayers=game.getNumberOfPlayers();
         if(((numberOfDraftsCreated==12) && (numberOfPlayers==3 || numberOfPlayers==4)) || ((numberOfDraftsCreated==6) && (numberOfPlayers==2))) {
-            return false;
+            return false; // checks arithmatically if there can still be more drafts
         }
         else {
             return true;
@@ -33,25 +34,26 @@ public class DraftController {
     ///// ///Feature Methods////        //////
     ///////////////////////////        //////
     /**
-     * Feature 9: Create Next Draft
-     * Create a next draft and do the necessary changes.
-     *
+     * Feature 8: Create Next Draft
+     * Create a next draft and the first few dominoes in the pile to it
+     * @author Mohamad
+     * 
      */
     public static void createNewDraftIsInitiated() {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        if(game.getNextDraft()==null) {
-            System.out.println(game.getAllDrafts().size()-1);
-            game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1));
+        if(game.getNextDraft()==null) {// if next draft is not there then set  one
+            
+            game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1)); //last draft is the newest so the next one
         }
-        game.setCurrentDraft(game.getNextDraft());
+        game.setCurrentDraft(game.getNextDraft()); // now set it as the new next Draft
 
-        if(thereCanBeMoreDrafts(game)) {
+        if(thereCanBeMoreDrafts(game)) { // if we can create more drafts
             Draft newNextDraft = new Draft(Draft.DraftStatus.FaceDown,game);
 
-            for(int i=0;i<newNextDraft.maximumNumberOfIdSortedDominos();i++) {
+            for(int i=0;i<newNextDraft.maximumNumberOfIdSortedDominos();i++) { // populate the draft with the corresponding number of dominoes from the linked list
                 Domino Top =game.getTopDominoInPile();
                 newNextDraft.addIdSortedDomino(Top);
-                Top.setStatus(Domino.DominoStatus.InNextDraft);
+                Top.setStatus(Domino.DominoStatus.InNextDraft);// update the linked ist
                 game.setTopDominoInPile(Top.getNextDomino());
             }
             game.getCurrentDraft().setDraftStatus(Draft.DraftStatus.FaceUp);
@@ -60,45 +62,46 @@ public class DraftController {
         }
         else {
             game.setNextDraft(null);
-            game.setTopDominoInPile(null);
+            game.setTopDominoInPile(null); // then the pile should be empty
         }
 
     }
 
     /**
-     *
-     * Method that orders the dominoes in the nextDraft.
+     * Feature 9
+     * Method that orders the dominoes in the nextDraft by sorting the dominoes in the draft
+     * @author Mohamad
      *
      */
-    public static void orderInitiated() {
+    public static void orderNewDraftInitiated() {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();
         ArrayList<Integer> listIDs = new ArrayList<Integer>();
         for(Domino domino : nextDraft.getIdSortedDominos()) {
 
-            listIDs.add(domino.getId());
+            listIDs.add(domino.getId()); // add the ids of the draft
         }
-        Collections.sort(listIDs);
+        Collections.sort(listIDs);// sort the ids
 
         ArrayList<Domino> newIdSorted = new ArrayList<Domino>();
         for(Integer id : listIDs) {
 
             newIdSorted.add(getdominoByID(id));
         }
-        nextDraft.setIdSortedDominos(newIdSorted.get(0),newIdSorted.get(1),newIdSorted.get(2),newIdSorted.get(3));
+        nextDraft.setIdSortedDominos(newIdSorted.get(0),newIdSorted.get(1),newIdSorted.get(2),newIdSorted.get(3));// add them back to the next draft
         nextDraft.setDraftStatus(Draft.DraftStatus.Sorted);
         game.setNextDraft(nextDraft);
     }
 
     /**
-     *
+     * Feature 9
      * Reveal the draft flips the dominoes up
-     *
+     * @author Mohamad
      */
-    public static void revealInitiated() {
+    public static void revealDominoesInitiated() {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();
-        nextDraft.setDraftStatus(Draft.DraftStatus.FaceUp);
+        nextDraft.setDraftStatus(Draft.DraftStatus.FaceUp);// flip up the dominoes
     }
 
     /////////////////////////////        //////

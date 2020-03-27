@@ -161,64 +161,69 @@ public class CalculationController {
         }
     }
 
-    /**
-     *
-     * Sort the players according to their score,size of largest property and the total number of crowns each one has.
-     *
+    /**Feature 23+24
+     * @author Mohamad
+     * Given if there is a tie or not, we know which method to call
+     * @param boolean noTie, tells if there is a tie or not
+     * @param ScoreList, stores all players'scores 
      */
-    public static void calculateRanking() {
-        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        ArrayList<Integer> ScoreList = new ArrayList<Integer>();
-        for( Player p :game.getPlayers()) {
-            String player0Name = (p.getUser().getName());
-            Square[] grid = GameController.getGrid(player0Name);
-            DisjointSet s = GameController.getSet(player0Name);
-            CalculationController.identifyPropertoes(s, grid, p.getKingdom());
-            CalculationController.calculatePropertyScore(p.getKingdom().getProperties(),p);
-            CalculationController.CalculateBonusScore(game, p);
-            ScoreList.add((p.getBonusScore()+p.getPropertyScore()));
-
-        }
-
-        boolean noTie=true;
-        for(Player p1 : game.getPlayers()) {
-            for(Player p2:game.getPlayers()) {
-                if(p1.getColor()!=p2.getColor()) {
-                    if((p2.getBonusScore()+p2.getPropertyScore())==(p1.getBonusScore()+p1.getPropertyScore())) {
-                        noTie=false;
-                    }
-                }
-
-            }
-        }
-
+    public static void calculateRanking(Boolean noTie,ArrayList<Integer> ScoreList) {
+       
         if(noTie) {
-            Collections.sort(ScoreList);
-            ArrayList<Player> Chosen = new ArrayList<Player>();
-            for(int i=0;i<ScoreList.size();i++) {
-                int currentScore = ScoreList.get(i);
-                Player player =getPlayer(currentScore,Chosen,game);
-                player.setCurrentRanking(ScoreList.size()-i);
-            }
+        	RankingNoTie(ScoreList);
         }
+        
         else {
-            ArrayList<Player> Chosen = new ArrayList<Player>();
-            System.out.println("enetered the resolve tie");
-            Player playerSorted[] = {getPlayer("green",game),getPlayer("pink",game),getPlayer("blue",game),getPlayer("yellow",game)};
-            quicksort(playerSorted,0,playerSorted.length-1);
-            int position=1;
-            for(int i=playerSorted.length-1;i>-1;i--) {
-                playerSorted[i].setCurrentRanking(position);
-                if(i<3) {
-                    int j=(i+1);
-                    if(playersEqual(playerSorted[i],playerSorted[j])) {
-                        playerSorted[i].setCurrentRanking(playerSorted[j].getCurrentRanking());
-                        position--;
-                    }
-                }
+            RankingWithTie();
+        }
+    }
+    /**
+     * @author Mohamad
+     * Sort the array of scores, since all scores are distinct (i.e no tie) we can get the payers from their scores.
+     * Feature 23
+     * 
+     * @param ArralyList of Scores, stores the scores of all players
+     */
+    public static void RankingNoTie(ArrayList<Integer> ScoreList) {
+    	
+    	Collections.sort(ScoreList);//sort the score list
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        ArrayList<Player> Chosen = new ArrayList<Player>(); 
+        for(int i=0;i<ScoreList.size();i++) {// since its in ascending order, last score is the ranked first
+            int currentScore = ScoreList.get(i);
+            Player player =getPlayer(currentScore,Chosen,game);
+            player.setCurrentRanking(ScoreList.size()-i);
+        }
+    
+    	
+    }
+    /**
+     * 
+     * Sort the array of players according to their scores
+     * Feature 24
+     * @author Mohamad
+     * 
+     */
+    public static void RankingWithTie() {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 
-                position++;
+    	ArrayList<Player> Chosen = new ArrayList<Player>(); //we are finding players through score
+        System.out.println("enetered the resolve tie");     //since score are repetitive, we dont want to chose
+        													//the same player more than once
+        Player playerSorted[] = {getPlayer("green",game),getPlayer("pink",game),getPlayer("blue",game),getPlayer("yellow",game)};
+        quicksort(playerSorted,0,playerSorted.length-1); //sort the players with respect to the score
+        int position=1;
+        for(int i=playerSorted.length-1;i>-1;i--) { // set positions but also check if other players score are equal
+            playerSorted[i].setCurrentRanking(position);
+            if(i<3) {
+                int j=(i+1);
+                if(playersEqual(playerSorted[i],playerSorted[j])) { //if score is equal set the same rank
+                    playerSorted[i].setCurrentRanking(playerSorted[j].getCurrentRanking());
+                    position--;
+                }
             }
+
+            position++;
         }
     }
 
@@ -227,6 +232,7 @@ public class CalculationController {
     ///////////////////////////        //////
     /***
      * Veryfying if castle is in the middle of Kingdom
+     * 
      * @param territories
      * @return true or false
      */
@@ -275,12 +281,12 @@ public class CalculationController {
     /**
      *
      * Helper Method : Tells me if two players are equal
-     *
+     * @author Mohamad
      * @param p2:Player 1
      * @param p1:Player 1
      * @return true if both have the same scores,crowns total and size of largest property, false otherwise
      */
-    public static boolean playersEqual(Player p1,Player p2) {
+    private static boolean playersEqual(Player p1,Player p2) {
         if((p1.getBonusScore()+p1.getPropertyScore())==(p2.getBonusScore()+p2.getPropertyScore())){
             if(largestProperty(p1)==largestProperty(p2)) {
                 if(totalCrowns(p1)==totalCrowns(p2)) {
@@ -290,8 +296,14 @@ public class CalculationController {
         }
         return false;
     }
-
-    public static void swapStandings(Player p1, Player p2) {
+    /**
+     * 
+     * Helper Method : Swaps the standings of two given players
+     * @author Mohamad
+     * @param p1 :player 1
+     * @param p2 :player 2
+     */
+    private static void swapStandings(Player p1, Player p2) {
         int i=p1.getCurrentRanking();
         int j=p2.getCurrentRanking();
         p2.setCurrentRanking(i);
@@ -326,12 +338,12 @@ public class CalculationController {
     }
     /**
      *
-     * Helpler method, gets the size of largets property
-     *
+     * Helper method, gets the size of largest property
+     * @author Mohamad
      * @param p : player
      * @return the size of the largest property
      */
-    public static int largestProperty(Player p) {
+    private static int largestProperty(Player p) {
         int max=0;
         if(p==null) {
             System.out.println("Player is null");
@@ -348,11 +360,11 @@ public class CalculationController {
     /**
      *
      * Helper method: gets the total number of crowns
-     *
+     * @author Mohamad
      * @param p : Player
      * @return the total number of crowns
      */
-    public static int totalCrowns(Player p) {
+    private static int totalCrowns(Player p) {
         int total=0;
         if(p==null) {
             System.out.println("Player is null");
@@ -364,7 +376,16 @@ public class CalculationController {
         }
         return total;
     }
-    public static Player getPlayer(int score, ArrayList<Player> AlreadyChosen,Game game) {
+    /**
+     * 
+     * TODO Given a List of players already chosen, this method returns a players not chosen having a specific score.
+     * @author Mohamad
+     * @param int score
+     * @param ArrayList AlreadyChosen
+     * @param Game game
+     * @return Player p
+     */
+    private static Player getPlayer(int score, ArrayList<Player> AlreadyChosen,Game game) {
         for(Player p:game.getPlayers()) {
             if((p.getBonusScore()+p.getPropertyScore())==score) {
                 if(AlreadyChosen.contains(p)==false) {
@@ -416,15 +437,31 @@ public class CalculationController {
                 throw new java.lang.IllegalArgumentException("Invalid color: " + color);
         }
     }
-
-    public static void swap (Player[] arr, int i, int j) {
+    /**
+     * 
+     * TODO Swap two players in an array of players given their respective index.
+     * @author Mohamad
+     * @param arr of players
+     * @param i index
+     * @param j index
+     */
+    private static void swap (Player[] arr, int i, int j) {
         Player temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
     }
 
     // Partition using Lomuto partition scheme
-    public static int partition(Player[] a, int start, int end)
+    /**
+     * 
+     * TODO given an array with the start index and end index, it returns the index of the pivot.
+     * @author Mohamad
+     * @param a array of players
+     * @param start index
+     * @param end index
+     * @return pivot index
+     */
+    private static int partition(Player[] a, int start, int end)
     {
         // Pick rightmost element as pivot from the array
         Player pivot = a[end];
@@ -465,7 +502,7 @@ public class CalculationController {
     }
 
     // Quicksort routine
-    public static void quicksort(Player[] a ,int start, int end)
+    private static void quicksort(Player[] a ,int start, int end)
     {
         // base condition
         if (start >= end) {

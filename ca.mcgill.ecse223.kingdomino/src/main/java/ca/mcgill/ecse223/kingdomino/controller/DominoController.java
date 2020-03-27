@@ -305,32 +305,25 @@ public class DominoController {
 
     /**
      * Feature 18 : Discard Domino
+     * Checks if a Domino can be placed in the player's kingdoms
      * @author Mohamad Dimassi.
      * @param DominoInKingdom that we want to see if it can be discarded.
      * @return true if the domino can be placed correctly placed in the kingdom, false otherwise.
      */
-    public static boolean attempt_discard_selected_domino(DominoInKingdom dominoInKingdom) {
+    public static boolean attemptDiscardSelectedDomino(DominoInKingdom dominoInKingdom) {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Player currentPl = game.getPlayer(0);
         Kingdom kingdom = currentPl.getKingdom();
-        Castle castle = getCastle(kingdom);
-        Domino domino=currentPl.getDominoSelection().getDomino();
-        TerrainType leftTile =domino.getLeftTile();
-        TerrainType righTile =domino.getRightTile();
-
-
+        Castle castle = getCastle(kingdom);        
         Square[] grid = GameController.getGrid(currentPl.getUser().getName());
-
         ArrayList<DominoInKingdom.DirectionKind> directions =new ArrayList<DominoInKingdom.DirectionKind>();
         directions.add(DominoInKingdom.DirectionKind.Down);
         directions.add(DominoInKingdom.DirectionKind.Left);
         directions.add(DominoInKingdom.DirectionKind.Up);
         directions.add(DominoInKingdom.DirectionKind.Right);
-
         for(int x=-4;x<5;x++) {
             for(int y=-4;y<5;y++) {
                 for(DominoInKingdom.DirectionKind dir :directions ) {
-//
                     dominoInKingdom.setDirection(dir);
                     dominoInKingdom.setX(x);
                     dominoInKingdom.setY(y);
