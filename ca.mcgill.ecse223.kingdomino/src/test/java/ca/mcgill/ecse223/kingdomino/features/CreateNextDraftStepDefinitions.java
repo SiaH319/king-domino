@@ -33,12 +33,161 @@ import io.cucumber.java.en.When;
  * @author Mohamad.
  *         Created Feb 25, 2020.
  */
-//@RunWith(Cucumber.class)
-//@CucumberOptions(
-//		plugin = "pretty", 
-//		features = "src/test/resources",
-//		glue = "CreateNextDraft.feature")
+
 public class CreateNextDraftStepDefinitions {
+	
+	
+
+	
+	
+	
+	/**
+	 * 
+	 * @author Mohamad Dimassi.
+	 * Initialise the game
+	 *
+	 */
+	
+	@Given("the game is initialized to create next draft")
+	public void the_game_is_initialized_to_reveal_next_draft() {
+				// Intialize empty game
+				Kingdomino kingdomino = new Kingdomino();
+				Game game = new Game(48, kingdomino);
+				game.setNumberOfPlayers(4);
+				kingdomino.setCurrentGame(game);
+				// Populate game
+				addDefaultUsersAndPlayers(game);
+				createAllDominoes(game);
+				game.setNextPlayer(game.getPlayer(0));
+				KingdominoApplication.setKingdomino(kingdomino);
+	}
+	
+
+	@Given("there has been {int} drafts created")
+	public void there_has_been_drafts_created(int number) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Integer numDraft=number;
+		for(int i=0;i<numDraft;i++) { // add {int} drafts to the list of Drafts
+			 Draft D =new Draft(DraftStatus.FaceUp,game);
+			 game.addAllDraft(D);	
+		}
+		
+		
+	}
+	
+	@Given("there is a current draft")
+	public void there_is_a_current_draft() {
+		boolean setCurrentDraft=false;
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		setCurrentDraft=game.setCurrentDraft(game.getAllDraft(1));
+	
+		
+	}
+	@Given("there is a next draft")
+	public void there_is_a_next_draft() {
+		boolean setNextDraft=false;
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		setNextDraft=game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1)); // last draft created is the newest, so must be the next draft
+		
+	}
+	@Given("this is a {int} player game")
+	public void this_is_a_player_game(Integer numOfPlayer) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		game.setNumberOfPlayers(numOfPlayer); // set the number of players in the game
+	}
+
+	
+	@Given("the top {int} dominoes in my pile have the IDs {string}")
+	public void the_top_5_dominoes_in_my_pile_have_the_IDs(Integer NumOfDominoes,String listOfIDs) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		ArrayList<Integer> myList =getListOfIDs(listOfIDs);
+		game.setTopDominoInPile(getdominoByID(myList.get(0)));// set top domino as the first integer in the string
+		Domino TopDomino = game.getTopDominoInPile();
+		for(int i=1;i<myList.size();i++) {
+			TopDomino.setNextDomino(getdominoByID(myList.get(i))); //update the linked list accordingly  
+			TopDomino=TopDomino.getNextDomino();
+		}
+	}
+	
+	@When("create next draft is initiated")
+	public void create_next_draft_is_initiated() {
+		DraftController.createNewDraftIsInitiated();
+	}
+	
+	
+	@Then("the pile is empty")
+	public void the_pile_is_empty() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		boolean hasTop =game.hasTopDominoInPile();
+		assertEquals(false,hasTop);
+		
+	}
+	
+	@Then("there is no next draft")
+	public void there_is_no_next_draft() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		boolean HasNextDraft =game.hasNextDraft();
+		assertEquals(false,HasNextDraft);
+	}
+	@Then("the former next draft is now the current draft")
+	public void the_former_next_draft_is_now_current_draft() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Draft current = game.getCurrentDraft();
+		if(game.getNextDraft()==null) {
+			Draft LastCreated =game.getAllDraft(game.getAllDrafts().size()-1);
+			assertEquals(LastCreated,current);
+		}
+		else {
+			Draft LastCreated =game.getAllDraft(game.getAllDrafts().size()-2);
+			assertEquals(LastCreated,current);
+		}
+		
+
+		
+	}
+	@Then("the top domino of the pile is ID {int}")
+	public void the_top_domino_of_the_pile_is_ID(int topID) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Domino actualTop=game.getTopDominoInPile();
+		assertEquals(getdominoByID(topID),actualTop);
+	}
+	@Then("the dominoes in the next draft are face down")
+	public void the_dominoes_in_the_next_draft_are_face_down() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		DraftStatus actualStatus=game.getNextDraft().getDraftStatus();
+		DraftStatus expectedStatus = DraftStatus.FaceDown;
+		assertEquals(expectedStatus,actualStatus);
+	}
+	@Then("the next draft now has the dominoes {string}")
+	public void the_next_draft_now_has_the_dominoes(String listOfIDs) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		ArrayList<Integer> expectedList = getListOfIDs(listOfIDs);
+		ArrayList<Domino> expectedListD =new ArrayList<Domino>();
+		for(int i=0;i<expectedList.size();i++) {
+			expectedListD.add(getdominoByID(expectedList.get(i)));
+		}
+		List<Domino> DominoesInDraft =game.getNextDraft().getIdSortedDominos();
+		for(int i=0;i<game.getNextDraft().maximumNumberOfIdSortedDominos();i++) {
+			assertEquals(expectedListD.get(i).getId(),DominoesInDraft.get(i).getId());//make sure the correct dominoes are in the draft
+		}
+
+		
+	}
+	@Then("a new draft is created from dominoes {string}")
+	public void a_new_draft_is_created_from_dominoes(String listOfIDs) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		ArrayList<Integer> actualList = getListOfIDs(listOfIDs);
+		for(int i=0;i<game.getNextDraft().maximumNumberOfIdSortedDominos();i++) {
+			Domino current =getdominoByID(actualList.get(i));
+			assertEquals(DominoStatus.InNextDraft,current.getStatus());
+		}
+
+		}
+	
+	
+	//Helper Methods
+	
+	
 	
 	private void addDefaultUsersAndPlayers(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
@@ -117,155 +266,8 @@ public class CreateNextDraftStepDefinitions {
 		return myList;
 		
 	}
-
 	
 	
-	
-	/**
-	 * 
-	 * @author Mohamad Dimassi.
-	 * Initialise the game
-	 *
-	 */
-	
-	@Given("the game is initialized to create next draft")
-	public void the_game_is_initialized_to_reveal_next_draft() {
-				// Intialize empty game
-				Kingdomino kingdomino = new Kingdomino();
-				Game game = new Game(48, kingdomino);
-				game.setNumberOfPlayers(4);
-				kingdomino.setCurrentGame(game);
-				// Populate game
-				addDefaultUsersAndPlayers(game);
-				createAllDominoes(game);
-				game.setNextPlayer(game.getPlayer(0));
-				KingdominoApplication.setKingdomino(kingdomino);
-	}
-	
-
-	@Given("there has been {int} drafts created")
-	public void there_has_been_drafts_created(int number) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		Integer numDraft=number;
-		for(int i=0;i<numDraft;i++) {
-			 Draft D =new Draft(DraftStatus.FaceUp,game);
-			 game.addAllDraft(D);	
-		}
-		
-		
-	}
-	
-	@Given("there is a current draft")
-	public void there_is_a_current_draft() {
-		boolean setCurrentDraft=false;
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		setCurrentDraft=game.setCurrentDraft(game.getAllDraft(1));
-	
-		
-	}
-	@Given("there is a next draft")
-	public void there_is_a_next_draft() {
-		boolean setNextDraft=false;
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		setNextDraft=game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1));
-		
-	}
-	@Given("this is a {int} player game")
-	public void this_is_a_player_game(Integer numOfPlayer) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		game.setNumberOfPlayers(numOfPlayer);
-	}
-
-	
-	@Given("the top {int} dominoes in my pile have the IDs {string}")
-	public void the_top_5_dominoes_in_my_pile_have_the_IDs(Integer NumOfDominoes,String listOfIDs) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		ArrayList<Integer> myList =getListOfIDs(listOfIDs);
-		game.setTopDominoInPile(getdominoByID(myList.get(0)));
-		Domino TopDomino = game.getTopDominoInPile();
-		for(int i=1;i<myList.size();i++) {
-			TopDomino.setNextDomino(getdominoByID(myList.get(i)));
-			TopDomino=TopDomino.getNextDomino();
-		}
-	}
-	
-	@When("create next draft is initiated")
-	public void create_next_draft_is_initiated() {
-		DraftController.createNewDraftIsInitiated();
-	}
-	
-	/**
-	 * TODO Put here a description of what this method does.
-	 *
-	 */
-	@Then("the pile is empty")
-	public void the_pile_is_empty() {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		boolean hasTop =game.hasTopDominoInPile();
-		assertEquals(false,hasTop);
-		
-	}
-	
-	@Then("there is no next draft")
-	public void there_is_no_next_draft() {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		boolean HasNextDraft =game.hasNextDraft();
-		assertEquals(false,HasNextDraft);
-	}
-	@Then("the former next draft is now the current draft")
-	public void the_former_next_draft_is_now_current_draft() {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		Draft current = game.getCurrentDraft();
-		if(game.getNextDraft()==null) {
-			Draft LastCreated =game.getAllDraft(game.getAllDrafts().size()-1);
-			assertEquals(LastCreated,current);
-		}
-		else {
-			Draft LastCreated =game.getAllDraft(game.getAllDrafts().size()-2);
-			assertEquals(LastCreated,current);
-		}
-		
-
-		
-	}
-	@Then("the top domino of the pile is ID {int}")
-	public void the_top_domino_of_the_pile_is_ID(int topID) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		Domino actualTop=game.getTopDominoInPile();
-		assertEquals(getdominoByID(topID),actualTop);
-	}
-	@Then("the dominoes in the next draft are face down")
-	public void the_dominoes_in_the_next_draft_are_face_down() {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		DraftStatus actualStatus=game.getNextDraft().getDraftStatus();
-		DraftStatus expectedStatus = DraftStatus.FaceDown;
-		assertEquals(expectedStatus,actualStatus);
-	}
-	@Then("the next draft now has the dominoes {string}")
-	public void the_next_draft_now_has_the_dominoes(String listOfIDs) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		ArrayList<Integer> expectedList = getListOfIDs(listOfIDs);
-		ArrayList<Domino> expectedListD =new ArrayList<Domino>();
-		for(int i=0;i<expectedList.size();i++) {
-			expectedListD.add(getdominoByID(expectedList.get(i)));
-		}
-		List<Domino> DominoesInDraft =game.getNextDraft().getIdSortedDominos();
-		for(int i=0;i<game.getNextDraft().maximumNumberOfIdSortedDominos();i++) {
-			assertEquals(expectedListD.get(i).getId(),DominoesInDraft.get(i).getId());
-		}
-
-		
-	}
-	@Then("a new draft is created from dominoes {string}")
-	public void a_new_draft_is_created_from_dominoes(String listOfIDs) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		ArrayList<Integer> actualList = getListOfIDs(listOfIDs);
-		for(int i=0;i<game.getNextDraft().maximumNumberOfIdSortedDominos();i++) {
-			Domino current =getdominoByID(actualList.get(i));
-			assertEquals(DominoStatus.InNextDraft,current.getStatus());
-		}
-
-		}
 	}
 
 	

@@ -1,7 +1,7 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -37,6 +37,8 @@ import io.cucumber.java.en.When;
  *      Created Mar 7, 2020.
  */
 public class CalculateRankingStepDefinitions {
+	boolean noTie=true;
+	ArrayList<Integer> ScoreList = new ArrayList<Integer>();
 	
 	@Given("the game is initialized for calculate ranking")
 	public void the_game_is_initialised_for_calculate_ranking() {
@@ -115,6 +117,30 @@ public class CalculateRankingStepDefinitions {
 	@Given("the players have no tiebreak")
 	public void the_players_have_no_tiebreak() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        
+        for( Player p :game.getPlayers()) { // populating the player's kingdom and calculating his score.
+            String player0Name = (p.getUser().getName());
+            Square[] grid = GameController.getGrid(player0Name);
+            DisjointSet s = GameController.getSet(player0Name);
+            CalculationController.identifyPropertoes(s, grid, p.getKingdom());
+            CalculationController.calculatePropertyScore(p.getKingdom().getProperties(),p);
+            CalculationController.CalculateBonusScore(game, p);
+            ScoreList.add((p.getBonusScore()+p.getPropertyScore())); // adding all player scores to the scorelist
+
+        }
+
+        
+        for(Player p1 : game.getPlayers()) {
+            for(Player p2:game.getPlayers()) {
+                if(p1.getColor()!=p2.getColor()) {
+                    if((p2.getBonusScore()+p2.getPropertyScore())==(p1.getBonusScore()+p1.getPropertyScore())) {// if we catch any pair of different 
+                    																				//players with the same score then there is a tie
+                        noTie=false;
+                    }
+                }
+
+            }
+        }
 		
 	}
 	
@@ -122,7 +148,7 @@ public class CalculateRankingStepDefinitions {
 	
 	@When("calculate ranking is initiated")
 	public void calculate_ranking_is_initiated() {
-		CalculationController.calculateRanking();
+		CalculationController.calculateRanking(noTie,ScoreList);
 	}
 	
 	@Then("player standings shall be the followings:")
