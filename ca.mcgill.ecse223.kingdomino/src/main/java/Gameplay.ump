@@ -5,7 +5,7 @@ class Gameplay {
     gamestatus {
         // TODO: complete gameplay state machine
         SettingUp{
-            startNewGame -> /{initializeGame();setGameOptions();} Initializing.CreatingFirstDraft;
+            startNewGame(int numOfPlayers) -> /{initializeGame(int numOfPlayers);setGameOptions();} Initializing.CreatingFirstDraft;
             loadGame [isLoadedGameValid()] -> /{load();} InGame;
             loadGame [!isLoadedGameValid()] -> /{} SettingUp;
         }
@@ -15,7 +15,7 @@ class Gameplay {
                 draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
             }
             SelectingFirstDomino {
-                makeSelection -> {currentPlayerSelectDomino()} Initializing.ProceedingToNextPlayerOrNextTurn;
+                makeSelection(int id) -> {currentPlayerSelectDomino(int id)} Initializing.ProceedingToNextPlayerOrNextTurn;
             }
             ProceedingToNextPlayerOrNextTurn{
                 proceed [!isCurrentPlayerTheLastInTurn()] -> {} Initializing.SelectingFirstDomino;
@@ -25,8 +25,8 @@ class Gameplay {
         }
         InGame{
             PreplacingDomino{
-                moveDomino -> {moveCurrentDomino();} InGame.PreplacingDomino;
-                rotateDomino -> {rotateCurrentDomino();} InGame.PreplacingDomino;
+                moveDomino(String dir) -> {moveCurrentDomino(String dir);} InGame.PreplacingDomino;
+                rotateDomino(int dir) -> {rotateCurrentDomino(int dir);} InGame.PreplacingDomino;
                 placeDomino [isCorrectlyPreplaced()] [!isCurrentTurnTheLastInGame()] ->
                     {placeDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
                 placeDomino [isCorrectlyPreplaced()] [isCurrentPlayerTheLastInTurn()] [isCurrentTurnTheLastInGame()] ->
@@ -36,7 +36,7 @@ class Gameplay {
                 discardDomino [!isCurrentTurnTheLastInGame()]-> {calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
             }
             SelectingNextDomino{
-                makeSelection  -> {currentPlayerSelectDomino();} InGame.ProceedingToNextPlayerOrNextTurn;
+                makeSelection(int id)  -> {currentPlayerSelectDomino(int id);} InGame.ProceedingToNextPlayerOrNextTurn;
             }
             ProceedingToNextPlayerOrNextTurn{
                 proceed [!isCurrentPlayerTheLastInTurn()] -> {} InGame.PreplacingDomino;
@@ -89,7 +89,11 @@ class Gameplay {
         // TODO: implement this
         return false;
     }
-    
+
+    public boolean isLoadedGameValid(){
+        // TODO: implement this
+        return false;
+    }
     // You may need to add more guards here
         
     /*
