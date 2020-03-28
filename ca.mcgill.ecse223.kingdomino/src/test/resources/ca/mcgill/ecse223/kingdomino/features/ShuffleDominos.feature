@@ -16,11 +16,10 @@ Feature: Shuffle Dominos
     Examples:
       | nplayers  | dominoesonboard| dominoesleft  |
       | 4         |             4 |          44  |
-    # Bonus: Fill in data table for 2 and 3 players if you decide to
-    # implement that functionality as a bonus feature.
-
+			| 3					|							3	|					 33	 |
+			|	2					|							4	|					 20	 |
   Scenario Outline: Fixed Arrangement
-    # Example table provided to be extended for the case of 2 and 3 players bonus.
+     #Example table provided to be extended for the case of 2 and 3 players bonus.
     Given there are <nplayers> players playing
     When I initiate to arrange the domino in the fixed order <dominoarrangement>
     Then the first draft shall exist
@@ -30,5 +29,5 @@ Feature: Shuffle Dominos
     Examples:
       | nplayers   | dominoesonboard       | dominoarrangement                                                                                                                                                                       |
       | 4          |    4                 | "34, 2, 41, 24, 38, 28, 3, 25, 8, 14, 32, 46, 27, 20, 31, 47, 29, 26, 23, 10, 13, 40, 1, 33, 30, 43, 5, 48, 15, 22, 39, 4, 12, 36, 42, 17, 9, 21, 35, 45, 37, 18, 44, 16, 7, 11, 6, 19" |
-    # Bonus: Fill in data table for 2 and 3 players if you decide to
-    # implement that functionality as a bonus feature.
+  		| 3					 |		3									| "27, 20, 31, 47, 29, 26, 23, 10, 13, 40, 1, 33, 30, 43, 5, 48, 15, 22, 39, 4, 12, 36, 42, 17, 9, 21, 35, 45, 37, 18, 44, 16, 7, 11, 6, 19" |
+  		| 2					 | 		4									| "30, 43, 5, 48, 15, 22, 39, 4, 12, 36, 42, 17, 9, 21, 35, 45, 37, 18, 44, 16, 7, 11, 6, 19" |

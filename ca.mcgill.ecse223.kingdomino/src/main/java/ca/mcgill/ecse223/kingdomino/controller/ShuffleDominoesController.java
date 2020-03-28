@@ -54,6 +54,7 @@ public class ShuffleDominoesController {
 	 */
 	public static void shuffle() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		
 		ArrayList<Integer> listOfIDs = new ArrayList<Integer>();
 		
 		int maxInPile = game.getMaxPileSize();
@@ -90,6 +91,7 @@ public class ShuffleDominoesController {
 		
 		Draft CurrentDraft = new Draft(DraftStatus.FaceDown,game);
 		int i =numberOfDominoesPerDraft(game);
+		
 		for(int j=0;j<i;j++) {
 			Domino toBeAdded = game.getTopDominoInPile();
 			CurrentDraft.addIdSortedDomino(toBeAdded);
@@ -126,8 +128,8 @@ public class ShuffleDominoesController {
 			}
 		}
 		Draft CurrentDraft = new Draft(DraftStatus.FaceDown,game);
-		int i =numberOfDominoesPerDraft(game);
-		for(int j=0;j<i;j++) {
+		int i =numberOfDominoesPerDraft(game); 
+		for(int j=0;j<i;j++) {    
 			Domino toBeAdded = game.getTopDominoInPile();
 			CurrentDraft.addIdSortedDomino(toBeAdded);
 			toBeAdded.setStatus(DominoStatus.InCurrentDraft);
