@@ -5,7 +5,7 @@ class Gameplay {
     gamestatus {
         // TODO: complete gameplay state machine
         SettingUp{
-            startNewGame(int numOfPlayers) -> /{initializeGame(int numOfPlayers);setGameOptions();} Initializing.CreatingFirstDraft;
+            startNewGame(int numOfPlayers) -> /{initializeGame(numOfPlayers);setGameOptions();} Initializing.CreatingFirstDraft;
             loadGame [isLoadedGameValid()] -> /{load();} InGame;
             loadGame [!isLoadedGameValid()] -> /{} SettingUp;
         }
@@ -15,41 +15,39 @@ class Gameplay {
                 draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
             }
             SelectingFirstDomino {
-                makeSelection(int id) -> {currentPlayerSelectDomino(int id)} Initializing.ProceedingToNextPlayerOrNextTurn;
+                makeSelection(int id) -> /{currentPlayerSelectDomino(id);} Initializing.ProceedingToNextPlayerOrNextTurn;
             }
             ProceedingToNextPlayerOrNextTurn{
-                proceed [!isCurrentPlayerTheLastInTurn()] -> {} Initializing.SelectingFirstDomino;
-                proceed [isCurrentPlayerTheLastInTurn()] -> {} InGame.OrderingNextDraft;
+                proceed [!isCurrentPlayerTheLastInTurn()] -> /{} Initializing.SelectingFirstDomino;
+                proceed [isCurrentPlayerTheLastInTurn()] -> /{} InGame.OrderingNextDraft;
                 exit/{switchCurrentPlayer();}
             }
         }
         InGame{
             PreplacingDomino{
-                moveDomino(String dir) -> {moveCurrentDomino(String dir);} InGame.PreplacingDomino;
-                rotateDomino(int dir) -> {rotateCurrentDomino(int dir);} InGame.PreplacingDomino;
-                placeDomino [isCorrectlyPreplaced()] [!isCurrentTurnTheLastInGame()] ->
-                    {placeDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
-                placeDomino [isCorrectlyPreplaced()] [isCurrentPlayerTheLastInTurn()] [isCurrentTurnTheLastInGame()] ->
-                    {placeDomino();calculateCurrentPlayerScore();} EndofGame;
-                placeDomino [isCorrectlyPreplaced()] [!isCurrentPlayerTheLastInTurn()] [isCurrentTurnTheLastInGame()] ->
-                    {placeDomino();calculateCurrentPlayerScore();} InGame.ProceedingToNextNextPlayerOrNextTurn;
-                discardDomino [!isCurrentTurnTheLastInGame()]-> {calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
+                moveDomino(String dir) -> /{moveCurrentDomino(dir);} InGame.PreplacingDomino;
+                rotateDomino(int dir) -> /{rotateCurrentDomino(dir);} InGame.PreplacingDomino;
+                place [isCorrectlyPreplaced() && !isCurrentTurnTheLastInGame()] -> /{placeDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
+                place [isCorrectlyPreplaced() && isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->
+                    /{placeDomino();calculateCurrentPlayerScore();} EndofGame;
+                place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerOrNextTurn;
+                discardDomino [!isCurrentTurnTheLastInGame()]-> /{calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
             }
             SelectingNextDomino{
-                makeSelection(int id)  -> {currentPlayerSelectDomino(int id);} InGame.ProceedingToNextPlayerOrNextTurn;
+                makeSelection(int id) -> /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
             }
             ProceedingToNextPlayerOrNextTurn{
-                proceed [!isCurrentPlayerTheLastInTurn()] -> {} InGame.PreplacingDomino;
-                proceed [isCurrentPlayerTheLastInTurn()]->{} InGame.OrderingNextDraft;
+                proceed [!isCurrentPlayerTheLastInTurn()] -> /{} InGame.PreplacingDomino;
+                proceed [isCurrentPlayerTheLastInTurn()] -> /{} InGame.OrderingNextDraft;
                 exit/{switchCurrentPlayer();}
             }
             OrderingNextDraft{
-                orderDraft -> {orderNextDraft();} InGame.RevealingNextDraft;
+                order -> /{orderNextDraft();} InGame.RevealingNextDraft;
             }
             RevealingNextDraft{
-                revealNextDraft -> {revealNextDraft();} InGame.PreplacingDomino;
+                reveal -> /{revealNextDraft();} InGame.PreplacingDomino;
             }
-            saveGame -> {save();} SettingUp;
+            saveGame -> /{save();} SettingUp;
         }
         EndofGame{
             entry/{calculateRanking();resolveTieBreak();}
@@ -119,6 +117,55 @@ class Gameplay {
     public void revealNextDraft() {
         // TODO: implement this
     }
+    
+    public void initializeGame(int numOfPlayers){
+    
+    }
+    
+    public void setGameOptions(){
+    
+    }
+    
+    public void currentPlayerSelectDomino(int id){
+    	
+    }
+    
+    public void moveCurrentDomino(String dir){
+    	
+    }
+    
+    public void rotateCurrentDomino(int dir){
+    	
+    }
+    
+    public void placeDomino(){
+    	
+    }
+    
+    public void calculateCurrentPlayerScore(){
+    	
+    }
+    
+    public void calculateRanking(){
+    	
+    }
+    
+    public void resolveTieBreak(){
+    	
+    }
+    
+    public void switchCurrentPlayer(){
+    	
+    }
+     
+    public void save(){
+    	
+    }
+    
+    public void load(){
+    	
+    }
+    
     
     // You may need to add more actions here
 }
