@@ -530,32 +530,28 @@ public class Gameplay
    */
   // line 78 "../../../../../Gameplay.ump"
    public boolean isCurrentPlayerTheLastInTurn(){
-    // TODO: implement this
-        return false;
+        return GameplayController.isCurrentPlayerTheLastInTurn();
   }
 
   // line 83 "../../../../../Gameplay.ump"
    public boolean isCurrentTurnTheLastInGame(){
-    // TODO: implement this
-        return false;
+        return GameplayController.isCurrentTurnTheLastInGame();
   }
 
   // line 88 "../../../../../Gameplay.ump"
    public boolean isCorrectlyPreplaced(){
-    // TODO: implement this
-        return false;
+        return GameplayController.isCorrectlyPreplaced();
   }
 
   // line 93 "../../../../../Gameplay.ump"
    public boolean isLoadedGameValid(){
-    // TODO: implement this
-        return false;
+        return GameplayController.isLoadedGameValid();
   }
 
   // line 98 "../../../../../Gameplay.ump"
    public boolean impossibleTopPlaceDomino(){
-    // TODO: implement this
-        return false;
+    
+        return GameplayController.impossibleTopPlaceDomino();
   }
 
 
