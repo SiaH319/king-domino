@@ -38,7 +38,7 @@ Feature: Discarding Domino
       | 46 | left      | -1   | -1   |
       | 41 | right     | 1    | -1   |
       | 12 | right     | 1    | -2   |
-    Given the current player is preplacing his/her domino with ID 3 at location 2:2 with direction "down"
+    Given the current player is preplacing his/her domino with ID 47 at location 2:2 with direction "down"
     And it is impossible to place the current domino in his/her kingdom
     When the current player discards his/her domino
     Then this player now shall be making his/her domino selection
