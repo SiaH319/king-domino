@@ -15,34 +15,32 @@ public class GameplayController {
 	//Trigger Relevant Events In SM
 	public static void triggerEventsInSM(String methodName) {
 		switch(methodName) {
-		case "shuffleDominoPile":
-			statemachine.shuffleDominoPile();
+		case "loadGame":
+			statemachine.loadGame();
 			break;
-		case "createNextDraft":
-			statemachine.createNextDraft();
+		case "saveGame":
+			statemachine.saveGame();
 			break;
-		case "generateInitialPlayerOrder":
+		case "draftReady":
+			statemachine.draftReady();
 			break;
-		case "orderNextDraft":
+		case "proceed":
+			statemachine.proceed();
 			break;
-		case "revealNextDraft":
+		case "place":
+			statemachine.place();
 			break;
-		case "placeDomino":
+		case "discard":
+			statemachine.discard();
 			break;
-		case "discardDomino":
+		case "order":
+			statemachine.order();
 			break;
-		case "calculateCurrentPlayerScore":
+		case "reveal":
+			statemachine.reveal();
 			break;
-		case "calculateRanking":
-			break;
-		case "resolveTieBreak":
-			break;
-		case "switchCurrentPlayer":
-			break;
-		case "save":
-			break;
-		case "load":
-			break;
+		default :
+			throw new java.lang.IllegalArgumentException("Invalid trigger event: " + methodName);
 		}
 		
 		
@@ -50,6 +48,15 @@ public class GameplayController {
 	
 	public static void triggerStartNewGameInSM(int numOfPlayers) {
 		statemachine.startNewGame(numOfPlayers);
+	}
+	public static void triggerMakeSelectionInSM(int id) {
+		statemachine.makeSelection(id);
+	}
+	public void triggerMoveDominoInSM(String dir) {
+		statemachine.moveCurrentDomino(dir);
+	}
+	public void triggerRotateDominoInSM(int dir) {
+		statemachine.rotateCurrentDomino(dir);
 	}
 	
 	//Guards
