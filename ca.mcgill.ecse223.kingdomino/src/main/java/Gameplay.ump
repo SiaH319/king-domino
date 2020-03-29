@@ -1,7 +1,7 @@
 namespace ca.mcgill.ecse223.kingdomino.model;
 
 class Gameplay {
-
+	depend ca.mcgill.ecse223.kingdomino.controller.GameplayController;
     gamestatus {
         // TODO: complete gameplay state machine
         SettingUp{
@@ -131,7 +131,7 @@ class Gameplay {
     }
     
     public void moveCurrentDomino(String dir){
-    	
+    	GameplayController.moveDominoCallFromSM(dir);
     }
     
     public void rotateCurrentDomino(int dir){

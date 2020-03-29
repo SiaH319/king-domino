@@ -2,6 +2,7 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package ca.mcgill.ecse223.kingdomino.model;
+import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
 
 // line 3 "../../../../../Gameplay.ump"
 public class Gameplay
@@ -587,9 +588,9 @@ public class Gameplay
     
   }
 
-  // line 135 "../../../../../Gameplay.ump"
+  // line 134 "../../../../../Gameplay.ump"
    public void moveCurrentDomino(String dir){
-    
+    GameplayController.moveDominoCallFromSM(dir);
   }
 
   // line 139 "../../../../../Gameplay.ump"

@@ -58,7 +58,7 @@ public class MoveCurrentDominoStepDefinition {
         Player p = game.getPlayer(playerIndex);
         Domino domino = p.getDominoSelection().getDomino();
         boolean isMoved = DominoController.moveCurrentDomino(p, domino.getId(),
-                DominoController.convertMovementStringToInt(movement));
+                movement);
     }
 
     @Then("the domino {int} should be tentatively placed at position {int}:{int} with direction {string}")

@@ -213,16 +213,17 @@ public class DominoController {
      * @author Violet Wei
      * @return true if successful or false if fail
      */
-    public static boolean moveCurrentDomino(Player player, int dominoId, int movement) {
+    public static boolean moveCurrentDomino(Player player, int dominoId, String movement) {
         Kingdom kingdom = player.getKingdom();
         DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(dominoId, kingdom);
         int oldx =dik.getX();
         int oldy = dik.getY();
         int newx = -1; int newy = -1;
+        int mov = convertMovementStringToInt(movement);
         Domino domino;
         if(dik != null){
             domino = dik.getDomino();
-            switch(movement){
+            switch(mov){
                 case 0:
                     newx = oldx;
                     newy = oldy + 1;
