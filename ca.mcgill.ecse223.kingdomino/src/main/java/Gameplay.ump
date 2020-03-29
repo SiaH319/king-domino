@@ -31,7 +31,8 @@ class Gameplay {
                 place [isCorrectlyPreplaced() && isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->
                     /{placeDomino();calculateCurrentPlayerScore();} EndofGame;
                 place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerOrNextTurn;
-                discardDomino [!isCurrentTurnTheLastInGame()]-> /{calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
+                discard [impossibleTopPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
+                discard [impossibleTopPlaceDomino() && isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} EndofGame;
             }
             SelectingNextDomino{
                 makeSelection(int id) -> /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
@@ -92,6 +93,11 @@ class Gameplay {
         // TODO: implement this
         return false;
     }
+
+    public boolean impossibleTopPlaceDomino(){
+        // TODO: implement this
+        return false;
+    }
     // You may need to add more guards here
         
     /*
@@ -119,15 +125,15 @@ class Gameplay {
     }
     
     public void initializeGame(int numOfPlayers){
-    
+        // TODO: implement this
     }
     
     public void setGameOptions(){
-    
+        // TODO: implement this
     }
     
     public void currentPlayerSelectDomino(int id){
-    	
+    	// TODO: implement this
     }
     
     public void moveCurrentDomino(String dir){
@@ -135,35 +141,39 @@ class Gameplay {
     }
     
     public void rotateCurrentDomino(int dir){
-    	
+    	// TODO: implement this
     }
     
     public void placeDomino(){
-    	
+    	// TODO: implement this
+    }
+    
+    public void discardDomino(){
+    	// TODO: implement this
     }
     
     public void calculateCurrentPlayerScore(){
-    	
+    	// TODO: implement this
     }
     
     public void calculateRanking(){
-    	
+    	// TODO: implement this
     }
     
     public void resolveTieBreak(){
-    	
+    	// TODO: implement this
     }
     
     public void switchCurrentPlayer(){
-    	
+    	// TODO: implement this
     }
      
     public void save(){
-    	
+    	// TODO: implement this
     }
     
     public void load(){
-    	
+    	// TODO: implement this
     }
     
     
