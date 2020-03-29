@@ -1,13 +1,13 @@
 namespace ca.mcgill.ecse223.kingdomino.model;
 
 class Gameplay {
-
+	depend ca.mcgill.ecse223.kingdomino.controller.GameplayController;
     gamestatus {
         // TODO: complete gameplay state machine
-        Idle{
-            startNewGame -> /{initializeGame();} Initializing.CreatingFirstDraft;
+        SettingUp{
+            startNewGame(int numOfPlayers) -> /{initializeGame(numOfPlayers);setGameOptions();} Initializing.CreatingFirstDraft;
             loadGame [isLoadedGameValid()] -> /{load();} InGame;
-            loadGame [!isLoadedGameValid()] -> /{} Idle;
+            loadGame [!isLoadedGameValid()] -> /{} SettingUp;
         }
         Initializing {
             CreatingFirstDraft {
@@ -15,34 +15,40 @@ class Gameplay {
                 draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
             }
             SelectingFirstDomino {
-                makeSelection -> {currentPlayerSelectDomino()} ProceedingToNextPlayerOrNextTurn;
+                makeSelection(int id) -> /{currentPlayerSelectDomino(id);} Initializing.ProceedingToNextPlayerOrNextTurn;
             }
             ProceedingToNextPlayerOrNextTurn{
-                proceed [!isCurrentPlayerTheLastInTurn()] -> {switchCurrentPlayer();} SelectingFirstDomino;
-                proceed [isCurrentPlayerTheLastInTurn()] ->{} InGame.OrderingNextDraft;
+                proceed [!isCurrentPlayerTheLastInTurn()] -> /{} Initializing.SelectingFirstDomino;
+                proceed [isCurrentPlayerTheLastInTurn()] -> /{} InGame.OrderingNextDraft;
+                exit/{switchCurrentPlayer();}
             }
         }
         InGame{
             PreplacingDomino{
-                moveDomino -> {} InGame.PreplacingDomino;
-                rotateDomino -> {} InGame.PreplacingDomino;
-                placeDomino [isCorrectlyPreplaced()] -> {calculateCurrentPlayerScore();} SelectingNextDomino;
-                discardDomino -> {calculateCurrentPlayerScore();} SelectingNextDomino;
+                moveDomino(String dir) -> /{moveCurrentDomino(dir);} InGame.PreplacingDomino;
+                rotateDomino(int dir) -> /{rotateCurrentDomino(dir);} InGame.PreplacingDomino;
+                place [isCorrectlyPreplaced() && !isCurrentTurnTheLastInGame()] -> /{placeDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
+                place [isCorrectlyPreplaced() && isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->
+                    /{placeDomino();calculateCurrentPlayerScore();} EndofGame;
+                place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerOrNextTurn;
+                discard [impossibleTopPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
+                discard [impossibleTopPlaceDomino() && isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} EndofGame;
             }
             SelectingNextDomino{
-                makeSelection  -> {currentPlayerSelectDomino()} ProceedingToNextPlayerOrNextTurn;
+                makeSelection(int id) -> /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
             }
             ProceedingToNextPlayerOrNextTurn{
-                proceed [isCurrentPlayerTheLastInTurn()] [isCurrentTurnTheLastInGame()] -> {} EndofGame;
-                proceed [!isCurrentPlayerTheLastInTurn()] [!isCurrentTurnTheLastInGame()] -> {switchCurrentPlayer();} InGame.PreplacingDomino;
-                proceed [isCurrentPlayerTheLastInTurn()] [!isCurrentTurnTheLastInGame()] ->{} InGame.OrderingNextDraft;
+                proceed [!isCurrentPlayerTheLastInTurn()] -> /{} InGame.PreplacingDomino;
+                proceed [isCurrentPlayerTheLastInTurn()] -> /{} InGame.OrderingNextDraft;
+                exit/{switchCurrentPlayer();}
             }
             OrderingNextDraft{
-                orderDraft -> {orderNextDraft();} InGame.RevealingNextDraft;
+                order -> /{orderNextDraft();} InGame.RevealingNextDraft;
             }
             RevealingNextDraft{
-                revealNextDraft -> {revealNextDraft} InGame.PreplacingDomino;
+                reveal -> /{revealNextDraft();} InGame.PreplacingDomino;
             }
+            saveGame -> /{save();} SettingUp;
         }
         EndofGame{
             entry/{calculateRanking();resolveTieBreak();}
@@ -77,7 +83,21 @@ class Gameplay {
         // TODO: implement this
         return false;
     }
-    
+
+    public boolean isCorrectlyPreplaced() {
+        // TODO: implement this
+        return false;
+    }
+
+    public boolean isLoadedGameValid(){
+        // TODO: implement this
+        return false;
+    }
+
+    public boolean impossibleTopPlaceDomino(){
+        // TODO: implement this
+        return false;
+    }
     // You may need to add more guards here
         
     /*
@@ -103,6 +123,59 @@ class Gameplay {
     public void revealNextDraft() {
         // TODO: implement this
     }
+    
+    public void initializeGame(int numOfPlayers){
+        // TODO: implement this
+    }
+    
+    public void setGameOptions(){
+        // TODO: implement this
+    }
+    
+    public void currentPlayerSelectDomino(int id){
+    	// TODO: implement this
+    }
+    
+    public void moveCurrentDomino(String dir){
+    	GameplayController.moveDominoCallFromSM(dir);
+    }
+    
+    public void rotateCurrentDomino(int dir){
+    	// TODO: implement this
+    }
+    
+    public void placeDomino(){
+    	// TODO: implement this
+    }
+    
+    public void discardDomino(){
+    	// TODO: implement this
+    }
+    
+    public void calculateCurrentPlayerScore(){
+    	// TODO: implement this
+    }
+    
+    public void calculateRanking(){
+    	// TODO: implement this
+    }
+    
+    public void resolveTieBreak(){
+    	// TODO: implement this
+    }
+    
+    public void switchCurrentPlayer(){
+    	// TODO: implement this
+    }
+     
+    public void save(){
+    	// TODO: implement this
+    }
+    
+    public void load(){
+    	// TODO: implement this
+    }
+    
     
     // You may need to add more actions here
 }
