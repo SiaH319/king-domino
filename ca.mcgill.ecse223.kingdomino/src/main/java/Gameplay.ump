@@ -137,7 +137,7 @@ class Gameplay {
     }
     
     public void moveCurrentDomino(String dir){
-    	GameplayController.moveDominoCallFromSM(dir);
+    	GameplayController.acceptMoveDominoCallFromSM(dir);
     }
     
     public void rotateCurrentDomino(int dir){
