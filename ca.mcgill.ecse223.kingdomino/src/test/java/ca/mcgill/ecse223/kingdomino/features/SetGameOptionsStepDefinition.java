@@ -2,7 +2,6 @@ package ca.mcgill.ecse223.kingdomino.features;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.InitializationController;
-import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -10,20 +9,11 @@ import io.cucumber.java.en.When;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-import java.util.Map;
 
-import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.controller.InitializationController.InvalidInputException;
 import ca.mcgill.ecse223.kingdomino.model.*;
-import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
-import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
-import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 
-public class SetGameOptions {
+public class SetGameOptionsStepDefinition {
 	/**
 	 * Feature: Set Game Options
 	 * @author Sia Ham  
