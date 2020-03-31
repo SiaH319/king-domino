@@ -6,7 +6,7 @@ Feature: Selecting First Domino
   Scenario Outline: Select first domino of the game
     Given the initial order of players is "<playerorder>"
     Given the current draft has the dominoes with ID "1,2,3,4"
-    Given player's domino selection "<currentselection>"
+    Given player's first domino selection of the game is "<currentselection>"
     Given the "<currentplayer>" player is selecting his/her domino with ID <chosendominoid>
     And the validation of domino selection returns "<result>"
     When the "<currentplayer>" player completes his/her domino selection
@@ -23,7 +23,7 @@ Feature: Selecting First Domino
   Scenario Outline: Complete first turn of domino selection
     Given the initial order of players is "<playerorder>"
     Given the current draft has the dominoes with ID "1,2,3,4"
-    Given player's domino selection "<currentselection>"
+    Given player's first domino selection of the game is "<currentselection>"
     Given the "<currentplayer>" player is selecting his/her first domino with ID <chosendominoid>
     And the validation of domino selection returns "<result>"
     When the "<currentplayer>" player completes his/her domino selection of the game
