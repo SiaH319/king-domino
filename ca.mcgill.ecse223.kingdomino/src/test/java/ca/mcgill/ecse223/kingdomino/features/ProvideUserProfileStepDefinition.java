@@ -17,7 +17,7 @@ import ca.mcgill.ecse223.kingdomino.controller.InitializationController.InvalidI
 import ca.mcgill.ecse223.kingdomino.model.*;
 
 
-public class ProvideUserProfile {
+public class ProvideUserProfileStepDefinition {
 	/**
 	 *  Feature: Provide User Profile
 	 *  @author: Sia Ham
