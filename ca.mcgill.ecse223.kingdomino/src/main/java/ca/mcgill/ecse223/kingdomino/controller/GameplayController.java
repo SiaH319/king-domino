@@ -60,27 +60,27 @@ public class GameplayController {
 	}
 	
 	//Guards
-	public boolean isCurrentPlayerTheLastInTurn() {
+	public static boolean isCurrentPlayerTheLastInTurn() {
         // TODO: implement this
         return false;
     }
         
-    public boolean isCurrentTurnTheLastInGame() {
+    public static boolean isCurrentTurnTheLastInGame() {
         // TODO: implement this
         return false;
     }
 
-    public boolean isCorrectlyPreplaced() {
+    public static boolean isCorrectlyPreplaced() {
         // TODO: implement this
         return false;
     }
 
-    public boolean isLoadedGameValid(){
+    public static boolean isLoadedGameValid(){
         // TODO: implement this
         return false;
     }
 
-    public boolean impossibleTopPlaceDomino(){
+    public static boolean impossibleTopPlaceDomino(){
         // TODO: implement this
         return false;
     }
