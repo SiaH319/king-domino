@@ -81,3 +81,13 @@ GitHub organization
 Cucumber in the context of your statemachine and the underlying domain model. 
 
 Iteration 3 [wiki report](https://github.com/McGill-ECSE223-Winter2020/ecse223-group-project-04/wiki/Iteration-3-Report)
+
+## Deliverable 4
+Iteration 4 – Implementation
+
+The deliverable for Iteration 4 is to complete the implementation of Kingdomino application with a
+graphical user interface (GUI) following the Model-View-Controller pattern. 
+
+Goal: Implementation of the Graphical User Interface of Kingdomino
+
+Documentation of Bonus Features on Project [Wiki[()

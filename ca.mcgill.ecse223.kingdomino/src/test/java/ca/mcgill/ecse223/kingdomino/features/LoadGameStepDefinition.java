@@ -39,6 +39,7 @@ import io.cucumber.java.en.When;
 public class LoadGameStepDefinition {
     Kingdomino kingdomino = new Kingdomino();
     Game game = new Game(48, kingdomino);
+    String name;
     
     @Given("the game is initialized for load game")
     public void the_game_is_initialized_for_save_game() {
@@ -61,6 +62,7 @@ public class LoadGameStepDefinition {
     /* Scenario Outline: Load valid incomplete game */
     @When("I initiate loading a saved game from {string}")
     public void i_initiate_loading_a_saved_game_from_filename(String filename) {
+    	name = filename;
         try {
             SaveLoadGameController.loadGame(filename);
         } catch (IOException e) {
@@ -157,11 +159,11 @@ public class LoadGameStepDefinition {
 
 
     /* Scenario Outline: Invalid placement in game file */
-    @Then("the game shall notify the user that the loaded game from {string} is invalid")
-    public void the_game_shall_notify_the_user_that_the_loaded_game_is_invalid(String filename) {
+    @Then("the game shall notify the user that the loaded game is invalid")
+    public void the_game_shall_notify_the_user_that_the_loaded_game_is_invalid() {
         boolean isValid;
         try {
-            isValid = SaveLoadGameController.loadGame(filename);
+            isValid = SaveLoadGameController.loadGame(name);
             assertEquals(false, isValid);
         } catch (IOException e) {
             e.printStackTrace();

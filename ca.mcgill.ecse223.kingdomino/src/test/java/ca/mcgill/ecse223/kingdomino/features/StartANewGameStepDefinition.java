@@ -6,12 +6,12 @@ import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.controller.InitializationController.InvalidInputException;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
-import io.cucumber.java.After;
+
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-public class StartANewGame {
+public class StartANewGameStepDefinition {
 	/**
 	 * Feature: Start a New Game
 	 * @author: Sia Ham

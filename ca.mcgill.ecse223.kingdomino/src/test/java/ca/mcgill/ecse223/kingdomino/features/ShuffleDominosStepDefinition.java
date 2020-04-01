@@ -27,7 +27,7 @@ import io.cucumber.java.en.When;
  * @author Mohamad.
  *         Created Mar 9, 2020.
  */
-public class ShuffleDominosStepDefinitions {
+public class ShuffleDominosStepDefinition {
 	int numberOfPlayers;
 	Game PreviousGame;
 	@Given("the game is initialized for shuffle dominoes")
