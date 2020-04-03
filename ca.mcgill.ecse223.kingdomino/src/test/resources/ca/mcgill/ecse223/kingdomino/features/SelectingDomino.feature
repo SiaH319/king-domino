@@ -5,7 +5,7 @@ Feature: Selecting Domino
 
   Scenario Outline: Select a domino and the current turn goes on
     Given the order of players is "<playerorder>"
-    Given the current draft has the dominoes with ID "1,2,3,4"
+    Given the next draft has the dominoes with ID "1,2,3,4"
     Given player's domino selection "<currentselection>"
     Given the "<currentplayer>" is selecting his/her domino with ID <chosendominoid>
     And the validation of domino selection returns "<result>"
@@ -22,7 +22,7 @@ Feature: Selecting Domino
 
   Scenario Outline: Complete a turn of domino selection
     Given the order of players is "<playerorder>"
-    Given the current draft has the dominoes with ID "1,2,3,4"
+    Given the next draft has the dominoes with ID "1,2,3,4"
     Given player's domino selection "<currentselection>"
     Given the "<currentplayer>" player is selecting his/her first domino of the game with ID <chosendominoid>
     And the validation of domino selection returns "<result>"

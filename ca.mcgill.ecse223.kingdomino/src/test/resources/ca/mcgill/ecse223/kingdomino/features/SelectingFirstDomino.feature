@@ -14,9 +14,9 @@ Feature: Selecting First Domino
 
     Examples:
       | playerorder            | currentplayer | currentselection     | chosendominoid | result  | nextplayer | action    |
-      | blue,green,pink,yellow | blue          | none,none,none,none  | 1              | success | green      | placing   |
-      | blue,green,pink,yellow | pink          | blue,green,none,none | 3              | success | yellow     | placing   |
-      | green,pink,blue,yellow | pink          | green,none,none,none | 2              | success | blue       | placing   |
+      | blue,green,pink,yellow | blue          | none,none,none,none  | 1              | success | green      | selecting |
+      | blue,green,pink,yellow | pink          | blue,green,none,none | 3              | success | yellow     | selecting |
+      | green,pink,blue,yellow | pink          | green,none,none,none | 2              | success | blue       | selecting |
       | green,pink,yellow,blue | pink          | green,none,none,none | 1              | error   | pink       | selecting |
       | blue,green,pink,yellow | yellow        | blue,green,pink,none | 3              | error   | yellow     | selecting |
 
