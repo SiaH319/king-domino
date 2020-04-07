@@ -1,8 +1,14 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
+import java.util.ArrayList;
+
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.model.Castle;
+import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
+import ca.mcgill.ecse223.kingdomino.model.Kingdom;
+import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
 
@@ -61,17 +67,46 @@ public class GameplayController {
 	
 	//Guards
 	public static boolean isCurrentPlayerTheLastInTurn() {
-        // TODO: implement this
-        return false;
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Player current =game.getNextPlayer();
+		boolean isLast=true;
+		for(Player p : game.getPlayers()) {
+			if(p.getDominoSelection().getDomino().getId()<current.getDominoSelection().getDomino().getId()) {
+				isLast=false;
+				break;
+			}
+		}
+        return isLast;
     }
         
     public static boolean isCurrentTurnTheLastInGame() {
-        // TODO: implement this
-        return false;
+    	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+    	boolean isLastTurn=false;
+    	int numPlayer =game.getNumberOfPlayers();
+    	if(numPlayer==2 || numPlayer==4) {
+    		if(game.getAllDrafts().size()==12) {
+    			isLastTurn=true;
+    		}
+    	}
+    	else {
+    		if(game.getAllDrafts().size()==9) {
+    			isLastTurn=true;
+    		}
+    	}
+        return isLastTurn;
     }
 
     public static boolean isCorrectlyPreplaced() {
-        // TODO: implement this
+    	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+    	Player currentPl=game.getNextPlayer();
+    	Kingdom kingdom = currentPl.getKingdom();
+        Castle castle = getCastle(kingdom);       
+        DominoInKingdom dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
+        Square[] grid = GameController.getGrid(currentPl.getUser().getName());
+    	if((VerificationController.verifyGridSize(currentPl.getKingdom().getTerritories()))  && (VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom)) && ((VerificationController.verifyCastleAdjacency(castle,dominoInKingdom)) || (VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))) {
+             
+             return true;
+         }
         return false;
     }
 
@@ -79,10 +114,38 @@ public class GameplayController {
         // TODO: implement this
         return false;
     }
+ 
+    public static boolean impossibleToPlaceDomino(){
+    	   Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+    	    Player currentPl = game.getPlayer(0);
+    	    Kingdom kingdom = currentPl.getKingdom();
+    	    Castle castle = getCastle(kingdom);        
+    	    Square[] grid = GameController.getGrid(currentPl.getUser().getName());
+    	    DominoInKingdom dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
+    	    ArrayList<DominoInKingdom.DirectionKind> directions =new ArrayList<DominoInKingdom.DirectionKind>();
+    	    directions.add(DominoInKingdom.DirectionKind.Down);
+    	    directions.add(DominoInKingdom.DirectionKind.Left);
+    	    directions.add(DominoInKingdom.DirectionKind.Up);
+    	    directions.add(DominoInKingdom.DirectionKind.Right);
+    	    for(int x=-4;x<5;x++) {
+    	        for(int y=-4;y<5;y++) {
+    	            for(DominoInKingdom.DirectionKind dir :directions ) {
+    	                dominoInKingdom.setDirection(dir);
+    	                dominoInKingdom.setX(x);
+    	                dominoInKingdom.setY(y);
 
-    public static boolean impossibleTopPlaceDomino(){
-        // TODO: implement this
-        return false;
+    	                if((VerificationController.verifyGridSize(currentPl.getKingdom().getTerritories()))  && (VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom)) && ((VerificationController.verifyCastleAdjacency(castle,dominoInKingdom)) || (VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))) {
+    	                    System.out.println("Found a place where we can place the domino with x= "+x+" y="+y+"direction ="+dir);
+    	                    System.out.println("A this x,y there is :"+ grid[Square.convertPositionToInt(x,y)].getTerrain());
+    	                    return false; // as we have found a place where we can place the domino
+    	                }
+    	            }
+    	        }
+    	    }
+    	    System.out.println("couldnt place the domino anywhere");
+    	    return true;
+        
+        
     }
 	
 	//Accept Action Calls
@@ -135,6 +198,13 @@ public class GameplayController {
 	
 	public static void acceptRotateCurrentDomino(int dir){
     	
+    }
+	private static Castle getCastle (Kingdom kingdom) {
+        for(KingdomTerritory territory: kingdom.getTerritories()){
+            if(territory instanceof Castle )
+                return (Castle)territory;
+        }
+        return null;
     }
 	
 }

@@ -75,27 +75,25 @@ class Gameplay {
      */
     
     public boolean isCurrentPlayerTheLastInTurn() {
-        // TODO: implement this
-        return false;
+        
+        return GameplayController.isCurrentPlayerTheLastInTurn();
     }
         
     public boolean isCurrentTurnTheLastInGame() {
-        // TODO: implement this
-        return false;
+        return GameplayController.isCurrentTurnTheLastInGame(); 
     }
 
     public boolean isCorrectlyPreplaced() {
-        // TODO: implement this
-        return false;
+        return GameplayController.isCorrectlyPreplaced();
     }
 
     public boolean isLoadedGameValid(){
-        // TODO: implement this
-        return false;
+        
+        return GameplayController.isLoadedGameValid();
     }
 
-    public boolean impossibleTopPlaceDomino(){
-        // TODO: implement this
+    public boolean impossibleToPlaceDomino(){
+        
         return false;
     }
     // You may need to add more guards here
