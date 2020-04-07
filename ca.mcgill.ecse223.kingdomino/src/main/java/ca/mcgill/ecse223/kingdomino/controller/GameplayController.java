@@ -152,6 +152,7 @@ public class GameplayController {
 	public static void acceptCallFromSM(String methodName){
 		switch(methodName) {
 		case "shuffleDominoPile":
+			ShuffleDominoesController.shuffle();
 			break;
 		case "createNextDraft":
 			DraftController.createNewDraftIsInitiated();
@@ -159,8 +160,10 @@ public class GameplayController {
 		case "generateInitialPlayerOrder":
 			break;
 		case "orderNextDraft":
+			DraftController.orderNewDraftInitiated();
 			break;
 		case "revealNextDraft":
+			DraftController.revealDominoesInitiated();
 			break;
 		case "placeDomino":
 			break;
