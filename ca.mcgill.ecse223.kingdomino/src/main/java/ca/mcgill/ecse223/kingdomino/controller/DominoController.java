@@ -263,11 +263,11 @@ public class DominoController {
      * by rotating it (clockwise or counter-clockwise).
      * rotationDir 1 for clockwise, -1 for anticlockwise
      * @author Cecilia Jiang
-     * @param castle
-     * @param grid
-     * @param territories
-     * @param dominoInKingdom
-     * @param rotationDir
+     * @param castle, the castle
+     * @param grid, the square[] grid
+     * @param territories, territories under current player's control
+     * @param dominoInKingdom, currently selected domino
+     * @param rotationDir, rotation direction as String
      */
     public static void rotateExistingDomino(Castle castle, Square[] grid, List<KingdomTerritory> territories,
                                             DominoInKingdom dominoInKingdom, int rotationDir){
@@ -295,7 +295,7 @@ public class DominoController {
      * @param id which is id of the domino to place
      * @author: Cecilia Jiang
      */
-    public static void placeDomino(Player player, int id){
+    public static void placeDomino(Player player, int id) throws java.lang.IllegalArgumentException{
         Domino domino = player.getDominoSelection().getDomino();
         if(domino.getId() == id && domino.getStatus() == DominoStatus.CorrectlyPreplaced){
             domino.setStatus(DominoStatus.PlacedInKingdom);

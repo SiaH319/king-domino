@@ -26,7 +26,7 @@ public class Square {
         this.dominoId = dominoId;
     }
 
-    public static int convertPositionToInt (int x, int y) {
+    public static int convertPositionToInt(int x, int y) {
         return (4 - y) * 9 + (x + 4);
     }
 

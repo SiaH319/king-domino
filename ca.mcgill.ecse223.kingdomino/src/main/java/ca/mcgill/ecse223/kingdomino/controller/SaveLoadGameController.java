@@ -141,11 +141,14 @@ public class SaveLoadGameController {
         List<Integer> claimedTiles = new ArrayList<>();
         List<Integer> unclaimedTiles = new ArrayList<>();
 
-        String name = currentGame.getNextPlayer().getUser().getName();
-        Square[] grid = GameController.getGrid(name);
-        for (int i = 4; i >= -4; i--)
-            for (int j = -4; j <= 4; j++)
-                grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+
+//        for(Player player: currentGame.getPlayers()){
+//            String name = player.getUser().getName();
+//            Square[] grid = GameController.getGrid(name);
+//            for (int i = 4; i >= -4; i--)
+//                for (int j = -4; j <= 4; j++)
+//                    grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+//        }
 
         /* // Add the domino to a player's kingdom
             Domino dominoToPlace = getdominoByID(id);
@@ -188,74 +191,69 @@ public class SaveLoadGameController {
                     } else if (currentLine.startsWith("P1")) {
                         String newLine = currentLine.substring(4);
                         String[] p1Tile = newLine.split(", ");
+                        String name = currentGame.getPlayer(0).getUser().getName();
+                        Square[] grid = GameController.getGrid(name);
                         for (int i = 0; i < p1Tile.length; i++) {
                             String tile = p1Tile[i];
-                            if (tile.charAt(1) == '@') {
-                                int dominoId = Integer.parseInt(tile.substring(0, 1));
-                                p1tiles.add(dominoId);
-                                Domino dominoToPlace = SaveLoadGameController.getdominoByID(dominoId);
-                                Kingdom kingdom = currentGame.getPlayer(0).getKingdom();
-                                String posInfo = tile.substring(3, tile.length()-1);
-                                String[] info = posInfo.split(",");
-                                int posx = Integer.parseInt(info[0]);
-                                int posy = Integer.parseInt(info[1]);
-                                String direction = info[2];
-                                DirectionKind directionKind;
-                                if (direction.equals("R")) {
-                                    directionKind = DirectionKind.Right;
-                                } else if (direction.equals("L")) {
-                                    directionKind = DirectionKind.Left;
-                                } else if (direction.equals("U")) {
-                                    directionKind = DirectionKind.Up;
-                                } else {
-                                    directionKind = DirectionKind.Down;
-                                }
-                                DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
-                                if (VerificationController.verifyNeighborAdjacency(getCastle(kingdom), grid, domInKingdom) &&
-                                    VerificationController.verifyCastleAdjacency(getCastle(kingdom), domInKingdom) &&
-                                    VerificationController.verifyNoOverlapping(getCastle(kingdom), grid, domInKingdom)) 
-                                {
-                                    domInKingdom.setDirection(directionKind);
-                                    dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
-                                } else {
-                                    return false;
-                                }
+                            String[] IdAndTileInfo = tile.split("@");
+                            //Extract domino Id from first two chars
+                            int dominoId = Integer.parseInt(IdAndTileInfo[0]);
+
+
+                            //Extract posX, posY, dir
+                            String tileInfo = IdAndTileInfo[1].substring(1, IdAndTileInfo[1].length()-1);
+                            System.out.println("tileInfoPlayer 0"+tileInfo);
+                            String[] x_y_dir = tileInfo.split(",");
+                            p1tiles.add(dominoId);
+                            Domino dominoToPlace = SaveLoadGameController.getdominoByID(dominoId);
+                            Kingdom kingdom = currentGame.getPlayer(0).getKingdom();
+                            int posx =Integer.parseInt( x_y_dir[0]);
+                            int posy = Integer.parseInt( x_y_dir[1]);
+                            String direction = x_y_dir[2];
+                            DirectionKind directionKind;
+                            System.out.println("Direction:"+direction);
+                            if (direction.equals("R")) {
+                                directionKind = DirectionKind.Right;
+                            } else if (direction.equals("L")) {
+                                directionKind = DirectionKind.Left;
+                            } else if (direction.equals("U")) {
+                                directionKind = DirectionKind.Up;
                             } else {
-                                int dominoId = Integer.parseInt(tile.substring(0, 2));
-                                p1tiles.add(dominoId);
-                                Domino dominoToPlace = SaveLoadGameController.getdominoByID(dominoId);
-                                Kingdom kingdom = currentGame.getPlayer(0).getKingdom();
-                                String posInfo = tile.substring(4, tile.length()-1);
-                                String[] info = posInfo.split(",");
-                                int posx = Integer.valueOf(info[0]);
-                                int posy = Integer.valueOf(info[1]);
-                                String direction = info[2];
-                                DirectionKind directionKind;
-                                if (direction.equals("R")) {
-                                    directionKind = DirectionKind.Right;
-                                } else if (direction.equals("L")) {
-                                    directionKind = DirectionKind.Left;
-                                } else if (direction.equals("U")) {
-                                    directionKind = DirectionKind.Up;
-                                } else {
-                                    directionKind = DirectionKind.Down;
-                                }
-                                DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
-                                if (VerificationController.verifyNeighborAdjacency(getCastle(kingdom), grid, domInKingdom) &&
-                                    VerificationController.verifyCastleAdjacency(getCastle(kingdom), domInKingdom) &&
-                                    VerificationController.verifyNoOverlapping(getCastle(kingdom), grid, domInKingdom)) 
-                                {
-                                    domInKingdom.setDirection(directionKind);
-                                    dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
-                                } else {
-                                    return false;
-                                }
+                                directionKind = DirectionKind.Down;
                             }
+
+                            //Create New DIK
+                            DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
+                            domInKingdom.setDirection(directionKind);
+
+                            //Verify the placement is valid
+                            if ((VerificationController.verifyNeighborAdjacency(getCastle(kingdom), grid, domInKingdom) ||
+                                    VerificationController.verifyCastleAdjacency(getCastle(kingdom), domInKingdom))&&
+                                    VerificationController.verifyNoOverlapping(getCastle(kingdom), grid, domInKingdom)) {
+                                dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
+                            } else {
+                                return false;
+                            }
+
+                            int[] pos = Square.splitPlacedDomino(domInKingdom, grid);
+                            DisjointSet s = GameController.getSet(name);
+                            Castle castle = getCastle(kingdom);
+
+                            if (grid[pos[0]].getTerrain() == grid[pos[1]].getTerrain())
+                                s.union(pos[0], pos[1]);
+                            GameController.unionCurrentSquare(pos[0],
+                                    VerificationController.getAdjacentSquareIndexesLeft(castle, grid, domInKingdom), s);
+                            GameController.unionCurrentSquare(pos[1],
+                                    VerificationController.getAdjacentSquareIndexesRight(castle, grid, domInKingdom), s);
+
                         }
+
 
                     } else if (currentLine.startsWith("P2")) {
                         String newLine = currentLine.substring(4);
                         String[] p2Tile = newLine.split(", ");
+                        String name = currentGame.getPlayer(1).getUser().getName();
+                        Square[] grid = GameController.getGrid(name);
                         for (int i = 0; i < p2Tile.length; i++) {
                             String tile = p2Tile[i];
                             if (tile.charAt(1) == '@') {
@@ -324,6 +322,8 @@ public class SaveLoadGameController {
                     } else if (currentLine.startsWith("P3")) {
                         String newLine = currentLine.substring(4);
                         String[] p3Tile = newLine.split(", ");
+                        String name = currentGame.getPlayer(2).getUser().getName();
+                        Square[] grid = GameController.getGrid(name);
                         for (int i = 0; i < p3Tile.length; i++) {
                             String tile = p3Tile[i];
                             if (tile.charAt(1) == '@') {
@@ -392,6 +392,8 @@ public class SaveLoadGameController {
                     } else if (currentLine.startsWith("P4")) {
                         String newLine = currentLine.substring(4);
                         String[] p4Tile = newLine.split(", ");
+                        String name = currentGame.getPlayer(3).getUser().getName();
+                        Square[] grid = GameController.getGrid(name);
                         for (int i = 0; i < p4Tile.length; i++) {
                             String tile = p4Tile[i];
                             if (tile.charAt(1) == '@') {

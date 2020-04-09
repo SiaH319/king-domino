@@ -14,6 +14,7 @@ Feature: Verify Neighbor Adjacency
 
   Scenario Outline: Current domino is placed in adjacent territory with existing dominoes
     Given the current player preplaced the domino with ID <id> at position <x>:<y> and direction "<direction>"
+    And the earth is round
     When check current preplaced domino adjacency is initiated
     Then the current-domino/existing-domino adjacency is "<result>"
 

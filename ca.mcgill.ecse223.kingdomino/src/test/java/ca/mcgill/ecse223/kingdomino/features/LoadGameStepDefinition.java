@@ -37,7 +37,7 @@ import io.cucumber.java.en.When;
  * it from the last position
  */
 public class LoadGameStepDefinition {
-    Kingdomino kingdomino = new Kingdomino();
+    Kingdomino kingdomino = KingdominoApplication.getKingdomino();
     Game game = new Game(48, kingdomino);
     String name;
     
@@ -50,13 +50,16 @@ public class LoadGameStepDefinition {
        addDefaultUsersAndPlayers(game);
        createAllDominoes(game);
        game.setNextPlayer(game.getPlayer(0));
-       KingdominoApplication.setKingdomino(kingdomino);
-		String name = game.getPlayer(0).getUser().getName();
-		GameController.setGrid(name,new Square[81]);
-		Square[] grid = GameController.getGrid(name);
-        for(int i = 4; i >=-4; i-- )
-            for(int j = -4 ; j <= 4; j++)
-                grid[Square.convertPositionToInt(i,j)] = new Square(i,j);
+       for(Player player: game.getPlayers()){
+		   String nameCur =player.getUser().getName();
+		   GameController.setGrid(nameCur, new Square[81]);
+		   GameController.setSet(nameCur, new DisjointSet(81));
+		   Square[] grid = GameController.getGrid(nameCur);
+		   for(int i = 4; i >=-4; i-- )
+			   for(int j = -4 ; j <= 4; j++)
+				   grid[Square.convertPositionToInt(i,j)] = new Square(i,j);
+	   }
+
     }
 
     /* Scenario Outline: Load valid incomplete game */
@@ -117,9 +120,21 @@ public class LoadGameStepDefinition {
             assertNotNull(playerTiles);
             String[] dominoIds = playerTiles.split(",");
             Kingdom kingdom = game.getPlayer(playerNumber-1).getKingdom();
+            System.out.println("Domino size"+kingdom.getTerritories().size());
             Domino dominoToPlace1 = getdominoByID(Integer.parseInt(dominoIds[0]));
             assertNotNull(kingdom);
             assertNotNull(dominoToPlace1);
+		}
+
+		String player0Name = (game.getPlayer(0).getUser().getName());
+		Square[] grid = GameController.getGrid(player0Name);
+		for(int i = 4; i >=-4; i-- ){
+			for(int j = -4 ; j <= 4; j++){
+				int cur = Square.convertPositionToInt(j,i);
+				char c = (grid[cur].getTerrain() == null) ?'/':printTerrain(grid[cur].getTerrain());
+				System.out.print(""+cur+""+c+" ");
+			}
+			System.out.println();
 		}
     }
 
@@ -283,5 +298,33 @@ public class LoadGameStepDefinition {
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
 		}
+	}
+
+	private char printTerrain(TerrainType terrainType){
+		char c;
+		switch(terrainType){
+			case WheatField:
+				c = 'W';
+				break;
+			case Mountain:
+				c = 'M';
+				break;
+			case Lake:
+				c = 'L';
+				break;
+			case Forest:
+				c = 'F';
+				break;
+			case Grass:
+				c = 'G';
+				break;
+			case Swamp:
+				c = 'S';
+				break;
+			default:
+				c = '/';
+				break;
+		}
+		return c;
 	}
 }
