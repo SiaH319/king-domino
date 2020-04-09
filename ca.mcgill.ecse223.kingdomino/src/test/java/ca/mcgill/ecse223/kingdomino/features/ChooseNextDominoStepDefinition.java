@@ -2,10 +2,7 @@ package ca.mcgill.ecse223.kingdomino.features;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.DominoController;
-import ca.mcgill.ecse223.kingdomino.controller.GameController;
 import ca.mcgill.ecse223.kingdomino.model.*;
-import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
-import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.Given;
@@ -32,7 +29,6 @@ public class ChooseNextDominoStepDefinition {
     Game game = new Game(48, kingdomino);
     Draft nDraft;
     String color;
-    Player currentPlayer;
 
     @Given("the game is initialized for choose next domino")
     public void the_game_is_initialized_for_choose_next_domino() {
@@ -53,8 +49,8 @@ public class ChooseNextDominoStepDefinition {
     public void the_next_draft_is_sorted_with_dominoes_nextdraft(String nextDraft) {
         Draft draft = new Draft(DraftStatus.Sorted, game);
         String[] dominoids = nextDraft.split(",");
-        for (int i = 0; i < dominoids.length; i++) {
-            draft.addIdSortedDomino(getdominoByID(Integer.parseInt(dominoids[i])));
+        for (String dominoid : dominoids) {
+            draft.addIdSortedDomino(getdominoByID(Integer.parseInt(dominoid)));
         }
         draft.setDraftStatus(DraftStatus.Sorted);
         game.setNextDraft(draft);
@@ -69,16 +65,21 @@ public class ChooseNextDominoStepDefinition {
         nDraft = game.getNextDraft();
         for(int i= 0; i < selections.length; i++){
             PlayerColor playercolor;
-            if (selections[i].equals("pink")) {
-                playercolor = PlayerColor.Pink;
-            } else if (selections[i].equals("green")) {
-                playercolor = PlayerColor.Green;
-            } else if (selections[i].equals("yellow")) {
-                playercolor = PlayerColor.Yellow;
-            } else if (selections[i].equals("blue")) {
-                playercolor = PlayerColor.Blue;
-            } else {
-                continue;
+            switch (selections[i]) {
+                case "pink":
+                    playercolor = PlayerColor.Pink;
+                    break;
+                case "green":
+                    playercolor = PlayerColor.Green;
+                    break;
+                case "yellow":
+                    playercolor = PlayerColor.Yellow;
+                    break;
+                case "blue":
+                    playercolor = PlayerColor.Blue;
+                    break;
+                default:
+                    continue;
             }
             for(Player player: game.getPlayers()){
                 if(player.getColor()==playercolor){
@@ -88,7 +89,6 @@ public class ChooseNextDominoStepDefinition {
                 }
             }
         }
-        System.out.println("Selection size: "+ nDraft.getSelections().size());
         game.setCurrentDraft(nDraft);
         assertNotNull(selections);
     }
@@ -97,19 +97,24 @@ public class ChooseNextDominoStepDefinition {
     public void the_current_player_is_currentplayer(String playerColor) {
         color = playerColor;
         PlayerColor playercolor;
-        if (playerColor.equals("pink")) {
-            playercolor = PlayerColor.Pink;
-        } else if (playerColor.equals("green")) {
-            playercolor = PlayerColor.Green;
-        } else if (playerColor.equals("yellow")) {
-            playercolor = PlayerColor.Yellow;
-        } else {
-            playercolor = PlayerColor.Blue;
+        switch (playerColor) {
+            case "pink":
+                playercolor = PlayerColor.Pink;
+                break;
+            case "green":
+                playercolor = PlayerColor.Green;
+                break;
+            case "yellow":
+                playercolor = PlayerColor.Yellow;
+                break;
+            default:
+                playercolor = PlayerColor.Blue;
+                break;
         }
         List<Player> players = game.getPlayers();
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getColor().equals(playercolor)) {
-                game.setNextPlayer(players.get(i));
+        for (Player player : players) {
+            if (player.getColor().equals(playercolor)) {
+                game.setNextPlayer(player);
                 break;
             }
         }
@@ -117,7 +122,7 @@ public class ChooseNextDominoStepDefinition {
 
     @When("current player chooses to place king on {int}")
     public void current_player_chooses_to_place_king_on_chosendominoid(int chosendominoid) {
-        boolean canChoose = DominoController.chooseNextDomino(game, chosendominoid);
+        DominoController.chooseNextDomino(game, chosendominoid);
     }
 
     @Then("current player king now is on {string}")
@@ -167,16 +172,22 @@ public class ChooseNextDominoStepDefinition {
         PlayerColor[] cols = new PlayerColor[4];
         int counter = 0;
         for (int i = 0; i < newSelections.length; i++) {
-            if (newSelections[i].equals("pink")) {
-                cols[i] = PlayerColor.Pink;
-            } else if (newSelections[i].equals("blue")) {
-                cols[i] = PlayerColor.Blue;
-            } else if (newSelections[i].equals("yellow")) {
-                cols[i] = PlayerColor.Yellow;
-            } else if (newSelections[i].equals("green"))  {
-                cols[i] = PlayerColor.Green;
-            } else {
-                cols[i] = null;
+            switch (newSelections[i]) {
+                case "pink":
+                    cols[i] = PlayerColor.Pink;
+                    break;
+                case "blue":
+                    cols[i] = PlayerColor.Blue;
+                    break;
+                case "yellow":
+                    cols[i] = PlayerColor.Yellow;
+                    break;
+                case "green":
+                    cols[i] = PlayerColor.Green;
+                    break;
+                default:
+                    cols[i] = null;
+                    break;
             }
 
             if(cols[i]!=null){
@@ -185,18 +196,6 @@ public class ChooseNextDominoStepDefinition {
             }
         }
 
-    }
-
-    private PlayerColor getPlayerColor(String color) {
-        if (color.equals("pink")) {
-            return PlayerColor.Pink;
-        } else if (color.equals("green")) {
-            return PlayerColor.Green;
-        } else if (color.equals("yellow")) {
-            return PlayerColor.Yellow;
-        } else {
-            return PlayerColor.Blue;
-        }
     }
 
 
@@ -262,44 +261,6 @@ public class ChooseNextDominoStepDefinition {
                 return TerrainType.Lake;
             default:
                 throw new IllegalArgumentException("Invalid terrain type: " + terrain);
-        }
-    }
-
-    private DirectionKind getDirection(String dir) {
-        switch (dir) {
-            case "up":
-                return DirectionKind.Up;
-            case "down":
-                return DirectionKind.Down;
-            case "left":
-                return DirectionKind.Left;
-            case "right":
-                return DirectionKind.Right;
-            default:
-                throw new IllegalArgumentException("Invalid direction: " + dir);
-        }
-    }
-
-    private DominoStatus getDominoStatus(String status) {
-        switch (status) {
-            case "inPile":
-                return DominoStatus.InPile;
-            case "excluded":
-                return DominoStatus.Excluded;
-            case "inCurrentDraft":
-                return DominoStatus.InCurrentDraft;
-            case "inNextDraft":
-                return DominoStatus.InNextDraft;
-            case "erroneouslyPreplaced":
-                return DominoStatus.ErroneouslyPreplaced;
-            case "correctlyPreplaced":
-                return DominoStatus.CorrectlyPreplaced;
-            case "placedInKingdom":
-                return DominoStatus.PlacedInKingdom;
-            case "discarded":
-                return DominoStatus.Discarded;
-            default:
-                throw new IllegalArgumentException("Invalid domino status: " + status);
         }
     }
 
