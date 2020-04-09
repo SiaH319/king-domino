@@ -334,9 +334,11 @@ public class Gameplay {
   }
 
   public boolean order() {
+	  System.out.println("In the order of SM");
     boolean wasEventProcessed = false;
     
     GamestatusInGame aGamestatusInGame = gamestatusInGame;
+    System.out.println("the gamestatus is :"+gamestatusInGame);
     switch (aGamestatusInGame) {
       case OrderingNextDraft:
         exitGamestatusInGame();
@@ -538,12 +540,13 @@ public class Gameplay {
 
   // line 120 "../../../../../Gameplay.ump"
    public void orderNextDraft() {
-    // TODO: implement this
+	System.out.println("Calling the controller to order");
+    GameplayController.acceptCallFromSM("orderNextDraft");
   }
 
   // line 124 "../../../../../Gameplay.ump"
    public void revealNextDraft() {
-    // TODO: implement this
+	   GameplayController.acceptCallFromSM("revealNextDraft");
   }
 
   // line 128 "../../../../../Gameplay.ump"

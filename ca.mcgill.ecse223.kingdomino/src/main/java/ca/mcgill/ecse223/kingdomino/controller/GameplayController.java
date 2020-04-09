@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
+import ca.mcgill.ecse223.kingdomino.model.Domino;
+import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
@@ -20,6 +22,7 @@ public class GameplayController {
 	
 	//Trigger Relevant Events In SM
 	public static void triggerEventsInSM(String methodName) {
+		initStatemachine();
 		switch(methodName) {
 		case "loadGame":
 			statemachine.loadGame();
@@ -40,6 +43,7 @@ public class GameplayController {
 			statemachine.discard();
 			break;
 		case "order":
+			System.out.println("calling statemachine to order");
 			statemachine.order();
 			break;
 		case "reveal":
@@ -99,15 +103,22 @@ public class GameplayController {
     public static boolean isCorrectlyPreplaced() {
     	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
     	Player currentPl=game.getNextPlayer();
-    	Kingdom kingdom = currentPl.getKingdom();
-        Castle castle = getCastle(kingdom);       
+    	Kingdom kingdom = currentPl.getKingdom();       
         DominoInKingdom dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
-        Square[] grid = GameController.getGrid(currentPl.getUser().getName());
-    	if((VerificationController.verifyGridSize(currentPl.getKingdom().getTerritories()))  && (VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom)) && ((VerificationController.verifyCastleAdjacency(castle,dominoInKingdom)) || (VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))) {
-             
+        
+    	if(dominoInKingdom.getDomino().getStatus()==DominoStatus.CorrectlyPreplaced) {
              return true;
          }
         return false;
+    }
+    public static boolean areAllDominoesInCurrentDraftSelected() {
+    	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+    	for(Domino d: game.getCurrentDraft().getIdSortedDominos()) {
+    		if(d.hasDominoSelection()==false) {
+    			return false;
+    		}
+    	}
+    	return true;
     }
 
     public static boolean isLoadedGameValid(){
@@ -160,6 +171,7 @@ public class GameplayController {
 		case "generateInitialPlayerOrder":
 			break;
 		case "orderNextDraft":
+			System.out.println("Calling draft controller to order");
 			DraftController.orderNewDraftInitiated();
 			break;
 		case "revealNextDraft":

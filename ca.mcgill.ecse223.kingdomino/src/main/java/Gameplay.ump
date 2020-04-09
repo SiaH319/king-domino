@@ -31,8 +31,10 @@ class Gameplay {
                 place [isCorrectlyPreplaced() && isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->
                     /{placeDomino();calculateCurrentPlayerScore();} EndofGame;
                 place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerOrNextTurn;
-                discard [impossibleTopPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
-                discard [impossibleTopPlaceDomino() && isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} EndofGame;
+                discard [impossibleToPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
+                discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();} EndofGame;
+                discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerorNextTurn;
+                
             }
             SelectingNextDomino{
                 makeSelection(int id) -> /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;

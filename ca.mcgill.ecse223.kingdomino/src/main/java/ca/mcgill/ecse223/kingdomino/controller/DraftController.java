@@ -74,6 +74,7 @@ public class DraftController {
      *
      */
     public static void orderNewDraftInitiated() {
+    	System.out.println("in the draft controller");
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();
         ArrayList<Integer> listIDs = new ArrayList<Integer>();
