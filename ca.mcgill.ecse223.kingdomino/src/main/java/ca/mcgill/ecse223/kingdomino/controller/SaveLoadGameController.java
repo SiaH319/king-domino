@@ -155,12 +155,14 @@ public class SaveLoadGameController {
                     if (currentLine.startsWith("C")) {
                         String newLine = currentLine.substring(3);
                         String[] claimedTile = newLine.split(", ");
+                        Draft draft = new Draft(Draft.DraftStatus.Sorted,currentGame);
                         for (int i = 0; i < claimedTile.length; i++) {
                             claimedTiles.add(Integer.parseInt(claimedTile[i]));
-                            Domino domino = getdominoByID(Integer.parseInt(claimedTile[i]));
-                            Draft draft = currentGame.getCurrentDraft();
-                            Player player = currentGame.getPlayer(i);
-                            new DominoSelection(player, domino, draft);
+//                            Domino domino = getdominoByID(Integer.parseInt(claimedTile[i]));
+//                            draft.addIdSortedDomino(domino);
+//                            Player player = currentGame.getPlayer(i);
+//                            player.setDominoSelection(null);
+//                            new DominoSelection(player, domino, draft);
                         }
                     } else if (currentLine.startsWith("U")) {
                         String newLine = currentLine.substring(3);
