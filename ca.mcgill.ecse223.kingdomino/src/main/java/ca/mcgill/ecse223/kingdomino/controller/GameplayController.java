@@ -1,11 +1,15 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
+import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
@@ -13,6 +17,8 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
+import ca.mcgill.ecse223.kingdomino.model.TerrainType;
+import ca.mcgill.ecse223.kingdomino.model.User;
 
 public class GameplayController {
 	private static Gameplay statemachine;
@@ -57,6 +63,8 @@ public class GameplayController {
 	}
 	
 	public static void triggerStartNewGameInSM(int numOfPlayers) {
+		System.out.println("triggeringStartNewGame");
+		initStatemachine();
 		statemachine.startNewGame(numOfPlayers);
 	}
 	public static void triggerMakeSelectionInSM(int id) {
@@ -73,14 +81,20 @@ public class GameplayController {
 	public static boolean isCurrentPlayerTheLastInTurn() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Player current =game.getNextPlayer();
-		boolean isLast=true;
-		for(Player p : game.getPlayers()) {
-			if(p.getDominoSelection().getDomino().getId()<current.getDominoSelection().getDomino().getId()) {
-				isLast=false;
-				break;
+		System.out.println("Current player has dominoselection"+current.getDominoSelection().getDomino().getId());
+		int dominoesInNextDraftSelected=0;
+		for(Domino d : game.getNextDraft().getIdSortedDominos()) {
+			if(d.hasDominoSelection()) {
+				dominoesInNextDraftSelected++;
 			}
 		}
-        return isLast;
+        if(dominoesInNextDraftSelected==3 && (game.getNumberOfPlayers()==2 || game.getNumberOfPlayers()==4)) {
+        	return true;
+        }
+        if(dominoesInNextDraftSelected==2 && game.getNumberOfPlayers()==3) {
+        	return true;
+        }
+        return false;
     }
         
     public static boolean isCurrentTurnTheLastInGame() {
@@ -111,14 +125,21 @@ public class GameplayController {
          }
         return false;
     }
-    public static boolean areAllDominoesInCurrentDraftSelected() {
+    public static boolean areAlmostAllDominoesInCurrentDraftSelected() {
     	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+    	int almostNumberOfDominoesSelected=game.getCurrentDraft().getIdSortedDominos().size()-1;
+    	int actualNumberOfDominoesSelected=0;
     	for(Domino d: game.getCurrentDraft().getIdSortedDominos()) {
-    		if(d.hasDominoSelection()==false) {
-    			return false;
+    		if(d.hasDominoSelection()==true) {
+    			actualNumberOfDominoesSelected++;
     		}
     	}
-    	return true;
+    	if((almostNumberOfDominoesSelected-actualNumberOfDominoesSelected)<=1) {
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
     }
 
     public static boolean isLoadedGameValid(){
@@ -188,6 +209,7 @@ public class GameplayController {
 		case "resolveTieBreak":
 			break;
 		case "switchCurrentPlayer":
+			switchCurrentPlayerInitiated();
 			break;
 		case "save":
 			break;
@@ -196,9 +218,92 @@ public class GameplayController {
 		}
 	}
 	
-	public static void acceptInitializeGameCallFromSM(int numOfPlayer){
-		
+	/**
+	 * TODO Put here a description of what this method does.
+	 *
+	 * @return
+	 */
+	private static void switchCurrentPlayerInitiated() {
+		System.out.println("Switching current player");
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		if(firstPlayerInThisTurn()) { // if its the first turn in this draft
+			Player nextPlayer=game.getPlayer(0);
+			for(Domino d : game.getCurrentDraft().getIdSortedDominos()) { //just in case it was the first draft and it was not sorted
+				if(d.hasDominoSelection() && (d.getId()<nextPlayer.getDominoSelection().getDomino().getId())) {// we use this convention
+					nextPlayer=d.getDominoSelection().getPlayer();
+					game.setNextPlayer(nextPlayer);
+				}
+				
+			}
+		}
+		else {
+			Player nextPlayer=game.getPlayer(0);
+			for(Domino d : game.getCurrentDraft().getIdSortedDominos()) {
+				if(d.hasDominoSelection()) {//if its not the fir
+					if(nextPlayer.getDominoSelection()==null) {
+						nextPlayer=d.getDominoSelection().getPlayer();
+					}
+					if(d.getId()<nextPlayer.getDominoSelection().getDomino().getId()) {
+						nextPlayer=d.getDominoSelection().getPlayer();
+						game.setNextPlayer(nextPlayer);
+					
+					}
+				}
+				
+			}
+			
+		}
 	}
+	private static boolean firstPlayerInThisTurn() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		int numberOfDominoesSelectedInCurrentDraft=0;
+		for(Domino d:game.getCurrentDraft().getIdSortedDominos()) {
+			if(d.hasDominoSelection()) {
+				numberOfDominoesSelectedInCurrentDraft++;
+			}
+		}
+		if(numberOfDominoesSelectedInCurrentDraft==4 && (game.getNumberOfPlayers()==2 || game.getNumberOfPlayers()==4)) {
+			return true;
+		}
+		if(numberOfDominoesSelectedInCurrentDraft==3 && game.getNumberOfPlayers()==3) {
+			return true;
+		}
+		return false;
+	}
+
+	public static void acceptInitializeGameCallFromSM(int numOfPlayer){
+		Kingdomino kingdomino = new Kingdomino();
+		Game game = new Game(48, kingdomino);
+		Game PreviousGame =game;
+		game.setNumberOfPlayers(4);
+		kingdomino.setCurrentGame(game);
+		// Populate game
+		addDefaultUsersAndPlayersFour(game);
+		createAllDominoes(game);
+		game.setNextPlayer(game.getPlayer(0));
+		KingdominoApplication.setKingdomino(kingdomino);
+		if(numOfPlayer==3) {
+			Game game2 = new Game(36, PreviousGame.getKingdomino());
+			game.setNumberOfPlayers(3);
+		;
+			PreviousGame.getKingdomino().setCurrentGame(game);
+			addDefaultUsersAndPlayersThree(game);
+			createAllDominoes(game);
+			game.setNextPlayer(game.getPlayer(0));
+			KingdominoApplication.setKingdomino(game.getKingdomino());
+		}
+		if(numOfPlayer==2) {
+			Game game3 = new Game(36, PreviousGame.getKingdomino());
+			game.setNumberOfPlayers(3);
+		
+			PreviousGame.getKingdomino().setCurrentGame(game);
+			addDefaultUsersAndPlayersThree(game);
+			createAllDominoes(game);
+			game.setNextPlayer(game.getPlayer(0));
+			KingdominoApplication.setKingdomino(game.getKingdomino());
+		}
+		}
+	
 	
 	public static void acceptMoveDominoCallFromSM(String dir){
 		Kingdomino kd = KingdominoApplication.getKingdomino();
@@ -222,4 +327,110 @@ public class GameplayController {
         return null;
     }
 	
+	
+	
+	
+	
+	
+	
+	
+	private static void addDefaultUsersAndPlayersFour(Game game) {
+		String[] userNames = { "User1", "User2", "User3", "User4" };
+		for (int i = 0; i < userNames.length; i++) {
+			User user = game.getKingdomino().addUser(userNames[i]);
+			Player player = new Player(game);
+			player.setUser(user);
+			player.setColor(PlayerColor.values()[i]);
+			Kingdom kingdom = new Kingdom(player);
+			new Castle(0, 0, kingdom, player);
+		}
+	}
+	private static void addDefaultUsersAndPlayersThree(Game game) {
+		String[] userNames = { "User5", "User6", "User7"};
+		for (int i = 0; i < userNames.length; i++) {
+			User user = game.getKingdomino().addUser(userNames[i]);
+			Player player = new Player(game);
+			player.setUser(user);
+			player.setColor(PlayerColor.values()[i]);
+			Kingdom kingdom = new Kingdom(player);
+			new Castle(0, 0, kingdom, player);
+		}
+	}
+	private void addDefaultUsersAndPlayersTwo(Game game) {
+		String[] userNames = { "User8", "User9"};
+		for (int i = 0; i < userNames.length; i++) {
+			User user = game.getKingdomino().addUser(userNames[i]);
+			Player player = new Player(game);
+			player.setUser(user);
+			player.setColor(PlayerColor.values()[i]);
+			Kingdom kingdom = new Kingdom(player);
+			new Castle(0, 0, kingdom, player);
+		}
+	}
+	
+	private static void createAllDominoes(Game game) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
+			String line = "";
+			String delimiters = "[:\\+()]";
+			while ((line = br.readLine()) != null) {
+				String[] dominoString = line.split(delimiters); // {id, leftTerrain, rightTerrain, crowns}
+				int dominoId = Integer.decode(dominoString[0]);
+				TerrainType leftTerrain = getTerrainType(dominoString[1]);
+				TerrainType rightTerrain = getTerrainType(dominoString[2]);
+				int numCrown = 0;
+				if (dominoString.length > 3) {
+					numCrown = Integer.decode(dominoString[3]);
+				}
+				new Domino(dominoId, leftTerrain, rightTerrain, numCrown, game);
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new java.lang.IllegalArgumentException(
+					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
+		}
+	}
+	
+	
+	private static TerrainType getTerrainType(String terrain) {
+		switch (terrain) {
+		case "W":
+			return TerrainType.WheatField;
+		case "F":
+			return TerrainType.Forest;
+		case "M":
+			return TerrainType.Mountain;
+		case "G":
+			return TerrainType.Grass;
+		case "S":
+			return TerrainType.Swamp;
+		case "L":
+			return TerrainType.Lake;
+		default:
+			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+		}
+	}
+	private Domino getdominoByID(int id) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		for (Domino domino : game.getAllDominos()) {
+			if (domino.getId() == id) {
+				return domino;
+			}
+		}
+		throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
+	}
+	
+	
+	private ArrayList<Integer> getListOfIDs(String aListOfIDs){
+		boolean beforeIsDigit =false;
+		ArrayList<Integer> myList = new ArrayList<Integer>();
+		String [] ids = aListOfIDs.split(", ");
+		for(int i=0; i<ids.length;i++) {
+			myList.add(Integer.parseInt(ids[i]));
+		}
+
+		return myList;
+		
+	}
 }

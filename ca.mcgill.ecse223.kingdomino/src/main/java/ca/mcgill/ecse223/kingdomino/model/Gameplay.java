@@ -63,6 +63,8 @@ public class Gameplay {
     switch (aGamestatus) {
       case SettingUp:
         // line 8 "../../../../../Gameplay.ump"
+  		System.out.println("Going to initialize");
+
         initializeGame(numOfPlayers);setGameOptions();
         setGamestatusInitializing(GamestatusInitializing.CreatingFirstDraft);
         wasEventProcessed = true;
@@ -363,6 +365,7 @@ public class Gameplay {
         exitGamestatusInGame();
         // line 49 "../../../../../Gameplay.ump"
         revealNextDraft();
+        switchCurrentPlayer();
         setGamestatusInGame(GamestatusInGame.PreplacingDomino);
         wasEventProcessed = true;
         break;
@@ -478,7 +481,15 @@ public class Gameplay {
        	case "CreatingFirstDraft":
        	    gamestatus = Gamestatus.Initializing;
        	    gamestatusInitializing = GamestatusInitializing.CreatingFirstDraft;
-       	// TODO add further cases here to set desired state
+       	    break;
+       	case "OrderingNextDraft":
+       		gamestatus=Gamestatus.InGame;
+       		gamestatusInGame=GamestatusInGame.OrderingNextDraft;
+       		break;
+       	case "ProceedingToNextPlayerOrNextTurn":
+       		gamestatus=Gamestatus.InGame;
+       		gamestatusInGame=GamestatusInGame.ProceedingToNextPlayerOrNextTurn;
+       		break;
        	default:
        	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
        	}
@@ -548,10 +559,12 @@ public class Gameplay {
    public void revealNextDraft() {
 	   GameplayController.acceptCallFromSM("revealNextDraft");
   }
+   
 
   // line 128 "../../../../../Gameplay.ump"
    public void initializeGame(int numOfPlayers) {
-    // TODO: implement this
+	   System.out.println("Calling the controller to initialize");
+	    GameplayController.acceptInitializeGameCallFromSM(numOfPlayers);
   }
 
   // line 132 "../../../../../Gameplay.ump"
@@ -601,7 +614,7 @@ public class Gameplay {
 
   // line 168 "../../../../../Gameplay.ump"
    public void switchCurrentPlayer() {
-    // TODO: implement this
+    GameplayController.acceptCallFromSM("switchCurrentPlayer");
   }
 
   // line 172 "../../../../../Gameplay.ump"

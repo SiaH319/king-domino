@@ -37,7 +37,8 @@ class Gameplay {
                 
             }
             SelectingNextDomino{
-                makeSelection(int id) -> /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
+                makeSelection(int id) ->[!areAlmostAllDominoesInCurrentDraftSelected] /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
+                makeSelection(int id) ->[areAlmostAllDominoesInCurrentDraftSelected] /{currentPlayerSelectDomino(id);} InGame.OrderingNextDraft;
             }
             ProceedingToNextPlayerOrNextTurn{
                 proceed [!isCurrentPlayerTheLastInTurn()] -> /{} InGame.PreplacingDomino;
@@ -48,7 +49,7 @@ class Gameplay {
                 order -> /{orderNextDraft();} InGame.RevealingNextDraft;
             }
             RevealingNextDraft{
-                reveal -> /{revealNextDraft();} InGame.PreplacingDomino;
+                reveal -> /{revealNextDraft();switchCurrentPlayer();} InGame.PreplacingDomino;
             }
             saveGame -> /{save();} SettingUp;
         }
