@@ -57,6 +57,10 @@ public class SortingAndRevealingDraftStepDefinitions {
 			newCurrentDraft.addIdSortedDomino(getdominoByID(1));
 			newCurrentDraft.addIdSortedDomino(getdominoByID(2));
 			newCurrentDraft.addIdSortedDomino(getdominoByID(3));
+			getdominoByID(4).setStatus(DominoStatus.InCurrentDraft);
+			getdominoByID(1).setStatus(DominoStatus.InCurrentDraft);
+			getdominoByID(2).setStatus(DominoStatus.InCurrentDraft);
+			getdominoByID(3).setStatus(DominoStatus.InCurrentDraft);
 		}
 		if(game.getNextDraft()==null) {
 			Draft newNextDraft= new Draft(DraftStatus.FaceDown, game);
@@ -65,6 +69,12 @@ public class SortingAndRevealingDraftStepDefinitions {
 			newNextDraft.addIdSortedDomino(getdominoByID(7));
 			newNextDraft.addIdSortedDomino(getdominoByID(6));
 			newNextDraft.addIdSortedDomino(getdominoByID(5));
+			getdominoByID(7).setStatus(DominoStatus.InNextDraft);
+			getdominoByID(8).setStatus(DominoStatus.InNextDraft);
+			getdominoByID(6).setStatus(DominoStatus.InNextDraft);
+			getdominoByID(5).setStatus(DominoStatus.InNextDraft);
+
+			
 
 		}
 		else {
@@ -86,7 +96,7 @@ public class SortingAndRevealingDraftStepDefinitions {
 			}
 		}
 		boolean expectedResult =true;
-		boolean actualResult=GameplayController.areAlmostAllDominoesInCurrentDraftSelected();
+		boolean actualResult=GameplayController.areAllDominoesInCurrentDraftSelected();
 		assertEquals(expectedResult,actualResult);
 		
 		KingdominoApplication.getStateMachine().setGamestatus("OrderingNextDraft");

@@ -33,20 +33,20 @@ class Gameplay {
                 place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerOrNextTurn;
                 discard [impossibleToPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
                 discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();} EndofGame;
-                discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerorNextTurn;
+                discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerOrNextTurn;
                 
             }
             SelectingNextDomino{
-                makeSelection(int id) ->[!areAlmostAllDominoesInCurrentDraftSelected] /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
-                makeSelection(int id) ->[areAlmostAllDominoesInCurrentDraftSelected] /{currentPlayerSelectDomino(id);} InGame.OrderingNextDraft;
+                makeSelection(int id) -> /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
+               
             }
             ProceedingToNextPlayerOrNextTurn{
-                proceed [!isCurrentPlayerTheLastInTurn()] -> /{} InGame.PreplacingDomino;
-                proceed [isCurrentPlayerTheLastInTurn()] -> /{} InGame.OrderingNextDraft;
-                exit/{switchCurrentPlayer();}
+                proceed [!isCurrentPlayerTheLastInTurn()] -> /{switchCurrentPlayer();} InGame.PreplacingDomino;
+                proceed [isCurrentPlayerTheLastInTurn()] -> /{switchDraft();} InGame.OrderingNextDraft;
+                
             }
             OrderingNextDraft{
-                order -> /{orderNextDraft();} InGame.RevealingNextDraft;
+                order [areAllDominoesInCurrentDraftSelected()]-> /{orderNextDraft();} InGame.RevealingNextDraft;
             }
             RevealingNextDraft{
                 reveal -> /{revealNextDraft();switchCurrentPlayer();} InGame.PreplacingDomino;
@@ -67,6 +67,11 @@ class Gameplay {
        	case "CreatingFirstDraft":
        	    gamestatus = Gamestatus.Initializing;
        	    gamestatusInitializing = GamestatusInitializing.CreatingFirstDraft;
+       	    break;
+       	case "OrderingNextDraft":
+       		gamestatus=Gamestatus.InGame;
+       		gamestatusInGame=GamestatusInGame.OrderingNextDraft;
+       		break;
        	// TODO add further cases here to set desired state
        	default:
        	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
@@ -76,6 +81,10 @@ class Gameplay {
     /*
      * Guards
      */
+     
+    public boolean areAllDominoesInCurrentDraftSelected(){
+    	return GameplayController.areAllDominoesInCurrentDraftSelected();
+    }
     
     public boolean isCurrentPlayerTheLastInTurn() {
         
@@ -104,7 +113,9 @@ class Gameplay {
     /*
      * Actions
      */
-    
+    public void switchDraft(){
+     	
+    }
     public void shuffleDominoPile() {
         // TODO: implement this
     }
@@ -118,11 +129,11 @@ class Gameplay {
     }
     
     public void orderNextDraft() {
-        // TODO: implement this
+        GameplayController.acceptCallFromSM("orderNextDraft");
     }
     
     public void revealNextDraft() {
-        // TODO: implement this
+        GameplayController.acceptCallFromSM("revealNextDraft");
     }
     
     public void initializeGame(int numOfPlayers){
@@ -166,7 +177,7 @@ class Gameplay {
     }
     
     public void switchCurrentPlayer(){
-    	// TODO: implement this
+    	GameplayController.acceptCallFromSM("switchCurrentPlayer");
     }
      
     public void save(){
