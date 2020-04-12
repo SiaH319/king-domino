@@ -83,12 +83,16 @@ public class GameplayController {
 	
 	//Guards
 	public static boolean isCurrentPlayerTheLastInTurn() {
+		System.out.println("in the guard of current player last in turn");
+
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Player current =game.getNextPlayer();
 		
 		int dominoesInNextDraftSelected=0;
 		
 		if(game.getNextDraft()!=null) {
+			System.out.println("there is a next draft");
+
 			for(Domino d : game.getNextDraft().getIdSortedDominos()) {
 				if(d.hasDominoSelection()) {
 					dominoesInNextDraftSelected++;
@@ -96,17 +100,31 @@ public class GameplayController {
 			}
 		}
 		else {
-			boolean foundBigger=false;
-			for(Domino d : game.getCurrentDraft().getIdSortedDominos()) {
+			System.out.println("there is no next draft");
 
+			
+			boolean foundBigger=false;
+			System.out.println("player has selected domino"+game.getNextPlayer().getDominoSelection().getDomino().getId());
+
+			for(Domino d : game.getCurrentDraft().getIdSortedDominos()) {
+				System.out.println("in the draft with domino :"+d.getId());
 				
 				if(d.getId()>game.getNextPlayer().getDominoSelection().getDomino().getId()) {
+					System.out.println("found a bigger domino than that of current player");
 
 					foundBigger=true;
 					break;
 				}
 				
 			}
+			if(foundBigger) {
+				System.out.println("current player is not the last in turn");
+			}
+			else {
+				System.out.println("current player is the last in turn");
+
+			}
+
 			return !foundBigger;
 		}
         if((dominoesInNextDraftSelected==3) && (game.getNumberOfPlayers()==2 || game.getNumberOfPlayers()==4)) {
@@ -136,12 +154,17 @@ public class GameplayController {
     }
 
     public static boolean isCorrectlyPreplaced() {
+    	
     	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
     	Player currentPl=game.getNextPlayer();
     	Kingdom kingdom = currentPl.getKingdom();       
         DominoInKingdom dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
-        
+        if(dominoInKingdom.getDomino().getStatus()==DominoStatus.CorrectlyPreplaced) {
+            return true;
+        }
+        DominoController.moveCurrentDomino(currentPl, dominoInKingdom.getDomino().getId(),null);
     	if(dominoInKingdom.getDomino().getStatus()==DominoStatus.CorrectlyPreplaced) {
+
              return true;
          }
         return false;
@@ -196,6 +219,7 @@ public class GameplayController {
     	        }
     	    }
     	    System.out.println("couldnt place the domino anywhere");
+    	    dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
     	    return true;
         
         
@@ -219,7 +243,7 @@ public class GameplayController {
 			DraftController.revealDominoesInitiated();
 			break;
 		case "placeDomino":
-			break;
+			DominoController.placeDomino(null,0);
 		case "calculateCurrentPlayerScore":
 			break;
 		case "calculateRanking":
@@ -235,6 +259,9 @@ public class GameplayController {
 			break;
 		}
 		
+	}
+	public static void acceptPlaceDominoFromSM(Player currentPlayer,int id) {
+		DominoController.placeDomino(currentPlayer,id);
 	}
 	public static void acceptDiscardDominoFromSM(DominoInKingdom dominoInKingdom) {
 		DominoController.attemptDiscardSelectedDomino(dominoInKingdom);

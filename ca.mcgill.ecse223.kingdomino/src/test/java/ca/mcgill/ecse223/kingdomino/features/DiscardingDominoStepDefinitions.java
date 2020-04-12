@@ -68,22 +68,24 @@ public class DiscardingDominoStepDefinitions {
 	@Given("it is not the last turn of the game")
 	public void it_is_not_the_last_turn_of_the_game() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		
-		Draft newCurrentDraft = new Draft(DraftStatus.FaceUp, game);
-		game.setCurrentDraft(newCurrentDraft);
-		newCurrentDraft.addIdSortedDomino(getdominoByID(1));
-		newCurrentDraft.addIdSortedDomino(getdominoByID(2));
-		newCurrentDraft.addIdSortedDomino(getdominoByID(3));
-		newCurrentDraft.addIdSortedDomino(getdominoByID(4));
+		if(game.getCurrentDraft()==null) {
+			Draft newCurrentDraft = new Draft(DraftStatus.FaceUp, game);
+			game.setCurrentDraft(newCurrentDraft);
+			newCurrentDraft.addIdSortedDomino(getdominoByID(1));
+			newCurrentDraft.addIdSortedDomino(getdominoByID(2));
+			newCurrentDraft.addIdSortedDomino(getdominoByID(3));
+			newCurrentDraft.addIdSortedDomino(getdominoByID(4));
+			game.addAllDraft(newCurrentDraft);
+		}
 		// if its not the last turn in game then there is a next draft different than null
 		Draft newNextDraft = new Draft(DraftStatus.FaceUp,game);
 		game.setNextDraft(newNextDraft);
 		newNextDraft.addIdSortedDomino(getdominoByID(5));
-		newNextDraft.addIdSortedDomino(getdominoByID(6));
+		newNextDraft.addIdSortedDomino(getdominoByID(9));
 		newNextDraft.addIdSortedDomino(getdominoByID(7));
 		newNextDraft.addIdSortedDomino(getdominoByID(8));
 		
-		game.addAllDraft(newCurrentDraft);
+		
 		game.addAllDraft(newNextDraft);
 		assertEquals(false,GameplayController.isCurrentTurnTheLastInGame());
 	}
@@ -102,8 +104,9 @@ public class DiscardingDominoStepDefinitions {
 		getdominoByID(1).setStatus(DominoStatus.PlacedInKingdom);// or could have been discarded
 		getdominoByID(2).setStatus(DominoStatus.PlacedInKingdom);// or could have been discarded
 
-		System.out.println("Current player has domino: "+game.getCurrentDraft().getIdSortedDomino(2).getId());
 		assertEquals(false,GameplayController.isCurrentPlayerTheLastInTurn());
+		System.out.println("Current player is not the last in turn ");
+
 
 	}
 	@Given("the current player is the last player in the turn")
@@ -123,24 +126,37 @@ public class DiscardingDominoStepDefinitions {
 		game.getCurrentDraft().getIdSortedDomino(1).setStatus(DominoStatus.PlacedInKingdom);//or discarded
 		game.getCurrentDraft().getIdSortedDomino(2).setStatus(DominoStatus.PlacedInKingdom);//or discarded
 		game.getCurrentDraft().getIdSortedDomino(3).setStatus(DominoStatus.InCurrentDraft);
-
+		System.out.println("the domino selection of the current player is: "+game.getNextPlayer().getDominoSelection().getDomino().getId());
 		assertEquals(true,GameplayController.isCurrentPlayerTheLastInTurn());
 	}
 	@Given("the current player is preplacing his\\/her domino with ID {int} at location {int}:{int} with direction {string}")
 	public void the_current_player_is_preplacing_his_her_domino_with_ID_3_at_location_with_direction_down(Integer ID,Integer x,Integer y,String direction) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		
 		Kingdom kingdom = game.getNextPlayer().getKingdom();
+		boolean shouldBeLast=GameplayController.isCurrentPlayerTheLastInTurn();
+		if((int)ID!=game.getNextPlayer().getDominoSelection().getDomino().getId()) {
+			
+			game.getNextPlayer().getDominoSelection().delete();
+			game.getNextPlayer().setDominoSelection(new DominoSelection(game.getNextPlayer(), getdominoByID(ID), game.getCurrentDraft()));
+			
+		}
+		boolean nowIsLast=GameplayController.isCurrentPlayerTheLastInTurn();
+		if(shouldBeLast && !nowIsLast) {
+			game.getCurrentDraft().removeIdSortedDomino(game.getCurrentDraft().getIdSortedDomino(3));
+			
+		}
+		
 		dominoInKingdom = new DominoInKingdom(x,y,kingdom,getdominoByID(ID));
 		kingdom.addTerritory(dominoInKingdom);
 		dominoInKingdom.setDirection(getDirection(direction));
+		
+		
 	}
 	@And("it is impossible to place the current domino in his\\/her kingdom")
 	public void it_is_impossible_to_place_the_current_domino_in_his_her_kingdom() {
 		boolean expectedImpossible=true;
 		boolean actualImpossible = GameplayController.impossibleToPlaceDomino();
 		assertEquals(expectedImpossible,actualImpossible);
-		dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
 		KingdominoApplication.getStateMachine().setGamestatus("PreplacingDomino");
 	}
 	@When("the current player discards his\\/her domino")
@@ -148,7 +164,7 @@ public class DiscardingDominoStepDefinitions {
 		System.out.println("is current player last in turn "+GameplayController.isCurrentPlayerTheLastInTurn());
 		System.out.println("is current turn last in game "+GameplayController.isCurrentTurnTheLastInGame());
 
-		KingdominoApplication.getStateMachine().discard(dominoInKingdom);
+		GameplayController.triggerDiscardDominoInSM(dominoInKingdom);;
 	}
 	@Then("this player now shall be making his\\/her domino selection")
 	public void this_player_now_shall_be_making_his_her_domino_selection() {

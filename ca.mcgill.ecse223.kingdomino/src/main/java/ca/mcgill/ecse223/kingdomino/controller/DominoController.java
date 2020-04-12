@@ -218,12 +218,19 @@ public class DominoController {
         DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(dominoId, kingdom);
         int oldx =dik.getX();
         int oldy = dik.getY();
+    	
+
+    	
         int newx = -1; int newy = -1;
         int mov = convertMovementStringToInt(movement);
         Domino domino;
         if(dik != null){
             domino = dik.getDomino();
             switch(mov){
+            	case -1:
+            		newx=oldx;
+            		newy=oldy;
+            		break;
                 case 0:
                     newx = oldx;
                     newy = oldy + 1;
@@ -241,6 +248,7 @@ public class DominoController {
                     newy = oldy;
                     break;
             }
+            
             dik.setX(newx); dik.setY(newy);
             Castle castle = KingdomController.getCastle(kingdom);
             Square[] grid = GameController.getGrid(player.getUser().getName());
@@ -296,6 +304,16 @@ public class DominoController {
      * @author: Cecilia Jiang
      */
     public static void placeDomino(Player player, int id){
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        if(player==null) {
+        	player=game.getNextPlayer();
+        }
+        if(id==0) {
+    		Kingdom kingdom = game.getNextPlayer().getKingdom();
+            DominoInKingdom dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
+
+        	id=dominoInKingdom.getDomino().getId();
+        }
         Domino domino = player.getDominoSelection().getDomino();
         if(domino.getId() == id && domino.getStatus() == DominoStatus.CorrectlyPreplaced){
             domino.setStatus(DominoStatus.PlacedInKingdom);
@@ -332,12 +350,14 @@ public class DominoController {
                     if((VerificationController.verifyGridSize(currentPl.getKingdom().getTerritories()))  && (VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom)) && ((VerificationController.verifyCastleAdjacency(castle,dominoInKingdom)) || (VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))) {
                         System.out.println("Found a place where we can place the domino with x= "+x+" y="+y+"direction ="+dir);
                         System.out.println("A this x,y there is :"+ grid[Square.convertPositionToInt(x,y)].getTerrain());
+                        dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
                         return true;
                     }
                 }
             }
         }
         System.out.println("couldnt place the domino anywhere");
+        dominoInKingdom.getDomino().setStatus(DominoStatus.Discarded);
         return false;
 
     }
@@ -390,6 +410,10 @@ public class DominoController {
 
     public static int convertMovementStringToInt(String movement){
         int mov = -1;
+
+        if(movement==null) {
+        	return -1;
+        }
         if(movement.equals("up") || movement.equals("Up") ) {
             mov = 0;
         } else if(movement.equals("right") || movement.equals("Right") ) {

@@ -30,10 +30,10 @@ class Gameplay {
                 place [isCorrectlyPreplaced() && !isCurrentTurnTheLastInGame()] -> /{placeDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
                 place [isCorrectlyPreplaced() && isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->
                     /{placeDomino();calculateCurrentPlayerScore();} EndofGame;
-                place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerOrNextTurn;
-                discard [impossibleToPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(dominoInKingdom); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
-                discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && isCurrentPlayerTheLastInTurn()]-> /{discardDomino(dominoInKingdom); calculateCurrentPlayerScore();} EndofGame;
-                discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(dominoInKingdom); calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.PreplacingDomino;
+                place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.PreplacingDomino;
+                discard(DominoInKingdom dominoInKingdom) [impossibleToPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(dominoInKingdom); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
+                discard(DominoInKingdom dominoInKingdom)  [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && isCurrentPlayerTheLastInTurn()]-> /{discardDomino(dominoInKingdom); calculateCurrentPlayerScore();} EndofGame;
+                discard(DominoInKingdom dominoInKingdom)  [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(dominoInKingdom); calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.PreplacingDomino;
                 
             }
             SelectingNextDomino{
@@ -174,7 +174,7 @@ class Gameplay {
     }
     
     public void placeDomino(){
-    	// TODO: implement this
+    	GameplayController.acceptCallFromSM("placeDomino");
     }
     
     public void discardDomino(DominoInKingdom dominoInKingdom){

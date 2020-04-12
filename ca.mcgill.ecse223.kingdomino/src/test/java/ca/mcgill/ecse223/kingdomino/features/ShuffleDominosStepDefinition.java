@@ -51,7 +51,7 @@ public class ShuffleDominosStepDefinition {
 		if((int)numPlayers==3) { 
 			Game game = new Game(36, PreviousGame.getKingdomino());
 			game.setNumberOfPlayers(3);
-		;
+		
 			PreviousGame.getKingdomino().setCurrentGame(game);
 			addDefaultUsersAndPlayersThree(game);
 			createAllDominoes(game);

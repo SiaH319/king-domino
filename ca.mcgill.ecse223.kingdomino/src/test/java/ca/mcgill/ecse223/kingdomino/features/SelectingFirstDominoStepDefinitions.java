@@ -2,6 +2,9 @@ package ca.mcgill.ecse223.kingdomino.features;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
+import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -17,6 +20,9 @@ public class SelectingFirstDominoStepDefinitions {
 	/* Background */
 	@Given("the game has been initialized for selecting first domino")
 	public void the_game_has_been_initialized_for_selecting_first_domino() {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		KingdominoApplication.getStateMachine();
+		GameplayController.triggerStartNewGameInSM(4);
 		
 	}
 

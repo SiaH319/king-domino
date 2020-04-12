@@ -1,5 +1,4 @@
 package ca.mcgill.ecse223.kingdomino.features;
-
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
@@ -40,11 +39,11 @@ import io.cucumber.java.en.When;
  * @author Mohamad.
  *         Created Apr 12, 2020.
  */
-public class DiscardingLastDominoStepDefinitions {
+public class PlacingLastDominoStepDefinitions {
 	Player CurrentPlayer;
 	DominoInKingdom dominoInKingdom;
-	@Given("the game is initialized for discarding last domino")
-	public void the_game_is_initialized_for_discarding_domino() {
+	@Given("the game has been initialized for placing last domino")
+	public void the_game_has_been_initialized_for_placing_last_domino() {
 		// Intialize empty game
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = new Game(48, kingdomino);
@@ -63,48 +62,23 @@ public class DiscardingLastDominoStepDefinitions {
         for (int i = 4; i >= -4; i--)
             for (int j = -4; j <= 4; j++)
                 grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+        Draft newCurrentDraft = new Draft(DraftStatus.FaceUp, game);
+		game.setCurrentDraft(newCurrentDraft);
+		newCurrentDraft.addIdSortedDomino(getdominoByID(1));
+		newCurrentDraft.addIdSortedDomino(getdominoByID(2));
+		newCurrentDraft.addIdSortedDomino(getdominoByID(6));
+		newCurrentDraft.addIdSortedDomino(getdominoByID(12));
+		game.addAllDraft(newCurrentDraft);
 	}
-	@Given("it is the last turn of the game")
-	public void it_is_the_last_turn_of_the_game() {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		if(game.getCurrentDraft()==null) {
-			System.out.println("current draft is null creating one with 1,2,3,4");
-			Draft newCurrentDraft = new Draft(DraftStatus.FaceUp, game);
-			game.setCurrentDraft(newCurrentDraft);
-			newCurrentDraft.addIdSortedDomino(getdominoByID(1));
-			newCurrentDraft.addIdSortedDomino(getdominoByID(2));
-			newCurrentDraft.addIdSortedDomino(getdominoByID(3));
-			newCurrentDraft.addIdSortedDomino(getdominoByID(4));
-			game.addAllDraft(newCurrentDraft);
-
-		}
-		game.setNextDraft(null);
-		assertEquals(true,GameplayController.isCurrentTurnTheLastInGame());
-	}
-	@Then("the game shall be finished")
-	public void the_game_shall_be_finished() {
-		Gamestatus expectedEndOfGame = Gamestatus.EndofGame;
-		Gamestatus actualEndOfGame = KingdominoApplication.getStateMachine().getGamestatus();
-		assertEquals(expectedEndOfGame,actualEndOfGame);
-	}
-	@Then("the final results after discard shall be computed")
-	public void the_final_results_after_discard_shall_be_computed() {
+	@Then("the final results after successful placement shall be computed")
+	public void the_final_results_after_successful_placement_shall_be_computed() {
 		GamestatusEndofGame expectedEndofGameCalculating =GamestatusEndofGame.CalculatingScore;
 		GamestatusEndofGame actualEndofGameCalculating = KingdominoApplication.getStateMachine().getGamestatusEndofGame();
 		assertEquals(expectedEndofGameCalculating,actualEndofGameCalculating);
 	}
 	
 	
-	@Then("the next player shall be placing his\\/her domino")
-	public void the_next_player_shall_be_placing_his_her_domino() {
-		Gamestatus expectedInGame =Gamestatus.InGame;
-		GamestatusInGame expectedInGamePreplacing=GamestatusInGame.PreplacingDomino;
-		Gamestatus actualInGame =KingdominoApplication.getStateMachine().getGamestatus();
-		GamestatusInGame actualInGamePreplacing =KingdominoApplication.getStateMachine().getGamestatusInGame();
-
-		assertEquals(expectedInGame,actualInGame);
-		assertEquals(expectedInGamePreplacing,actualInGamePreplacing);
-	}
+	
 	
 	
 	
@@ -211,6 +185,8 @@ public class DiscardingLastDominoStepDefinitions {
 			return DominoStatus.PlacedInKingdom;
 		case "discarded":
 			return DominoStatus.Discarded;
+		case "CorrectlyPreplaced":
+			return DominoStatus.CorrectlyPreplaced;
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
 		}

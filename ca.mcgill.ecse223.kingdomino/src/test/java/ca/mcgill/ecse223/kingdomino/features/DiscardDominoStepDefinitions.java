@@ -103,12 +103,6 @@ public class DiscardDominoStepDefinitions {
 	@When("the player attempts to discard the selected domino")
 	public void the_player_attempts_to_discard_the_selected_domino() {
 		boolean CanBePlaced= DominoController.attemptDiscardSelectedDomino(dominoInKingdom);
-		if(CanBePlaced) {// if the domino can be placed then we cannot discard it, thus it has to be errornlously placed
-			dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
-		}
-		else {// if it caanot be placed anywhere, thus it must be discarded
-			dominoInKingdom.getDomino().setStatus(DominoStatus.Discarded);
-		}
 	}
 	
 

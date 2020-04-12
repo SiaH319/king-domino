@@ -329,8 +329,8 @@ public class Gameplay
         {
           exitGamestatusInGame();
         // line 33 "../../../../../Gameplay.ump"
-          placeDomino();calculateCurrentPlayerScore();
-          setGamestatusInGame(GamestatusInGame.ProceedingToNextPlayerOrNextTurn);
+          placeDomino();calculateCurrentPlayerScore();switchCurrentPlayer();
+          setGamestatusInGame(GamestatusInGame.PreplacingDomino);
           wasEventProcessed = true;
           break;
         }
@@ -715,7 +715,7 @@ public class Gameplay
 
   // line 177 "../../../../../Gameplay.ump"
    public void placeDomino(){
-    // TODO: implement this
+    GameplayController.acceptCallFromSM("placeDomino");
   }
 
   // line 181 "../../../../../Gameplay.ump"
