@@ -12,6 +12,7 @@ import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
+import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
@@ -46,9 +47,7 @@ public class GameplayController {
 		case "place":
 			statemachine.place();
 			break;
-		case "discard":
-			statemachine.discard();
-			break;
+		
 		case "order":
 			System.out.println("calling statemachine to order");
 			statemachine.order();
@@ -61,6 +60,10 @@ public class GameplayController {
 		}
 		
 		
+	}
+	public static void triggerDiscardDominoInSM(DominoInKingdom dominoInKingdom) {
+		initStatemachine();
+		statemachine.discard(dominoInKingdom);
 	}
 	
 	public static void triggerStartNewGameInSM(int numOfPlayers) {
@@ -82,37 +85,54 @@ public class GameplayController {
 	public static boolean isCurrentPlayerTheLastInTurn() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Player current =game.getNextPlayer();
-		System.out.println("Current player has dominoselection"+current.getDominoSelection().getDomino().getId());
+		
 		int dominoesInNextDraftSelected=0;
-		for(Domino d : game.getNextDraft().getIdSortedDominos()) {
-			if(d.hasDominoSelection()) {
-				dominoesInNextDraftSelected++;
+		
+		if(game.getNextDraft()!=null) {
+			for(Domino d : game.getNextDraft().getIdSortedDominos()) {
+				if(d.hasDominoSelection()) {
+					dominoesInNextDraftSelected++;
+				}
 			}
 		}
-        if(dominoesInNextDraftSelected==4 && (game.getNumberOfPlayers()==2 || game.getNumberOfPlayers()==4)) {
+		else {
+			boolean foundBigger=false;
+			for(Domino d : game.getCurrentDraft().getIdSortedDominos()) {
+
+				
+				if(d.getId()>game.getNextPlayer().getDominoSelection().getDomino().getId()) {
+
+					foundBigger=true;
+					break;
+				}
+				
+			}
+			return !foundBigger;
+		}
+        if((dominoesInNextDraftSelected==3) && (game.getNumberOfPlayers()==2 || game.getNumberOfPlayers()==4)) {
+            System.out.println("CurrentPlayer is last in turn");
+
         	return true;
         }
-        if(dominoesInNextDraftSelected==3 && game.getNumberOfPlayers()==3) {
+        if((dominoesInNextDraftSelected==2) && game.getNumberOfPlayers()==3) {
+            System.out.println("CurrentPlayer is last in turn");
+
         	return true;
         }
+        System.out.println("CurrentPlayer is not last in turn");
         return false;
     }
         
     public static boolean isCurrentTurnTheLastInGame() {
     	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-    	boolean isLastTurn=false;
-    	int numPlayer =game.getNumberOfPlayers();
-    	if(numPlayer==2 || numPlayer==4) {
-    		if(game.getAllDrafts().size()==12) {
-    			isLastTurn=true;
-    		}
+    	if(game.getNextDraft()==null) {
+    		return true;
     	}
     	else {
-    		if(game.getAllDrafts().size()==9) {
-    			isLastTurn=true;
-    		}
+    		return false;
     	}
-        return isLastTurn;
+
+        
     }
 
     public static boolean isCorrectlyPreplaced() {
@@ -200,8 +220,6 @@ public class GameplayController {
 			break;
 		case "placeDomino":
 			break;
-		case "discardDomino":
-			break;
 		case "calculateCurrentPlayerScore":
 			break;
 		case "calculateRanking":
@@ -216,6 +234,10 @@ public class GameplayController {
 		case "load":
 			break;
 		}
+		
+	}
+	public static void acceptDiscardDominoFromSM(DominoInKingdom dominoInKingdom) {
+		DominoController.attemptDiscardSelectedDomino(dominoInKingdom);
 	}
 	
 	/**

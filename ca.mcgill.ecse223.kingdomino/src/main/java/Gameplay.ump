@@ -31,9 +31,9 @@ class Gameplay {
                 place [isCorrectlyPreplaced() && isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->
                     /{placeDomino();calculateCurrentPlayerScore();} EndofGame;
                 place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerOrNextTurn;
-                discard [impossibleToPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
-                discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();} EndofGame;
-                discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.ProceedingToNextPlayerOrNextTurn;
+                discard [impossibleToPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(dominoInKingdom); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
+                discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && isCurrentPlayerTheLastInTurn()]-> /{discardDomino(dominoInKingdom); calculateCurrentPlayerScore();} EndofGame;
+                discard [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(dominoInKingdom); calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.PreplacingDomino;
                 
             }
             SelectingNextDomino{
@@ -54,7 +54,13 @@ class Gameplay {
             saveGame -> /{save();} SettingUp;
         }
         EndofGame{
-            entry/{calculateRanking();resolveTieBreak();}
+        	CalculatingScore{
+           		entry/{calculateScore();}
+           		showRankings->/{}EndofGame.ShowingRankings;
+            }
+            ShowingRankings{
+            	entry/{showRanking();}
+            }
         }
     }
 
@@ -72,6 +78,11 @@ class Gameplay {
        		gamestatus=Gamestatus.InGame;
        		gamestatusInGame=GamestatusInGame.OrderingNextDraft;
        		break;
+       	case "PreplacingDomino":
+       		gamestatus=Gamestatus.InGame;
+       		gamestatusInGame=GamestatusInGame.PreplacingDomino;
+       		break;
+       		
        	// TODO add further cases here to set desired state
        	default:
        	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
@@ -106,13 +117,19 @@ class Gameplay {
 
     public boolean impossibleToPlaceDomino(){
         
-        return false;
+        return GameplayController.impossibleToPlaceDomino();
     }
     // You may need to add more guards here
         
     /*
      * Actions
      */
+    public void showRanking(){
+    
+    }
+    public void calculateScore(){
+    
+    }
     public void switchDraft(){
      	
     }
@@ -160,8 +177,9 @@ class Gameplay {
     	// TODO: implement this
     }
     
-    public void discardDomino(){
-    	// TODO: implement this
+    public void discardDomino(DominoInKingdom dominoInKingdom){
+    	    GameplayController.acceptDiscardDominoFromSM(dominoInKingdom);
+
     }
     
     public void calculateCurrentPlayerScore(){

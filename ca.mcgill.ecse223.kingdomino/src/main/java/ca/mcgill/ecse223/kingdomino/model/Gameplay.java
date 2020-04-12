@@ -16,9 +16,11 @@ public class Gameplay
   public enum Gamestatus { SettingUp, Initializing, InGame, EndofGame }
   public enum GamestatusInitializing { Null, CreatingFirstDraft, SelectingFirstDomino, ProceedingToNextPlayerOrNextTurn }
   public enum GamestatusInGame { Null, PreplacingDomino, SelectingNextDomino, ProceedingToNextPlayerOrNextTurn, OrderingNextDraft, RevealingNextDraft }
+  public enum GamestatusEndofGame { Null, CalculatingScore, ShowingRankings }
   private Gamestatus gamestatus;
   private GamestatusInitializing gamestatusInitializing;
   private GamestatusInGame gamestatusInGame;
+  private GamestatusEndofGame gamestatusEndofGame;
 
   //------------------------
   // CONSTRUCTOR
@@ -28,6 +30,7 @@ public class Gameplay
   {
     setGamestatusInitializing(GamestatusInitializing.Null);
     setGamestatusInGame(GamestatusInGame.Null);
+    setGamestatusEndofGame(GamestatusEndofGame.Null);
     setGamestatus(Gamestatus.SettingUp);
   }
 
@@ -40,6 +43,7 @@ public class Gameplay
     String answer = gamestatus.toString();
     if (gamestatusInitializing != GamestatusInitializing.Null) { answer += "." + gamestatusInitializing.toString(); }
     if (gamestatusInGame != GamestatusInGame.Null) { answer += "." + gamestatusInGame.toString(); }
+    if (gamestatusEndofGame != GamestatusEndofGame.Null) { answer += "." + gamestatusEndofGame.toString(); }
     return answer;
   }
 
@@ -56,6 +60,11 @@ public class Gameplay
   public GamestatusInGame getGamestatusInGame()
   {
     return gamestatusInGame;
+  }
+
+  public GamestatusEndofGame getGamestatusEndofGame()
+  {
+    return gamestatusEndofGame;
   }
 
   public boolean startNewGame(int numOfPlayers)
@@ -333,7 +342,7 @@ public class Gameplay
     return wasEventProcessed;
   }
 
-  public boolean discard()
+  public boolean discard(DominoInKingdom dominoInKingdom)
   {
     boolean wasEventProcessed = false;
     
@@ -345,7 +354,7 @@ public class Gameplay
         {
           exitGamestatusInGame();
         // line 34 "../../../../../Gameplay.ump"
-          discardDomino(); calculateCurrentPlayerScore();
+          discardDomino(dominoInKingdom); calculateCurrentPlayerScore();
           setGamestatusInGame(GamestatusInGame.SelectingNextDomino);
           wasEventProcessed = true;
           break;
@@ -354,7 +363,7 @@ public class Gameplay
         {
           exitGamestatus();
         // line 35 "../../../../../Gameplay.ump"
-          discardDomino(); calculateCurrentPlayerScore();
+          discardDomino(dominoInKingdom); calculateCurrentPlayerScore();
           setGamestatus(Gamestatus.EndofGame);
           wasEventProcessed = true;
           break;
@@ -363,8 +372,8 @@ public class Gameplay
         {
           exitGamestatusInGame();
         // line 36 "../../../../../Gameplay.ump"
-          discardDomino(); calculateCurrentPlayerScore();
-          setGamestatusInGame(GamestatusInGame.ProceedingToNextPlayerOrNextTurn);
+          discardDomino(dominoInKingdom); calculateCurrentPlayerScore();switchCurrentPlayer();
+          setGamestatusInGame(GamestatusInGame.PreplacingDomino);
           wasEventProcessed = true;
           break;
         }
@@ -411,10 +420,29 @@ public class Gameplay
       case RevealingNextDraft:
         exitGamestatusInGame();
         // line 52 "../../../../../Gameplay.ump"
-        revealNextDraft();
-        switchCurrentPlayer();
-        
+        revealNextDraft();switchCurrentPlayer();
         setGamestatusInGame(GamestatusInGame.PreplacingDomino);
+        wasEventProcessed = true;
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
+  public boolean showRankings()
+  {
+    boolean wasEventProcessed = false;
+    
+    GamestatusEndofGame aGamestatusEndofGame = gamestatusEndofGame;
+    switch (aGamestatusEndofGame)
+    {
+      case CalculatingScore:
+        exitGamestatusEndofGame();
+        // line 59 "../../../../../Gameplay.ump"
+        
+        setGamestatusEndofGame(GamestatusEndofGame.ShowingRankings);
         wasEventProcessed = true;
         break;
       default:
@@ -434,6 +462,9 @@ public class Gameplay
       case InGame:
         exitGamestatusInGame();
         break;
+      case EndofGame:
+        exitGamestatusEndofGame();
+        break;
     }
   }
 
@@ -451,8 +482,7 @@ public class Gameplay
         if (gamestatusInGame == GamestatusInGame.Null) { setGamestatusInGame(GamestatusInGame.PreplacingDomino); }
         break;
       case EndofGame:
-        // line 57 "../../../../../Gameplay.ump"
-        calculateRanking();resolveTieBreak();
+        if (gamestatusEndofGame == GamestatusEndofGame.Null) { setGamestatusEndofGame(GamestatusEndofGame.CalculatingScore); }
         break;
     }
   }
@@ -518,6 +548,38 @@ public class Gameplay
     if (gamestatus != Gamestatus.InGame && aGamestatusInGame != GamestatusInGame.Null) { setGamestatus(Gamestatus.InGame); }
   }
 
+  private void exitGamestatusEndofGame()
+  {
+    switch(gamestatusEndofGame)
+    {
+      case CalculatingScore:
+        setGamestatusEndofGame(GamestatusEndofGame.Null);
+        break;
+      case ShowingRankings:
+        setGamestatusEndofGame(GamestatusEndofGame.Null);
+        break;
+    }
+  }
+
+  private void setGamestatusEndofGame(GamestatusEndofGame aGamestatusEndofGame)
+  {
+    gamestatusEndofGame = aGamestatusEndofGame;
+    if (gamestatus != Gamestatus.EndofGame && aGamestatusEndofGame != GamestatusEndofGame.Null) { setGamestatus(Gamestatus.EndofGame); }
+
+    // entry actions and do activities
+    switch(gamestatusEndofGame)
+    {
+      case CalculatingScore:
+        // line 58 "../../../../../Gameplay.ump"
+        calculateScore();
+        break;
+      case ShowingRankings:
+        // line 62 "../../../../../Gameplay.ump"
+        showRanking();
+        break;
+    }
+  }
+
   public void delete()
   {}
 
@@ -525,7 +587,7 @@ public class Gameplay
   /**
    * Setter for test setup
    */
-  // line 66 "../../../../../Gameplay.ump"
+  // line 72 "../../../../../Gameplay.ump"
    public void setGamestatus(String status){
     switch (status) {
        	case "CreatingFirstDraft":
@@ -536,6 +598,11 @@ public class Gameplay
        		gamestatus=Gamestatus.InGame;
        		gamestatusInGame=GamestatusInGame.OrderingNextDraft;
        		break;
+       	case "PreplacingDomino":
+       		gamestatus=Gamestatus.InGame;
+       		gamestatusInGame=GamestatusInGame.PreplacingDomino;
+       		break;
+       		
        	// TODO add further cases here to set desired state
        	default:
        	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
@@ -546,34 +613,34 @@ public class Gameplay
   /**
    * Guards
    */
-  // line 86 "../../../../../Gameplay.ump"
+  // line 97 "../../../../../Gameplay.ump"
    public boolean areAllDominoesInCurrentDraftSelected(){
     return GameplayController.areAllDominoesInCurrentDraftSelected();
   }
 
-  // line 91 "../../../../../Gameplay.ump"
+  // line 102 "../../../../../Gameplay.ump"
    public boolean isCurrentPlayerTheLastInTurn(){
     return GameplayController.isCurrentPlayerTheLastInTurn();
   }
 
-  // line 95 "../../../../../Gameplay.ump"
+  // line 106 "../../../../../Gameplay.ump"
    public boolean isCurrentTurnTheLastInGame(){
     return GameplayController.isCurrentTurnTheLastInGame();
   }
 
-  // line 99 "../../../../../Gameplay.ump"
+  // line 110 "../../../../../Gameplay.ump"
    public boolean isCorrectlyPreplaced(){
     return GameplayController.isCorrectlyPreplaced();
   }
 
-  // line 104 "../../../../../Gameplay.ump"
+  // line 115 "../../../../../Gameplay.ump"
    public boolean isLoadedGameValid(){
     return GameplayController.isLoadedGameValid();
   }
 
-  // line 109 "../../../../../Gameplay.ump"
+  // line 120 "../../../../../Gameplay.ump"
    public boolean impossibleToPlaceDomino(){
-    return false;
+    return GameplayController.impossibleToPlaceDomino();
   }
 
 
@@ -581,97 +648,107 @@ public class Gameplay
    * You may need to add more guards here
    * Actions
    */
-  // line 118 "../../../../../Gameplay.ump"
+  // line 129 "../../../../../Gameplay.ump"
+   public void showRanking(){
+    
+  }
+
+  // line 132 "../../../../../Gameplay.ump"
+   public void calculateScore(){
+    
+  }
+
+  // line 135 "../../../../../Gameplay.ump"
    public void switchDraft(){
     
   }
 
-  // line 120 "../../../../../Gameplay.ump"
+  // line 137 "../../../../../Gameplay.ump"
    public void shuffleDominoPile(){
     // TODO: implement this
   }
 
-  // line 124 "../../../../../Gameplay.ump"
+  // line 141 "../../../../../Gameplay.ump"
    public void generateInitialPlayerOrder(){
     // TODO: implement this
   }
 
-  // line 128 "../../../../../Gameplay.ump"
+  // line 145 "../../../../../Gameplay.ump"
    public void createNextDraft(){
     // TODO: implement this
   }
 
-  // line 132 "../../../../../Gameplay.ump"
+  // line 149 "../../../../../Gameplay.ump"
    public void orderNextDraft(){
     GameplayController.acceptCallFromSM("orderNextDraft");
   }
 
-  // line 136 "../../../../../Gameplay.ump"
+  // line 153 "../../../../../Gameplay.ump"
    public void revealNextDraft(){
     GameplayController.acceptCallFromSM("revealNextDraft");
   }
 
-  // line 140 "../../../../../Gameplay.ump"
+  // line 157 "../../../../../Gameplay.ump"
    public void initializeGame(int numOfPlayers){
     // TODO: implement this
   }
 
-  // line 144 "../../../../../Gameplay.ump"
+  // line 161 "../../../../../Gameplay.ump"
    public void setGameOptions(){
     // TODO: implement this
   }
 
-  // line 148 "../../../../../Gameplay.ump"
+  // line 165 "../../../../../Gameplay.ump"
    public void currentPlayerSelectDomino(int id){
     // TODO: implement this
   }
 
-  // line 152 "../../../../../Gameplay.ump"
+  // line 169 "../../../../../Gameplay.ump"
    public void moveCurrentDomino(String dir){
     GameplayController.acceptMoveDominoCallFromSM(dir);
   }
 
-  // line 156 "../../../../../Gameplay.ump"
+  // line 173 "../../../../../Gameplay.ump"
    public void rotateCurrentDomino(int dir){
     // TODO: implement this
   }
 
-  // line 160 "../../../../../Gameplay.ump"
+  // line 177 "../../../../../Gameplay.ump"
    public void placeDomino(){
     // TODO: implement this
   }
 
-  // line 164 "../../../../../Gameplay.ump"
-   public void discardDomino(){
-    // TODO: implement this
+  // line 181 "../../../../../Gameplay.ump"
+   public void discardDomino(DominoInKingdom dominoInKingdom){
+    GameplayController.acceptDiscardDominoFromSM(dominoInKingdom);
   }
 
-  // line 168 "../../../../../Gameplay.ump"
+  // line 186 "../../../../../Gameplay.ump"
    public void calculateCurrentPlayerScore(){
     // TODO: implement this
   }
 
-  // line 172 "../../../../../Gameplay.ump"
+  // line 190 "../../../../../Gameplay.ump"
    public void calculateRanking(){
     // TODO: implement this
   }
 
-  // line 176 "../../../../../Gameplay.ump"
+  // line 194 "../../../../../Gameplay.ump"
    public void resolveTieBreak(){
     // TODO: implement this
   }
 
-  // line 180 "../../../../../Gameplay.ump"
+  // line 198 "../../../../../Gameplay.ump"
    public void switchCurrentPlayer(){
     GameplayController.acceptCallFromSM("switchCurrentPlayer");
   }
 
-  // line 184 "../../../../../Gameplay.ump"
+  // line 202 "../../../../../Gameplay.ump"
    public void save(){
     // TODO: implement this
   }
 
-  // line 188 "../../../../../Gameplay.ump"
+  // line 206 "../../../../../Gameplay.ump"
    public void load(){
     // TODO: implement this
   }
