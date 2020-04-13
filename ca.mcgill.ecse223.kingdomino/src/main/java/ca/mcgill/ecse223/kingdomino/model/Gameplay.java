@@ -309,6 +309,9 @@ public class Gameplay
       case PreplacingDomino:
         if (isCorrectlyPreplaced()&&!(isCurrentTurnTheLastInGame()))
         {
+        	System.out.println("----case1----");
+
+
           exitGamestatusInGame();
         // line 30 "../../../../../Gameplay.ump"
           placeDomino(); calculateCurrentPlayerScore();
@@ -318,6 +321,8 @@ public class Gameplay
         }
         if (isCorrectlyPreplaced()&&isCurrentPlayerTheLastInTurn()&&isCurrentTurnTheLastInGame())
         {
+        	System.out.println("----case2----");
+
           exitGamestatus();
         // line 32 "../../../../../Gameplay.ump"
           placeDomino();calculateCurrentPlayerScore();
@@ -327,6 +332,8 @@ public class Gameplay
         }
         if (isCorrectlyPreplaced()&&!(isCurrentPlayerTheLastInTurn())&&isCurrentTurnTheLastInGame())
         {
+        	System.out.println("----case3----");
+
           exitGamestatusInGame();
         // line 33 "../../../../../Gameplay.ump"
           placeDomino();calculateCurrentPlayerScore();switchCurrentPlayer();
@@ -725,7 +732,8 @@ public class Gameplay
 
   // line 186 "../../../../../Gameplay.ump"
    public void calculateCurrentPlayerScore(){
-    // TODO: implement this
+	   System.out.println("going to calculate the score");
+    GameplayController.acceptCallFromSM("calculateCurrentPlayerScore");
   }
 
   // line 190 "../../../../../Gameplay.ump"

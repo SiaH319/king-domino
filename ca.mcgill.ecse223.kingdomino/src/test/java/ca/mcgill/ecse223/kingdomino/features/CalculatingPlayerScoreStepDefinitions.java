@@ -1,4 +1,5 @@
 package ca.mcgill.ecse223.kingdomino.features;
+
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
@@ -6,11 +7,13 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.CalculationController;
 import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
 import ca.mcgill.ecse223.kingdomino.controller.DominoController;
 import ca.mcgill.ecse223.kingdomino.controller.GameController;
 import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
+import ca.mcgill.ecse223.kingdomino.model.BonusOption;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -21,9 +24,9 @@ import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay.Gamestatus;
-import ca.mcgill.ecse223.kingdomino.model.Gameplay.GamestatusEndofGame;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay.GamestatusInGame;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
+import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
@@ -33,66 +36,94 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
 /**
  * TODO Put here a description of what this class does.
  *
- * @author Mohamad.
- *         Created Apr 12, 2020.
+ * @author Mohamad. Created Apr 12, 2020.
  */
-public class PlacingDominoStepDefinitions {
-	Player CurrentPlayer;
-	DominoInKingdom dominoInKingdom;
-	@Given("the game has been initialized for placing domino")
-	public void the_game_has_been_initialized_for_placing_domino() {
+public class CalculatingPlayerScoreStepDefinitions {
+	@Given("the game is initialized for calculating player score")
+	public void the_game_is_initialized_for_calculating_player_score() {
 		// Intialize empty game
-        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-        Game game = new Game(48, kingdomino);
-        game.setNumberOfPlayers(4);
-        kingdomino.setCurrentGame(game);
-        // Populate game
-        addDefaultUsersAndPlayers(game);
-        createAllDominoes(game);
-        game.setNextPlayer(game.getPlayer(0));
-        CurrentPlayer=game.getNextPlayer();
-        KingdominoApplication.setKingdomino(kingdomino);
-        String player0Name = (game.getPlayer(0).getUser().getName());
-        GameController.setGrid(player0Name, new Square[81]);
-        GameController.setSet(player0Name, new DisjointSet(81));
-        Square[] grid = GameController.getGrid(player0Name);
-        for (int i = 4; i >= -4; i--)
-            for (int j = -4; j <= 4; j++)
-                grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = new Game(48, kingdomino);
+		game.setNumberOfPlayers(4);
+		kingdomino.setCurrentGame(game);
+		// Populate game
+		addDefaultUsersAndPlayers(game);
+		createAllDominoes(game);
+		game.setNextPlayer(game.getPlayer(0));
+		KingdominoApplication.setKingdomino(kingdomino);
+		String player0Name = (game.getPlayer(0).getUser().getName());
+		GameController.setGrid(player0Name, new Square[81]);
+		GameController.setSet(player0Name, new DisjointSet(81));
+		Square[] grid = GameController.getGrid(player0Name);
+		for (int i = 4; i >= -4; i--)
+			for (int j = -4; j <= 4; j++)
+				grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+		if (game.getCurrentDraft() == null) {
+			Draft newCurrentDraft = new Draft(DraftStatus.FaceUp, game);
+			game.setCurrentDraft(newCurrentDraft);
+			newCurrentDraft.addIdSortedDomino(getdominoByID(19));
+			newCurrentDraft.addIdSortedDomino(getdominoByID(2));
+			newCurrentDraft.addIdSortedDomino(getdominoByID(30));
+			newCurrentDraft.addIdSortedDomino(getdominoByID(3));
+			game.addAllDraft(newCurrentDraft);
+			game.getNextPlayer().setDominoSelection(new DominoSelection(game.getNextPlayer(), getdominoByID(19), newCurrentDraft));
+		}
 	}
-	
-	@And("the preplaced domino has the status {string}")
-	public void the_preplaced_domino_has_the_status(String dominoStatusString) {
+
+	@Given("the current player has no dominoes in his\\/her kingdom yet")
+	public void the_current_player_has_no_dominoes_in_his_her_kingdom_yet() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		for(KingdomTerritory t : game.getNextPlayer().getKingdom().getTerritories()) {
+			game.getNextPlayer().getKingdom().removeTerritory(t);
+		}
+		assertEquals(1,game.getNextPlayer().getKingdom().getTerritories().size()); //should only have the castle
+	}
+
+	@Given("the score of the current player is {int}")
+	public void the_score_of_the_current_player_is(Integer int1) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+
+		CalculationController.calculateCurrentPlayerScore();
+
+		assertEquals((int)int1,game.getNextPlayer().getPropertyScore());
+	}
+
+	@Then("the score of the current player shall be {int}")
+	public void the_score_of_the_current_player_shall_be(Integer int1) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+
+
+		assertEquals((int)int1,game.getNextPlayer().getPropertyScore());
+	}
+
+	@Given("the game has no bonus options selected")
+	public void the_game_has_no_bonus_options_selected() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		for(BonusOption b:game.getSelectedBonusOptions()) {
+			game.removeSelectedBonusOption(b);
+		}
+		assertEquals(0,game.getSelectedBonusOptions().size());
+	}
+
+	@Given("the current player is placing his\\/her domino with ID {int}")
+	public void the_current_player_is_placing_his_her_domino_with_ID(Integer int1) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Kingdom kingdom = game.getNextPlayer().getKingdom();
-        DominoInKingdom dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
-		boolean isCorrectlyPreplaced=GameplayController.isCorrectlyPreplaced();
-		
-		DominoStatus expectedStatus = getDominoStatus(dominoStatusString);
-		DominoStatus actualStatus=dominoInKingdom.getDomino().getStatus();
-		assertEquals(expectedStatus,actualStatus);
-		KingdominoApplication.getStateMachine().setGamestatus("PreplacingDomino");
-		System.out.println("State machine ste to preplacing");
-
-
-		
+		if(game.getNextPlayer().getDominoSelection()==null) {
+			game.getNextPlayer().setDominoSelection(new DominoSelection(game.getNextPlayer(), getdominoByID(int1), game.getCurrentDraft()));
+		}
+		DominoInKingdom dominoInKingdom = new DominoInKingdom(0, 0, kingdom, getdominoByID(int1));
+		kingdom.addTerritory(dominoInKingdom);
+		dominoInKingdom.setDirection(getDirection("down"));
 	}
-	@When("the current player places his\\/her domino")
-	public void the_current_player_places_his_her_domino() {
-		GameplayController.triggerEventsInSM("place");
-		System.out.println("Finished placing");
-	}
-	
-	
-	
-	
-	
-	///////////////////////////////////////
-	/// -----Private Helper Methods---- ///
-	///////////////////////////////////////
+
+///////////////////////////////////////
+/// -----Private Helper Methods---- ///
+///////////////////////////////////////
 
 	private void addDefaultUsersAndPlayers(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
@@ -192,8 +223,6 @@ public class PlacingDominoStepDefinitions {
 			return DominoStatus.PlacedInKingdom;
 		case "discarded":
 			return DominoStatus.Discarded;
-		case "CorrectlyPreplaced":
-			return DominoStatus.CorrectlyPreplaced;
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
 		}

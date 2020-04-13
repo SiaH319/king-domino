@@ -305,18 +305,42 @@ public class DominoController {
      */
     public static void placeDomino(Player player, int id){
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        DominoInKingdom dominoInKingdom=null;
+        Kingdom kingdom=null;
         if(player==null) {
         	player=game.getNextPlayer();
         }
         if(id==0) {
-    		Kingdom kingdom = game.getNextPlayer().getKingdom();
-            DominoInKingdom dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
+    		kingdom = game.getNextPlayer().getKingdom();
+            dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
 
         	id=dominoInKingdom.getDomino().getId();
         }
         Domino domino = player.getDominoSelection().getDomino();
         if(domino.getId() == id && domino.getStatus() == DominoStatus.CorrectlyPreplaced){
             domino.setStatus(DominoStatus.PlacedInKingdom);
+            String player0Name = (game.getPlayer(0).getUser().getName());
+            Square[] grid = GameController.getGrid(player0Name);
+            int[] pos = Square.splitPlacedDomino(dominoInKingdom, grid);
+            DisjointSet s = GameController.getSet(player0Name);
+            Castle castle = getCastle(kingdom);
+            if (grid[pos[0]].getTerrain() == grid[pos[1]].getTerrain())
+                s.union(pos[0], pos[1]);
+            GameController.unionCurrentSquare(pos[0],
+                    VerificationController.getAdjacentSquareIndexesLeft(castle, grid, dominoInKingdom), s);
+            GameController.unionCurrentSquare(pos[1],
+                    VerificationController.getAdjacentSquareIndexesRight(castle, grid, dominoInKingdom), s);
+            System.out.println("added the domino to the kingdom with id: "+id+" at position: "+dominoInKingdom.getX()+":"+dominoInKingdom.getY());
+            for(int i = 4; i >=-4; i-- ){
+                for(int j = -4 ; j <= 4; j++){
+                    int cur = Square.convertPositionToInt(j,i);
+                    char c = (grid[cur].getTerrain() == null) ?'/':printTerrain(grid[cur].getTerrain());
+                    System.out.print(""+cur+""+c+" ");
+                }
+                System.out.println();
+            }
+            System.out.println("Disjoint Set");
+            System.out.println(GameController.getSet(player0Name).toString(grid));
         } else
             throw new java.lang.IllegalArgumentException("The current domino placement does not respect the " +
                     "adjacency rules");
@@ -333,6 +357,9 @@ public class DominoController {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Player currentPl = game.getPlayer(0);
         Kingdom kingdom = currentPl.getKingdom();
+        if(dominoInKingdom==null) {
+        	dominoInKingdom=(DominoInKingdom)kingdom.getTerritory(kingdom.getTerritories().size()-1);
+        }
         Castle castle = getCastle(kingdom);        
         Square[] grid = GameController.getGrid(currentPl.getUser().getName());
         ArrayList<DominoInKingdom.DirectionKind> directions =new ArrayList<DominoInKingdom.DirectionKind>();
@@ -459,6 +486,33 @@ public class DominoController {
                 break;
         }
         return dir;
+    }
+    private static char printTerrain(TerrainType terrainType){
+        char c;
+        switch(terrainType){
+            case WheatField:
+                c = 'W';
+                break;
+            case Mountain:
+                c = 'M';
+                break;
+            case Lake:
+                c = 'L';
+                break;
+            case Forest:
+                c = 'F';
+                break;
+            case Grass:
+                c = 'G';
+                break;
+            case Swamp:
+                c = 'S';
+                break;
+            default:
+                c = '/';
+                break;
+        }
+        return c;
     }
 
     private static Castle getCastle (Kingdom kingdom) {

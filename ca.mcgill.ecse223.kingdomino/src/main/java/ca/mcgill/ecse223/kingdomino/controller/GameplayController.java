@@ -91,7 +91,7 @@ public class GameplayController {
 		int dominoesInNextDraftSelected=0;
 		
 		if(game.getNextDraft()!=null) {
-			System.out.println("there is a next draft");
+			
 
 			for(Domino d : game.getNextDraft().getIdSortedDominos()) {
 				if(d.hasDominoSelection()) {
@@ -100,17 +100,17 @@ public class GameplayController {
 			}
 		}
 		else {
-			System.out.println("there is no next draft");
+			
 
 			
 			boolean foundBigger=false;
-			System.out.println("player has selected domino"+game.getNextPlayer().getDominoSelection().getDomino().getId());
+			//System.out.println("player has selected domino"+game.getNextPlayer().getDominoSelection().getDomino().getId());
 
 			for(Domino d : game.getCurrentDraft().getIdSortedDominos()) {
-				System.out.println("in the draft with domino :"+d.getId());
+			
 				
 				if(d.getId()>game.getNextPlayer().getDominoSelection().getDomino().getId()) {
-					System.out.println("found a bigger domino than that of current player");
+					
 
 					foundBigger=true;
 					break;
@@ -118,10 +118,10 @@ public class GameplayController {
 				
 			}
 			if(foundBigger) {
-				System.out.println("current player is not the last in turn");
+				
 			}
 			else {
-				System.out.println("current player is the last in turn");
+				
 
 			}
 
@@ -244,7 +244,9 @@ public class GameplayController {
 			break;
 		case "placeDomino":
 			DominoController.placeDomino(null,0);
+			break;
 		case "calculateCurrentPlayerScore":
+			CalculationController.calculateCurrentPlayerScore();
 			break;
 		case "calculateRanking":
 			break;
