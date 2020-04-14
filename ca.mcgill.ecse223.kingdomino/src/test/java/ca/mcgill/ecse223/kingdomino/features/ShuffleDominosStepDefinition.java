@@ -75,7 +75,7 @@ public class ShuffleDominosStepDefinition {
 	
 	@When("the shuffling of dominoes is initiated")
 	public void the_shuffling_of_dominoes_is_initiated() {
-		ShuffleDominoesController.shuffle();
+		ShuffleDominoesController.shuffle(true);
 		
 	}
 	@When("I initiate to arrange the domino in the fixed order {string}")

@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
@@ -24,6 +25,7 @@ import ca.mcgill.ecse223.kingdomino.model.User;
 
 public class GameplayController {
 	private static Gameplay statemachine;
+	private static ArrayList<Player> Orders=new ArrayList<Player>();
 	public static void initStatemachine() {
 		statemachine = KingdominoApplication.getStateMachine();
 	}
@@ -37,9 +39,6 @@ public class GameplayController {
 			break;
 		case "saveGame":
 			statemachine.saveGame();
-			break;
-		case "draftReady":
-			statemachine.draftReady();
 			break;
 		case "proceed":
 			statemachine.proceed();
@@ -61,16 +60,34 @@ public class GameplayController {
 		
 		
 	}
+	/**
+	 * 
+	 * given a dominoInKingdom, we will try to discard
+	 * @author Mohamad
+	 * @param dominoInKingdom
+	 */
 	public static void triggerDiscardDominoInSM(DominoInKingdom dominoInKingdom) {
 		initStatemachine();
 		statemachine.discard(dominoInKingdom);
 	}
+	/**
+	 * 
+	 * Given a number of player, we will try to create a new game.
+	 * @author Mohamad
+	 * @param numOfPlayers
+	 */
 	
 	public static void triggerStartNewGameInSM(int numOfPlayers) {
 		System.out.println("triggeringStartNewGame");
 		initStatemachine();
 		statemachine.startNewGame(numOfPlayers);
 	}
+	/**
+	 * 
+	 * Given an id of a domino, the current player will try to select it.
+	 * @author Mohamad
+	 * @param id
+	 */
 	public static void triggerMakeSelectionInSM(int id) {
 		statemachine.makeSelection(id);
 	}
@@ -82,6 +99,17 @@ public class GameplayController {
 	}
 	
 	//Guards
+	/**
+	 * 
+	 * Checks is the current player is last in turn
+	 * If there is a next draft, see how many selection
+	 * have been made
+	 * 
+	 * If there is no next draft, compare selected domino Id to the ones in the current draft
+	 * 
+	 * @author Mohamad
+	 * @return true if curren tplayer is last, false otherwise
+	 */
 	public static boolean isCurrentPlayerTheLastInTurn() {
 		System.out.println("in the guard of current player last in turn");
 
@@ -100,47 +128,34 @@ public class GameplayController {
 			}
 		}
 		else {
-			
-
-			
 			boolean foundBigger=false;
-			//System.out.println("player has selected domino"+game.getNextPlayer().getDominoSelection().getDomino().getId());
-
 			for(Domino d : game.getCurrentDraft().getIdSortedDominos()) {
-			
-				
 				if(d.getId()>game.getNextPlayer().getDominoSelection().getDomino().getId()) {
-					
-
-					foundBigger=true;
+					foundBigger=true;															// if found an id bigger than that of current player
 					break;
 				}
-				
 			}
-			if(foundBigger) {
-				
-			}
-			else {
-				
-
-			}
-
-			return !foundBigger;
+			return !foundBigger;     // if no bigger, return true
 		}
-        if((dominoesInNextDraftSelected==3) && (game.getNumberOfPlayers()==2 || game.getNumberOfPlayers()==4)) {
-            System.out.println("CurrentPlayer is last in turn");
+        if((dominoesInNextDraftSelected==3) && (game.getNumberOfPlayers()==2 || game.getNumberOfPlayers()==4)) {// if almost all dominoes in next draft
+            System.out.println("CurrentPlayer is last in turn");												// are sleected
 
         	return true;
         }
-        if((dominoesInNextDraftSelected==2) && game.getNumberOfPlayers()==3) {
-            System.out.println("CurrentPlayer is last in turn");
+        if((dominoesInNextDraftSelected==2) && game.getNumberOfPlayers()==3) {									//if almost all dominoes in next draft 
+            System.out.println("CurrentPlayer is last in turn");												// are selected
 
         	return true;
         }
         System.out.println("CurrentPlayer is not last in turn");
         return false;
     }
-        
+    /**
+     * 
+     * if there is a next draft then this is not the last tuen
+     * @author Mohamad
+     * @return true if next draft doesn't exist
+     */
     public static boolean isCurrentTurnTheLastInGame() {
     	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
     	if(game.getNextDraft()==null) {
@@ -152,7 +167,12 @@ public class GameplayController {
 
         
     }
-
+    /**
+     * 
+     * checks if the status of the domino is CorrectlyPreplaced
+     * @author Mohamad
+     * @return true if it's CorrectlyPreplaced, false otherwise
+     */
     public static boolean isCorrectlyPreplaced() {
     	
     	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
@@ -162,23 +182,29 @@ public class GameplayController {
         if(dominoInKingdom.getDomino().getStatus()==DominoStatus.CorrectlyPreplaced) {
             return true;
         }
-        DominoController.moveCurrentDomino(currentPl, dominoInKingdom.getDomino().getId(),null);
+        DominoController.moveCurrentDomino(currentPl, dominoInKingdom.getDomino().getId(),null);//in case it wasn't computed before
     	if(dominoInKingdom.getDomino().getStatus()==DominoStatus.CorrectlyPreplaced) {
 
              return true;
          }
         return false;
     }
+    /**
+     * 
+     * checks if all dominoes in current draft have selections
+     * @author Mohamad
+     * @return true if they all have, false otherwise.
+     */
     public static boolean areAllDominoesInCurrentDraftSelected() {
     	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-    	int almostNumberOfDominoesSelected=game.getCurrentDraft().getIdSortedDominos().size();
+    	int expectedNumberOfDominoesSelected=game.getCurrentDraft().getIdSortedDominos().size();
     	int actualNumberOfDominoesSelected=0;
     	for(Domino d: game.getCurrentDraft().getIdSortedDominos()) {
     		if(d.hasDominoSelection()==true) {
     			actualNumberOfDominoesSelected++;
     		}
     	}
-    	if((almostNumberOfDominoesSelected-actualNumberOfDominoesSelected)==0) {
+    	if((expectedNumberOfDominoesSelected-actualNumberOfDominoesSelected)==0) {
     		return true;
     	}
     	else {
@@ -190,7 +216,12 @@ public class GameplayController {
         // TODO: implement this
         return false;
     }
- 
+    /**
+     * 
+     * checks all positions in the kingdom.
+     * @author Mohamad
+     * @return true if can't place the domino anywhere, false if it can.
+     */
     public static boolean impossibleToPlaceDomino(){
     	   Game game = KingdominoApplication.getKingdomino().getCurrentGame();
     	    Player currentPl = game.getPlayer(0);
@@ -218,7 +249,7 @@ public class GameplayController {
     	            }
     	        }
     	    }
-    	    System.out.println("couldnt place the domino anywhere");
+    	    //couldn't place the domino anywhere.
     	    dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
     	    return true;
         
@@ -229,12 +260,14 @@ public class GameplayController {
 	public static void acceptCallFromSM(String methodName){
 		switch(methodName) {
 		case "shuffleDominoPile":
-			ShuffleDominoesController.shuffle();
+			System.out.println("Going to shuffle the dominoes");
+			ShuffleDominoesController.shuffle(false);
 			break;
 		case "createNextDraft":
 			DraftController.createNewDraftIsInitiated();
 			break;
 		case "generateInitialPlayerOrder":
+			
 			break;
 		case "orderNextDraft":
 			DraftController.orderNewDraftInitiated();
@@ -255,6 +288,8 @@ public class GameplayController {
 		case "switchCurrentPlayer":
 			switchCurrentPlayerInitiated();
 			break;
+		case "switchDraft":
+			
 		case "save":
 			break;
 		case "load":
@@ -291,24 +326,35 @@ public class GameplayController {
 			}
 		}
 	}
-	private static boolean firstPlayerInThisTurn() {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		int numberOfDominoesSelectedInCurrentDraft=0;
-		for(Domino d:game.getCurrentDraft().getIdSortedDominos()) {
-			if(d.hasDominoSelection()) {
-				numberOfDominoesSelectedInCurrentDraft++;
+	/**
+	 * 
+	 * randomly generate the order at the begining of the game
+	 * @author Mohamad
+	 */
+	private static void generateInitialPlayerOrder() {
+		 Kingdomino kd = KingdominoApplication.getKingdomino();
+			Game currentGame = kd.getCurrentGame();
+			int numberOfPlayers = currentGame.getNumberOfPlayers();
+			Random r = new Random();
+			for(int i =0; i < numberOfPlayers; i++) {
+				int IndexOfplayerToTake = r.nextInt(numberOfPlayers);
+				int positionInListToInsert = r.nextInt(numberOfPlayers);
+				Player playerToTake = currentGame.getPlayers().get(IndexOfplayerToTake);
+				currentGame.addOrMovePlayerAt(playerToTake, positionInListToInsert);
 			}
-		}
-		if(numberOfDominoesSelectedInCurrentDraft==4 && (game.getNumberOfPlayers()==2 || game.getNumberOfPlayers()==4)) {
-			return true;
-		}
-		if(numberOfDominoesSelectedInCurrentDraft==3 && game.getNumberOfPlayers()==3) {
-			return true;
-		}
-		return false;
+			for (int i =0; i < numberOfPlayers; i++) {
+				Orders.add(currentGame.getPlayers().get(i));
+			}
+			KingdominoApplication.getKingdomino().getCurrentGame().setNextPlayer(Orders.remove(0));
 	}
-
+	/**
+	 * 
+	 * Given the number of players, initialise the game accordingly.
+	 * @author Mohamad
+	 * @param numOfPlayer
+	 */
 	public static void acceptInitializeGameCallFromSM(int numOfPlayer){
+		System.out.println("creating the new game");
 		Kingdomino kingdomino = new Kingdomino();
 		Game game = new Game(48, kingdomino);
 		Game PreviousGame =game;
@@ -339,7 +385,7 @@ public class GameplayController {
 			game.setNextPlayer(game.getPlayer(0));
 			KingdominoApplication.setKingdomino(game.getKingdomino());
 		}
-		}
+	}
 	
 	
 	public static void acceptMoveDominoCallFromSM(String dir){

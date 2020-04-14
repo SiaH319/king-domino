@@ -62,6 +62,7 @@ public class ResolveTiebreakStepDefinitions {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		for (Map<String, String> map : valueMaps) {
+			System.out.println("supposed to be: "+Integer.parseInt(map.get("standing"))+"  but is: "+getPlayer(map.get("player"),game).getCurrentRanking());
 			assertEquals(Integer.parseInt(map.get("standing")),getPlayer(map.get("player"),game).getCurrentRanking());
 		}
 

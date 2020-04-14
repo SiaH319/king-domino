@@ -5,16 +5,13 @@ class Gameplay {
     gamestatus {
         // TODO: complete gameplay state machine
         SettingUp{
-            startNewGame(int numOfPlayers) -> /{initializeGame(numOfPlayers);setGameOptions();} Initializing.CreatingFirstDraft;
+            startNewGame(int numOfPlayers) -> /{initializeGame(numOfPlayers);setGameOptions();shuffleDominoPile(); createNextDraft(); orderNextDraft();} Initializing.SelectingFirstDomino;
             loadGame [isLoadedGameValid()] -> /{load();} InGame;
             loadGame [!isLoadedGameValid()] -> /{} SettingUp;
         }
         Initializing {
-            CreatingFirstDraft {
-                entry/{shuffleDominoPile(); createNextDraft(); orderNextDraft();}
-                draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
-            }
             SelectingFirstDomino {
+           		entry/{revealNextDraft(); generateInitialPlayerOrder();switchDraft();createNextDraft();}
                 makeSelection(int id) -> /{currentPlayerSelectDomino(id);} Initializing.ProceedingToNextPlayerOrNextTurn;
             }
             ProceedingToNextPlayerOrNextTurn{
@@ -70,10 +67,6 @@ class Gameplay {
 
     public void setGamestatus(String status){
         switch (status) {
-       	case "CreatingFirstDraft":
-       	    gamestatus = Gamestatus.Initializing;
-       	    gamestatusInitializing = GamestatusInitializing.CreatingFirstDraft;
-       	    break;
        	case "OrderingNextDraft":
        		gamestatus=Gamestatus.InGame;
        		gamestatusInGame=GamestatusInGame.OrderingNextDraft;
@@ -81,6 +74,9 @@ class Gameplay {
        	case "PreplacingDomino":
        		gamestatus=Gamestatus.InGame;
        		gamestatusInGame=GamestatusInGame.PreplacingDomino;
+       		break;
+       	case "SettingUp":
+       		gamestatus=Gamestatus.SettingUp;
        		break;
        		
        	// TODO add further cases here to set desired state
@@ -134,15 +130,17 @@ class Gameplay {
      	
     }
     public void shuffleDominoPile() {
-        // TODO: implement this
+        GameplayController.acceptCallFromSM("shuffleDominoPile");
+
     }
     
     public void generateInitialPlayerOrder() {
-        // TODO: implement this
+        GameplayController.acceptCallFromSM("generateInitialPlayerOrder");
     }
     
     public void createNextDraft() {
-        // TODO: implement this
+   		 GameplayController.acceptCallFromSM("createNextDraft");
+
     }
     
     public void orderNextDraft() {
@@ -154,7 +152,8 @@ class Gameplay {
     }
     
     public void initializeGame(int numOfPlayers){
-        // TODO: implement this
+        GameplayController.acceptInitializeGameCallFromSM(numOfPlayers);
+
     }
     
     public void setGameOptions(){
@@ -178,12 +177,13 @@ class Gameplay {
     }
     
     public void discardDomino(DominoInKingdom dominoInKingdom){
-    	    GameplayController.acceptDiscardDominoFromSM(dominoInKingdom);
+    	GameplayController.acceptDiscardDominoFromSM(dominoInKingdom);
 
     }
     
     public void calculateCurrentPlayerScore(){
-    	// TODO: implement this
+    	GameplayController.acceptCallFromSM("calculateCurrentPlayerScore");
+
     }
     
     public void calculateRanking(){

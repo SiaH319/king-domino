@@ -318,7 +318,9 @@ public class DominoController {
         }
         Domino domino = player.getDominoSelection().getDomino();
         if(domino.getId() == id && domino.getStatus() == DominoStatus.CorrectlyPreplaced){
+    		kingdom = game.getNextPlayer().getKingdom();
             domino.setStatus(DominoStatus.PlacedInKingdom);
+            dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
             String player0Name = (game.getPlayer(0).getUser().getName());
             Square[] grid = GameController.getGrid(player0Name);
             int[] pos = Square.splitPlacedDomino(dominoInKingdom, grid);
@@ -367,7 +369,7 @@ public class DominoController {
         directions.add(DominoInKingdom.DirectionKind.Left);
         directions.add(DominoInKingdom.DirectionKind.Up);
         directions.add(DominoInKingdom.DirectionKind.Right);
-        for(int x=-4;x<5;x++) {
+        for(int x=-4;x<5;x++) {// brute force, try every combination of x,y,direction
             for(int y=-4;y<5;y++) {
                 for(DominoInKingdom.DirectionKind dir :directions ) {
                     dominoInKingdom.setDirection(dir);
@@ -375,15 +377,14 @@ public class DominoController {
                     dominoInKingdom.setY(y);
 
                     if((VerificationController.verifyGridSize(currentPl.getKingdom().getTerritories()))  && (VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom)) && ((VerificationController.verifyCastleAdjacency(castle,dominoInKingdom)) || (VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))) {
-                        System.out.println("Found a place where we can place the domino with x= "+x+" y="+y+"direction ="+dir);
-                        System.out.println("A this x,y there is :"+ grid[Square.convertPositionToInt(x,y)].getTerrain());
+                        //the above is the verification if the placement is possible
                         dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
                         return true;
                     }
                 }
             }
         }
-        System.out.println("couldnt place the domino anywhere");
+        // if couldn't find a position to place the domino
         dominoInKingdom.getDomino().setStatus(DominoStatus.Discarded);
         return false;
 
