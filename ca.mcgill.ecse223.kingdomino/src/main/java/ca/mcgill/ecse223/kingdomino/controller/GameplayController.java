@@ -14,6 +14,7 @@ import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
+import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
@@ -289,7 +290,7 @@ public class GameplayController {
 			switchCurrentPlayerInitiated();
 			break;
 		case "switchDraft":
-			
+			break;
 		case "save":
 			break;
 		case "load":
@@ -325,6 +326,20 @@ public class GameplayController {
 				break;
 			}
 		}
+	}
+	/**
+	 * Given an order of player set it
+	 * @author Mohamad
+	 */
+	public static void setOrderOfPlayer(Player[] order) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		for(int i=0;i<game.getPlayers().size();i++) {
+			game.addOrMovePlayerAt(order[i],i);
+		}
+	}
+	public static boolean specificPlayerChosesDomino( Player player, Draft draft, int dominoId) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		return DominoController.chooseNextDomino(game,player.getColor(),draft,dominoId);
 	}
 	/**
 	 * 
@@ -394,6 +409,7 @@ public class GameplayController {
 		Player p = game.getNextPlayer();
     	DominoController.moveCurrentDomino(p, p.getDominoSelection().getDomino().getId(), dir);
     }
+	
 	
 	public static void acceptSelectDominoCallFromSM(int dominoId){
 		
