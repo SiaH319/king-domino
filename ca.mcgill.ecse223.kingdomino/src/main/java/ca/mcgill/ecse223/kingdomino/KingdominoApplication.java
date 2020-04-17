@@ -2,6 +2,7 @@ package ca.mcgill.ecse223.kingdomino;
 
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
+import ca.mcgill.ecse223.kingdomino.view.StartPage;
 
 public class KingdominoApplication {
 
@@ -10,7 +11,22 @@ public class KingdominoApplication {
 
 	public static void main(String[] args) {
 		System.out.println("Hello Kingdomino!");
+		
+		java.awt.EventQueue.invokeLater(new Runnable(){
+		public void run() {
+			
+			new StartPage().setVisible(true);
+			
+			
+			
+		}
+		
+		});
+		
 	}
+		
+		
+	
 
 	public static Kingdomino getKingdomino() {
 		if (kingdomino == null) {
