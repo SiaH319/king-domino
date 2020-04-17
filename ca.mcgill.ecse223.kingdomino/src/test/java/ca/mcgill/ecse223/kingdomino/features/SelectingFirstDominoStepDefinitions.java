@@ -9,7 +9,9 @@ import java.io.IOException;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
 import ca.mcgill.ecse223.kingdomino.controller.GameController;
+import ca.mcgill.ecse223.kingdomino.controller.PlayerController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
+import ca.mcgill.ecse223.kingdomino.controller.CalculationController;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Game;
@@ -21,6 +23,9 @@ import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.User;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
+import ca.mcgill.ecse223.kingdomino.model.Draft;
+import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -64,24 +69,7 @@ public class SelectingFirstDominoStepDefinitions {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
 		String[] allPlayers = playerOrder.split(",");
-		for(int i = 0; i < allPlayers.length; i++) {
-			
-			while(true) {
-				
-				int j=0;
-				if(game.getPlayer(j).getColor().toString().equals(allPlayers[i])) {
-					
-					game.addOrMovePlayerAt(game.getPlayer(j), i);
-					break;
-				}
-				j++;
-			
-				
-			}
-			
-			
-		}
-		
+		CalculationController.orderPlayers(allPlayers, game);
 		
 		
 	}
@@ -90,7 +78,20 @@ public class SelectingFirstDominoStepDefinitions {
 	public void the_current_draft_has_the_dominoes_with_ID(String string) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
-	
+		Draft currDraft = new Draft(DraftStatus.FaceDown, game);
+		String[] IDs = string.split(",");
+		int length = IDs.length;
+		//Adding dominos in draft
+		
+		for(int i =0; i < length; i++) {
+			
+			currDraft.addIdSortedDomino(getdominoByID(((int) Integer.parseInt(IDs[i]))));
+			
+			
+		}
+		//set this draft to current draft
+		game.setCurrentDraft(currDraft);
+		
 		
 	}
 
@@ -101,20 +102,54 @@ public class SelectingFirstDominoStepDefinitions {
 
 	@Given("the {string} player is selecting his/her domino with ID {int}")
 	public void the_player_is_selecting_hisher_domino_with_ID(String currentplayer, int chosendominoid) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		Player currentPlayer = PlayerController.getPlayerByColor(currentplayer, game);
+		Gameplay gameplay = new Gameplay();
+		gameplay.setGamestatus("SelectingDomino");
+		DominoSelection select = new DominoSelection(currentPlayer, getdominoByID(chosendominoid), game.getCurrentDraft());
+		currentPlayer.setDominoSelection(select);
 
 	}
 
 	@When("the {string} player completes his/her domino selection")
 	public void the_player_completes_his_her_domino_selection(String currentplayer) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		Player currentPlayer = PlayerController.getPlayerByColor(currentplayer, game);
+		//not sure how to continue now that i got the player by color
 
 	}
 
 	@Then("the {string} player shall be {string} his/her domino")
 	public void the_nextplayer_shall_be_action_his_her_domino(String nextplayer, String action) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		Player currentPlayer = PlayerController.getPlayerByColor(nextplayer, game);
+		Gameplay gameplay = KingdominoApplication.getStateMachine();
+		String testAction = "error";
+		
+		if(gameplay.getGamestatusInGame().toString().equals("SelectingDomino")){
+			testAction = "selecting";	
+			
+			}
+		else if(gameplay.getGamestatusInGame().toString().equals("PlacingDomino")){
+			testAction = "placing";
+			}
+			
+		else if(gameplay.getGamestatusInGame().toString().equals("CreatingNewDraft")){
+			testAction = "creatingnewdraft";
+			
+			}
+		
+		else if(gameplay.getGamestatusInGame().toString().equals("DiscardingDomino")){
+			testAction = "discaringdomino";
 
-	}
+			}
+		
+		assertEquals(action,testAction);
 
-
+		}
 	// We use the annotation @And to signal precondition check instead of
 	// initialization (which is done in @Given methods)
 	@And("the validation of domino selection returns {string}")
@@ -141,7 +176,11 @@ public class SelectingFirstDominoStepDefinitions {
 
 	@Then("a new draft shall be available, face down")
     public void a_new_draft_shall_be_available_face_down() {
-
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		Draft newDraft = game.getNextDraft();
+		assertEquals(DraftStatus.FaceDown, newDraft.getDraftStatus());
+		
 	}
 ///////////////////////////////////////
 /// -----Private Helper Methods---- ///

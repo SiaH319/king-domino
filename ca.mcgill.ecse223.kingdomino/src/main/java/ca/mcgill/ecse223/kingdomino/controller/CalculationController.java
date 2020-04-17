@@ -226,7 +226,38 @@ public class CalculationController {
             position++;
         }
     }
-
+    /**
+    @Yuta
+*/
+    
+    
+    public static void orderPlayers (String[] allPlayers, Game game) {
+    	
+    	for(int i = 0; i < allPlayers.length; i++) {
+			
+			while(true) {
+				
+				int j=0;
+				if(game.getPlayer(j).getColor().toString().equals(allPlayers[i])) {
+					
+					game.addOrMovePlayerAt(game.getPlayer(j), i);
+					break;
+				}
+				j++;
+			
+				
+			}
+			
+			
+		}
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    }
     /////////////////////////////        //////
     ///// ///Helper Methods/////        //////
     ///////////////////////////        //////
