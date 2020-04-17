@@ -20,10 +20,13 @@ public class CalculationController {
      * @param kingdom, a given player's assoicated Kingdom
      */
     public static void identifyPropertoes(DisjointSet s, Square[] grid, Kingdom kingdom){
+    	System.out.println("-----------Identifying the properties----------");
         int pari,countsets=0;
         ArrayList<Properties> properties = new ArrayList<Properties>();
+        
         Boolean[] arr = new Boolean[s.parArraySize()];
         Arrays.fill(arr, false);
+        
 
 
         String[] setstrings = new String[s.parArraySize()];
@@ -41,9 +44,19 @@ public class CalculationController {
             }
         }
         /* Add Properties */
+        int size=kingdom.getProperties().size();
+        int k=0;
+        while(k<size) {
+        	kingdom.getProperty(0).delete();// clear the properties because we will add them later on again
+        	k++;
+        }
+
         for (int i=0; i<s.parArraySize(); i++) {
             if (setstrings[i] != null) {
+
                 Property p = new Property(kingdom);
+                System.out.println("here");
+
                 String[] containedSquareIndexes = setstrings[i].split(",");
                 int p_Crown = 0;
                 int p_size = 0;
@@ -55,6 +68,9 @@ public class CalculationController {
                     int id = grid[squareIndex].getDominoId();
                     p.addIncludedDomino(getdominoByID(id));
                 }
+                System.out.println("Setting the number of crowns: "+p_Crown);
+                System.out.println("and the size of prop: "+p_size);
+
                 p.setCrowns(p_Crown);
                 p.setSize(p_size);
             }
@@ -73,13 +89,15 @@ public class CalculationController {
     public static void calculatePropertyScore(List<Property> properties, Player player) {
         int score = 0;
         int Totalscore = 0;
-
-        for (int i = 0; i < properties.size(); i++) {
-            Property p = properties.get(i);
+        System.out.println("----------Now checking each property----------");
+        for (Property p: properties) {
             score = p.getSize() * p.getCrowns();
+            System.out.println("Size: "+p.getSize()+"  Crowns: "+p.getCrowns());
 
+            System.out.println("Score from that property is: "+score);
             Totalscore += score;
         }
+        System.out.println("setting player score to :"+Totalscore);
 
         player.setPropertyScore(Totalscore);
 
@@ -160,6 +178,21 @@ public class CalculationController {
                 player.setBonusScore(15);
         }
     }
+    public static void calculateCurrentPlayerScore() {
+    	System.out.println("enterred the calculation");
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        Player p= game.getNextPlayer();
+        String player0Name = (p.getUser().getName());
+        Square[] grid = GameController.getGrid(player0Name);
+        DisjointSet s = GameController.getSet(player0Name);
+        identifyPropertoes(s, grid, p.getKingdom());
+        calculatePropertyScore(p.getKingdom().getProperties(),p);
+        CalculateBonusScore(game, p);
+        if(s==null || grid==null) {
+        	System.out.println("Something wrong here");
+        }
+        
+        }
 
     /**Feature 23+24
      * @author Mohamad
