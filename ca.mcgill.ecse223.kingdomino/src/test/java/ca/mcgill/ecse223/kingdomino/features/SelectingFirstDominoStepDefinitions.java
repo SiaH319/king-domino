@@ -13,6 +13,7 @@ import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Game;
+import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
@@ -52,19 +53,45 @@ public class SelectingFirstDominoStepDefinitions {
 		for (int i = 4; i >= -4; i--)
 			for (int j = -4; j <= 4; j++)
 				grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+		Gameplay gameplay = new Gameplay();
+		gameplay.setGamestatus("SelectingFirstDomino");
 		
 	}
 
 	/* Scenario Outline: Select first domino of the game */
 	@Given("the initial order of players is {string}")
 	public void the_initial_order_of_players_is_playerorder(String playerOrder) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		String[] allPlayers = playerOrder.split(",");
+		for(int i = 0; i < allPlayers.length; i++) {
+			
+			while(true) {
+				
+				int j=0;
+				if(game.getPlayer(j).getColor().toString().equals(allPlayers[i])) {
+					
+					game.addOrMovePlayerAt(game.getPlayer(j), i);
+					break;
+				}
+				j++;
+			
+				
+			}
+			
+			
+		}
 		
-
+		
+		
 	}
 
-	@Given("the current draft has the dominoes with ID 1,2,3,4")
-	public void the_current_draft_has_the_dominoes_with_ID() {
-
+	@Given("the current draft has the dominoes with {string}")
+	public void the_current_draft_has_the_dominoes_with_ID(String string) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+	
+		
 	}
 
 	@Given("player's first domino selection of the game is {string}")
@@ -224,4 +251,4 @@ throw new java.lang.IllegalArgumentException("Invalid domino status: " + status)
 }
 
 }
-}
+
