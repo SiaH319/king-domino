@@ -56,9 +56,6 @@ public class GameplayController {
 	public static void triggerEventsInSM(String methodName) {
 		initStatemachine();
 		switch (methodName) {
-		case "saveGame":
-			statemachine.saveGame();
-			break;
 		case "proceed":
 			statemachine.proceed();
 			break;
