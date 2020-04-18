@@ -30,6 +30,7 @@ public class GameplayController {
 	private static Gameplay statemachine;
 	public Kingdomino kingdomino;
 	private static ArrayList<Player> Orders=new ArrayList<Player>();
+	private String errorMessage;
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////Helper Methods/////////////////////////////////////////////////////
@@ -49,9 +50,6 @@ public class GameplayController {
 	public static void triggerEventsInSM(String methodName) {
 		initStatemachine();
 		switch(methodName) {
-		case "loadGame":
-			statemachine.loadGame();
-			break;
 		case "saveGame":
 			statemachine.saveGame();
 			break;
@@ -91,9 +89,9 @@ public class GameplayController {
 	 * @param numOfPlayers
 	 */
 	
-	public static void triggerStartNewGameInSM(int numOfPlayers) {
+	public static void triggerStartNewGameInSM(int numOfPlayers, boolean mkActivated, boolean harmonyActivated) {
 		initStatemachine();
-		statemachine.startNewGame(numOfPlayers);
+		statemachine.startNewGame(numOfPlayers,mkActivated,harmonyActivated);
 	}
 	/**
 	 * 
@@ -104,6 +102,11 @@ public class GameplayController {
 	public static void triggerMakeSelectionInSM(int id) {
 		statemachine.makeSelection(id);
 	}
+	
+	public static void triggerLoadGameInSM(String filename) {
+		statemachine.loadGame(filename);
+	}
+	
 	public void triggerMoveDominoInSM(String dir) {
 		statemachine.moveCurrentDomino(dir);
 	}
@@ -124,11 +127,7 @@ public class GameplayController {
 	 * @return true if curren tplayer is last, false otherwise
 	 */
 	public static boolean isCurrentPlayerTheLastInTurn() {
-		System.out.println("in the guard of current player last in turn");
-
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		Player current =game.getNextPlayer();
-		
 		int dominoesInNextDraftSelected=0;
 		
 		if(game.getNextDraft()!=null) {
@@ -163,23 +162,18 @@ public class GameplayController {
         return false;
     }
     /**
-     * 
-     * if there is a next draft then this is not the last tuen
+     * Guard In StateMachine.
+     * Checks if the current turn is the last turn in game.
      * @author Mohamad
      * @return true if next draft doesn't exist
      */
     public static boolean isCurrentTurnTheLastInGame() {
     	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-    	if(game.getNextDraft()==null) {
-    		return true;
-    	}
-    	else {
-    		return false;
-    	}
-
+    	return (game.getNextDraft()==null);
         
     }
     /**
+     * Guard In StateMachine.
      * Checks if the domino status of the current player's domino selection's domino is CorrectlyPreplaced
      * @author Mohamad
      * @return true if it's CorrectlyPreplaced, false otherwise
@@ -193,6 +187,7 @@ public class GameplayController {
     }
 
     /**
+     * Guard In StateMachine.
      * checks if all dominoes in current draft have selections
      * @author Mohamad
      * @return true if they all have, false otherwise.
@@ -206,17 +201,17 @@ public class GameplayController {
     			actualNumberOfDominoesSelected++;
     		}
     	}
-    	if((expectedNumberOfDominoesSelected-actualNumberOfDominoesSelected)==0) {
-    		return true;
-    	}
-    	else {
-    		return false;
-    	}
+    	
+    	return ((expectedNumberOfDominoesSelected-actualNumberOfDominoesSelected)==0);
     }
 
-    public static boolean isLoadedGameValid(){
-        // TODO: implement this
-        return false;
+    public static boolean isLoadedGameValid(String filename){
+        try {
+        	return SaveLoadGameController.loadGame(filename);
+        }catch(Exception e) {
+        	return false;
+        }
+        
     }
     /**
      * Guard method in sate machine.

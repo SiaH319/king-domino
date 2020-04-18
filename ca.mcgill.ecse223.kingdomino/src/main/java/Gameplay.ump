@@ -7,8 +7,8 @@ class Gameplay {
         SettingUp{
             startNewGame(int numOfPlayers, boolean mkActivated, boolean harmonyActivated) 
             -> /{initializeGame(numOfPlayers);setGameOptions(mkActivated, harmonyActivated);shuffleDominoPile(); createNextDraft(); orderNextDraft();} Initializing.SelectingFirstDomino;
-            loadGame [isLoadedGameValid()] -> /{} InGame;
-            loadGame [!isLoadedGameValid()] -> /{} SettingUp;
+            loadGame(String filename) [isLoadedGameValid(filename)] -> /{} InGame;
+            loadGame(String filename) [!isLoadedGameValid(filename)] -> /{} SettingUp;
         }
         Initializing {
             SelectingFirstDomino {
@@ -115,9 +115,9 @@ class Gameplay {
         return GameplayController.isCorrectlyPreplaced();
     }
 
-    public boolean isLoadedGameValid(){
+    public boolean isLoadedGameValid(String filename){
         
-        return GameplayController.isLoadedGameValid();
+        return GameplayController.isLoadedGameValid(filename);
     }
 
     public boolean impossibleToPlaceDomino(){

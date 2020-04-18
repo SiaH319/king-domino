@@ -87,7 +87,7 @@ public class Gameplay
     return wasEventProcessed;
   }
 
-  public boolean loadGame()
+  public boolean loadGame(String filename)
   {
     boolean wasEventProcessed = false;
     
@@ -95,7 +95,7 @@ public class Gameplay
     switch (aGamestatus)
     {
       case SettingUp:
-        if (isLoadedGameValid())
+        if (isLoadedGameValid(filename))
         {
         // line 10 "../../../../../Gameplay.ump"
           
@@ -103,7 +103,7 @@ public class Gameplay
           wasEventProcessed = true;
           break;
         }
-        if (!(isLoadedGameValid()))
+        if (!(isLoadedGameValid(filename)))
         {
         // line 11 "../../../../../Gameplay.ump"
           
@@ -617,8 +617,8 @@ public class Gameplay
   }
 
   // line 120 "../../../../../Gameplay.ump"
-   public boolean isLoadedGameValid(){
-    return GameplayController.isLoadedGameValid();
+   public boolean isLoadedGameValid(String filename){
+    return GameplayController.isLoadedGameValid(filename);
   }
 
   // line 125 "../../../../../Gameplay.ump"
