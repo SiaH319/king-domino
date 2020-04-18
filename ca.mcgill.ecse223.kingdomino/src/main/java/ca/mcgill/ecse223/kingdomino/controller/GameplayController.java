@@ -440,8 +440,17 @@ public class GameplayController {
 			game.getKingdomino().setCurrentGame(game);
 			addUsersAndPlayers(userNames,game);
 			createAllDominoes(game);
+			for(int k = 0 ;k < 2; k++) {
+				String playerName = userNames[k];
+				GameController.setGrid(playerName, new Square[81]);
+				GameController.setSet(playerName, new DisjointSet(81));
+				Square[] grid = GameController.getGrid(playerName);
+				for (int i = 4; i >= -4; i--)
+					for (int j = -4; j <= 4; j++)
+						grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+			}
 			
-			for(int i = 0 ; i<24;i++) {
+			for(int i = 0 ; i < 24; i++) {
 				int size = game.getAllDominos().size();
 				int index = (int)(Math.random() * (size));
 				Domino domino = game.getAllDomino(index);
@@ -611,12 +620,21 @@ public class GameplayController {
 	private static void addUsersAndPlayers(String[] userNames, Game game) {
 		if(userNames.length == 3 || userNames.length == 4) {
 			for (int i = 0; i < userNames.length; i++) {
-				User user = game.getKingdomino().addUser(userNames[i]);
-				Player player = new Player(game);
-				player.setUser(user);
-				player.setColor(PlayerColor.values()[i]);
-				Kingdom kingdom = new Kingdom(player);
-				new Castle(0, 0, kingdom, player);
+				List<User> users = game.getKingdomino().getUsers();
+				User curUser = null;
+				for(User user: users) {
+					if(user.getName().equals(userNames[i])) {
+						curUser = user;
+						break;
+					}
+				}
+				if(curUser != null) {
+					Player player = new Player(game);
+					player.setUser(curUser);
+					player.setColor(PlayerColor.values()[i]);
+					Kingdom kingdom = new Kingdom(player);
+					new Castle(0, 0, kingdom, player);
+				}
 			}
 		} else {
 			for (int i = 0; i < 2; i++) {
@@ -634,6 +652,11 @@ public class GameplayController {
 					player1.setColor(PlayerColor.values()[2*i]);
 					Kingdom kingdom = new Kingdom(player1);
 					new Castle(0, 0, kingdom, player1);
+					Player player2 = new Player(game);
+					player2.setUser(curUser);
+					player2.setColor(PlayerColor.values()[2*i]);
+					Kingdom kingdom2 = new Kingdom(player2);
+					new Castle(0, 0, kingdom2, player2);
 				}
 				
 			}
