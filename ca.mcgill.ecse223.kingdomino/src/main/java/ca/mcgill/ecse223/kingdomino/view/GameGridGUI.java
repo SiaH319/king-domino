@@ -17,9 +17,11 @@ import ca.mcgill.ecse223.kingdomino.controller.DominoController;
  * @author Violet 
  *
  * This class contains the layout of the Kingdomino board grid
- * and the Place Domino button, Move Domino button
- * Rotate Domino button, Dicard Domino button
- * the Next button
+ * & Place Domino button, 
+ * & Move Domino button,
+ * & Rotate Domino button, 
+ * & Dicard Domino button
+ * & Choose Next Domino button
  */
 public class GameGridGUI {
 
