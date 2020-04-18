@@ -29,14 +29,16 @@ import io.cucumber.java.en.When;
  */
 public class ShuffleDominosStepDefinition {
 	int numberOfPlayers;
+	Game PreviousGame;
 	@Given("the game is initialized for shuffle dominoes")
 	public void the_game_is_initialized_for_shuffle_dominoes() {
 		Kingdomino kingdomino = new Kingdomino();
 		Game game = new Game(48, kingdomino);
+		PreviousGame =game;
 		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
 		// Populate game
-		addDefaultUsersAndPlayers(game);
+		addDefaultUsersAndPlayersFour(game);
 		createAllDominoes(game);
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
@@ -45,15 +47,35 @@ public class ShuffleDominosStepDefinition {
 		
 	@Given("there are {int} players playing")
 	public void there_are_players_playing(Integer numPlayers) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		numberOfPlayers=(int)numPlayers;
-		game.setNumberOfPlayers(numPlayers);
+		
+		if((int)numPlayers==3) { 
+			Game game = new Game(36, PreviousGame.getKingdomino());
+			game.setNumberOfPlayers(3);
+		
+			PreviousGame.getKingdomino().setCurrentGame(game);
+			addDefaultUsersAndPlayersThree(game);
+			createAllDominoes(game);
+			game.setNextPlayer(game.getPlayer(0));
+			KingdominoApplication.setKingdomino(game.getKingdomino());
+		}
+		else if((int)numPlayers==2) {
+			Game game2 = new Game(24, PreviousGame.getKingdomino());
+			game2.setNumberOfPlayers(2);
+			
+			PreviousGame.getKingdomino().setCurrentGame(game2);
+			addDefaultUsersAndPlayersTwo(game2);
+			createAllDominoes(game2);
+			game2.setNextPlayer(game2.getPlayer(0));
+			KingdominoApplication.setKingdomino(game2.getKingdomino());
+			
+			
+		}
 		
 	}
 	
 	@When("the shuffling of dominoes is initiated")
 	public void the_shuffling_of_dominoes_is_initiated() {
-		ShuffleDominoesController.shuffle();
+		ShuffleDominoesController.shuffle(true);
 		
 	}
 	@When("I initiate to arrange the domino in the fixed order {string}")
@@ -72,7 +94,9 @@ public class ShuffleDominosStepDefinition {
 	@Then("the first draft should have {int} dominoes on the board face down")
 	public void the_first_draft_should_have_dominoes_on_the_board_face_down(Integer expectedDominoesInDraft) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+	
 		int actualDominoesInDraft =game.getAllDraft(0).getIdSortedDominos().size();
+	
 		assertEquals((int)expectedDominoesInDraft,actualDominoesInDraft);
 	}
 	
@@ -85,6 +109,7 @@ public class ShuffleDominosStepDefinition {
 			actualSizeOfPile+=1;
 			Current=Current.getNextDomino();
 		}
+	
 		assertEquals((int)ExpectedSizeOfPile,actualSizeOfPile);
 	}
 	
@@ -106,7 +131,13 @@ public class ShuffleDominosStepDefinition {
 			Current=Current.getNextDomino();
 		}
 		for(int i=4;i<expectedList.size();i++) {
-			assertEquals((int)expectedList.get(i),(int)actualList.get(i-4));
+			if(game.getNumberOfPlayers()==3) {
+				assertEquals((int)expectedList.get(i),(int)actualList.get(i-3));
+			}
+			else {
+				assertEquals((int)expectedList.get(i),(int)actualList.get(i-4));
+			}
+			
 		}
 		
 		
@@ -115,10 +146,38 @@ public class ShuffleDominosStepDefinition {
 	
 	
 	
+//	private void removeAllUser(Kingdomino kingdomino,Game game) {
+//		int i= game.getNumberOfPlayers();
+//		for(User u : kingdomino.getUsers()) {
+//			i++;
+//			u.set
+//		}
+//	}
 	
-	
-	private void addDefaultUsersAndPlayers(Game game) {
+	private void addDefaultUsersAndPlayersFour(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
+		for (int i = 0; i < userNames.length; i++) {
+			User user = game.getKingdomino().addUser(userNames[i]);
+			Player player = new Player(game);
+			player.setUser(user);
+			player.setColor(PlayerColor.values()[i]);
+			Kingdom kingdom = new Kingdom(player);
+			new Castle(0, 0, kingdom, player);
+		}
+	}
+	private void addDefaultUsersAndPlayersThree(Game game) {
+		String[] userNames = { "User5", "User6", "User7"};
+		for (int i = 0; i < userNames.length; i++) {
+			User user = game.getKingdomino().addUser(userNames[i]);
+			Player player = new Player(game);
+			player.setUser(user);
+			player.setColor(PlayerColor.values()[i]);
+			Kingdom kingdom = new Kingdom(player);
+			new Castle(0, 0, kingdom, player);
+		}
+	}
+	private void addDefaultUsersAndPlayersTwo(Game game) {
+		String[] userNames = { "User8", "User9"};
 		for (int i = 0; i < userNames.length; i++) {
 			User user = game.getKingdomino().addUser(userNames[i]);
 			Player player = new Player(game);

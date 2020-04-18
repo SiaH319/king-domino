@@ -40,14 +40,22 @@ public class DraftController {
      * 
      */
     public static void createNewDraftIsInitiated() {
+    	System.out.println("Creating the next draft");
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        if(game.getAllDrafts().size()!=0) {// if its not the first turn
         if(game.getNextDraft()==null) {// if next draft is not there then set  one
-            
-            game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1)); //last draft is the newest so the next one
+            if(game.getAllDraft(game.getAllDrafts().size()-1)!=null) {
+            	game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1)); //last draft is the newest so the next one
+            }
+            else {
+            	game.setNextDraft(new Draft(null, game));
+            }
+        }    
         }
         game.setCurrentDraft(game.getNextDraft()); // now set it as the new next Draft
 
         if(thereCanBeMoreDrafts(game)) { // if we can create more drafts
+        	
             Draft newNextDraft = new Draft(Draft.DraftStatus.FaceDown,game);
 
             for(int i=0;i<newNextDraft.maximumNumberOfIdSortedDominos();i++) { // populate the draft with the corresponding number of dominoes from the linked list
@@ -56,9 +64,11 @@ public class DraftController {
                 Top.setStatus(Domino.DominoStatus.InNextDraft);// update the linked ist
                 game.setTopDominoInPile(Top.getNextDomino());
             }
-            game.getCurrentDraft().setDraftStatus(Draft.DraftStatus.FaceUp);
-            game.addAllDraft(newNextDraft);
-            game.setNextDraft(newNextDraft);
+            if(game.getCurrentDraft()!=null) {
+                game.getCurrentDraft().setDraftStatus(Draft.DraftStatus.FaceUp);
+            }
+            game.addAllDraft(newNextDraft);// add draft to list of drafts
+            game.setNextDraft(newNextDraft);// set draft as the next one
         }
         else {
             game.setNextDraft(null);
@@ -77,19 +87,22 @@ public class DraftController {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();
         ArrayList<Integer> listIDs = new ArrayList<Integer>();
-        for(Domino domino : nextDraft.getIdSortedDominos()) {
+        if(game.getNextDraft()!=null) {
+        	for(Domino domino : nextDraft.getIdSortedDominos()) {
 
-            listIDs.add(domino.getId()); // add the ids of the draft
+        		listIDs.add(domino.getId()); // add the ids of the draft to the list of ids
+        	}
         }
+        
         Collections.sort(listIDs);// sort the ids
 
         ArrayList<Domino> newIdSorted = new ArrayList<Domino>();
         for(Integer id : listIDs) {
-
+        	System.out.println("added an id to the list");
             newIdSorted.add(getdominoByID(id));
         }
-        nextDraft.setIdSortedDominos(newIdSorted.get(0),newIdSorted.get(1),newIdSorted.get(2),newIdSorted.get(3));// add them back to the next draft
-        nextDraft.setDraftStatus(Draft.DraftStatus.Sorted);
+        nextDraft.setIdSortedDominos(newIdSorted.get(0),newIdSorted.get(1),newIdSorted.get(2),newIdSorted.get(3));// add them back to the next draft 
+        nextDraft.setDraftStatus(Draft.DraftStatus.Sorted);														  //in the right order
         game.setNextDraft(nextDraft);
     }
 
@@ -101,12 +114,24 @@ public class DraftController {
     public static void revealDominoesInitiated() {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();
+        System.out.println("revealing the next draft");
         nextDraft.setDraftStatus(Draft.DraftStatus.FaceUp);// flip up the dominoes
+    }
+    /**
+     * 
+     * once all selections have been made we have to make the next draft the current draft
+     * @author Mohamad
+     */
+    public static void switchDraft() {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        game.setCurrentDraft(game.getNextDraft());
     }
 
     /////////////////////////////        //////
     ///// ///Helper Methods/////        //////
     ///////////////////////////        //////
+    
+    
     private static Domino getdominoByID(int id) {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         for (Domino domino : game.getAllDominos()) {

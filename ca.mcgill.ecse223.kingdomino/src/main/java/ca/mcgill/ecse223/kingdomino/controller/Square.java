@@ -37,6 +37,9 @@ public class Square {
      * @return grid positions of domino tiles
      */
     public static int[] splitPlacedDomino (DominoInKingdom domino, Square[] squares) {
+    	if(domino==null) {
+    		System.out.println("the dominoInKingdom is null");
+    	}
         int x_left = domino.getX();
         int y_left = domino.getY();
         int pos_left = convertPositionToInt(x_left, y_left);

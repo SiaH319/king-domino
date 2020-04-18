@@ -82,7 +82,7 @@ public class IdentifyPropertyStepDefinition {
             GameController.unionCurrentSquare(pos[1],
                     VerificationController.getAdjacentSquareIndexesRight(castle, grid, domInKingdom), s);
         }
-        //Print Grid
+    //    Print Grid
         String player0Name = (game.getPlayer(0).getUser().getName());
         Square[] grid = GameController.getGrid(player0Name);
         for(int i = 4; i >=-4; i-- ){

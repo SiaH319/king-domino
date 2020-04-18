@@ -32,6 +32,6 @@ Feature: Create Next Draft of Dominoes
     Examples: 
       | num_players | draftnum |
       |           4 |       12 |
-#     |           2 |        6 |
-#     |           3 |       12 |
+      |           2 |        6 |
+      |           3 |       12 |
 
