@@ -8,8 +8,8 @@ import java.util.List;
 
 /***
 *
-*
-*@author Cecilia
+*Controller Class that contains query methods for game attributes
+*@author Cecilia Jiang
 ***/
 
 public class GameController {
@@ -108,6 +108,12 @@ public class GameController {
     /////////Feature Methods////        //////
     ///////////////////////////        //////
 
+    /**
+     * Feature: Set Bonus Option for current game
+     * @author Cecilia Jiang
+     * @param mkActivated, boolean variable that specify if middleKingdom is activated
+     * @param harmonyActivated, boolean variable that specify if harmony is activated
+     */
     public static void setBonusOptionForCurrentGame(boolean mkActivated, boolean harmonyActivated){
         if(mkActivated){
             Kingdomino kingdomino = KingdominoApplication.getKingdomino();

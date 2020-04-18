@@ -49,6 +49,10 @@ public class GameplayController {
 //////////////////////////////////Trigger Relevant Events In SM//////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * A wrppaer method that triggers actions without parameters in state machine
+	 * @param methodName, method name in string
+	 */
 	public static void triggerEventsInSM(String methodName) {
 		initStatemachine();
 		switch (methodName) {
@@ -259,7 +263,6 @@ public class GameplayController {
 	/**
 	 * Guard method in sate machine. Check if it's impossible to place the currently
 	 * selected domino
-	 * 
 	 * @author Mohamad
 	 * @return true if can't place the domino anywhere, false if it can.
 	 */
@@ -340,14 +343,25 @@ public class GameplayController {
 		case "switchCurrentPlayer":
 			switchCurrentPlayerInitiated();
 			break;
-		case "save":
-			//TODO
-			break;
+		default:
+			throw new java.lang.IllegalArgumentException("Invalid trigger event: " + methodName);
 		}
 
 	}
 	
-
+	/**
+	 * Accept saveGame call from SM
+	 * @param filename
+	 * @return true if succeeded, false otherwise
+	 */
+	public static boolean acceptSaveGameCallFromSM(String filename) {
+		try {
+			return SaveLoadGameController.saveGame(filename);
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
 	/**
 	 * Accept create user call from state machine
 	 * @author Cecilia Jiang
@@ -381,6 +395,15 @@ public class GameplayController {
 			// Populate game
 			addUsersAndPlayers(userNames,game);
 			createAllDominoes(game);
+			for(int k = 0; k < numOfPlayer; k++) {
+				String playerName = (game.getPlayer(k).getUser().getName());
+				GameController.setGrid(playerName, new Square[81]);
+				GameController.setSet(playerName, new DisjointSet(81));
+				Square[] grid = GameController.getGrid(playerName);
+				for (int i = 4; i >= -4; i--)
+					for (int j = -4; j <= 4; j++)
+						grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+			}
 		}
 
 		if (numOfPlayer == 3) {
@@ -389,6 +412,15 @@ public class GameplayController {
 			game.getKingdomino().setCurrentGame(game);
 			addUsersAndPlayers(userNames,game);
 			createAllDominoes(game);
+			for(int k = 0; k < numOfPlayer; k++) {
+				String playerName = (game.getPlayer(k).getUser().getName());
+				GameController.setGrid(playerName, new Square[81]);
+				GameController.setSet(playerName, new DisjointSet(81));
+				Square[] grid = GameController.getGrid(playerName);
+				for (int i = 4; i >= -4; i--)
+					for (int j = -4; j <= 4; j++)
+						grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+			}
 			for(int i = 0 ; i<12;i++) {
 				int size = game.getAllDominos().size();
 				int index = (int)(Math.random() * (size));
@@ -423,6 +455,12 @@ public class GameplayController {
 		}
 	}
 	
+	/**
+	 * Accept set bonus option call from state machine
+	 * @author Cecilia Jiang
+	 * @param mkActivated, middle kingdom activated or not,
+	 * @param harmonyActivated, harmony activated or not
+	 */
 	public static void acceptSetBonusOptionFromSM(boolean mkActivated, boolean harmonyActivated) {
 		GameController.setBonusOptionForCurrentGame(mkActivated,harmonyActivated);
 	}
@@ -477,8 +515,7 @@ public class GameplayController {
 	}
 
 	/**
-	 * 
-	 * randomly generate the order at the begining of the game
+	 * Randomly generate the order of players at the first turn of the game
 	 * @author Cecilia Jiang
 	 */
 	private static void generateInitialPlayerOrder() {
@@ -486,7 +523,7 @@ public class GameplayController {
 		Game currentGame = kd.getCurrentGame();
 		int playerNumber = currentGame.getNumberOfPlayers();
 		List<Integer> ranks = new ArrayList<>();
-		if(playerNumber%2 ==0) {
+		if(playerNumber % 2 ==0) {
 			ranks.add(1);
 			ranks.add(2);
 			ranks.add(3);
@@ -572,14 +609,36 @@ public class GameplayController {
 	}
 
 	private static void addUsersAndPlayers(String[] userNames, Game game) {
-		for (int i = 0; i < userNames.length; i++) {
-			User user = game.getKingdomino().addUser(userNames[i]);
-			Player player = new Player(game);
-			player.setUser(user);
-			player.setColor(PlayerColor.values()[i]);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
+		if(userNames.length == 3 || userNames.length == 4) {
+			for (int i = 0; i < userNames.length; i++) {
+				User user = game.getKingdomino().addUser(userNames[i]);
+				Player player = new Player(game);
+				player.setUser(user);
+				player.setColor(PlayerColor.values()[i]);
+				Kingdom kingdom = new Kingdom(player);
+				new Castle(0, 0, kingdom, player);
+			}
+		} else {
+			for (int i = 0; i < 2; i++) {
+				List<User> users = game.getKingdomino().getUsers();
+				User curUser = null;
+				for(User user: users) {
+					if(user.getName().equals(userNames[i])) {
+						curUser = user;
+						break;
+					}
+				}
+				if(curUser != null) {
+					Player player1 = new Player(game);
+					player1.setUser(curUser);
+					player1.setColor(PlayerColor.values()[2*i]);
+					Kingdom kingdom = new Kingdom(player1);
+					new Castle(0, 0, kingdom, player1);
+				}
+				
+			}
 		}
+		
 	}
 
 
