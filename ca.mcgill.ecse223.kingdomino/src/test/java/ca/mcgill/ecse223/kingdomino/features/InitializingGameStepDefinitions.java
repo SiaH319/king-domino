@@ -65,7 +65,7 @@ public class InitializingGameStepDefinitions {
 	@Then("the first draft shall be revealed")
 	public void the_first_draft_shall_be_revealed() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		assertEquals(DraftStatus.FaceUp, game.getCurrentDraft().getDraftStatus());
+		assertEquals(DraftStatus.FaceUp, game.getAllDraft(0).getDraftStatus());
 		System.out.println("------------The draft is faced up-----------");
 
 	}

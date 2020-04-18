@@ -48,7 +48,7 @@ class Gameplay {
                 order [areAllDominoesInCurrentDraftSelected()]-> /{orderNextDraft();} InGame.RevealingNextDraft;
             }
             RevealingNextDraft {
-                reveal -> /{revealNextDraft();switchCurrentPlayer();} InGame.PreplacingDomino;
+                reveal -> /{revealNextDraft();createNextDraft();switchCurrentPlayer();} InGame.PreplacingDomino;
             }
             saveGame -> /{save();} SettingUp;
         }

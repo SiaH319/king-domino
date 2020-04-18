@@ -69,8 +69,9 @@ public class CreateNextDraftStepDefinitions {
 		Integer numDraft=number;
 		for(int i=0;i<numDraft;i++) { // add {int} drafts to the list of Drafts
 			 Draft D =new Draft(DraftStatus.FaceUp,game);
-			 game.addAllDraft(D);	
+			 game.addAllDraft(D);
 		}
+		game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1));
 		
 		
 	}
