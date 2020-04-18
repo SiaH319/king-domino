@@ -50,9 +50,9 @@ public class GameController {
 
     /**
      * Combine current square and all adjacent square into one set
-     * @param curIndex
-     * @param adjacentIndexes
-     * @param s
+     * @param curIndex, current square index
+     * @param adjacentIndexes, a list of adjacent squares' indexes
+     * @param s, disjoint set for current player
      */
     public static void unionCurrentSquare(int curIndex, ArrayList<Integer> adjacentIndexes, DisjointSet s){
         for (int i: adjacentIndexes)
@@ -82,27 +82,21 @@ public class GameController {
     private static TerrainType getTerrainType(String terrain) {
         switch (terrain) {
             case "W":
-                return TerrainType.WheatField;
-            case "F":
-                return TerrainType.Forest;
-            case "M":
-                return TerrainType.Mountain;
-            case "G":
-                return TerrainType.Grass;
-            case "S":
-                return TerrainType.Swamp;
-            case "L":
-                return TerrainType.Lake;
             case "wheat":
                 return TerrainType.WheatField;
+            case "F":
             case "forest":
                 return TerrainType.Forest;
+            case "M":
             case "mountain":
                 return TerrainType.Mountain;
+            case "G":
             case "grass":
                 return TerrainType.Grass;
+            case "S":
             case "swamp":
                 return TerrainType.Swamp;
+            case "L":
             case "lake":
                 return TerrainType.Lake;
             default:
@@ -110,4 +104,21 @@ public class GameController {
         }
     }
 
+    /////////////////////////////        //////
+    /////////Feature Methods////        //////
+    ///////////////////////////        //////
+
+    public static void setBonusOptionForCurrentGame(boolean mkActivated, boolean harmonyActivated){
+        if(mkActivated){
+            Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+            Game game = kingdomino.getCurrentGame();
+            game.addSelectedBonusOption(new BonusOption("middle kingdom",kingdomino));
+        }
+
+        if(harmonyActivated){
+            Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+            Game game = kingdomino.getCurrentGame();
+            game.addSelectedBonusOption(new BonusOption("harmony",kingdomino));
+        }
+    }
 }

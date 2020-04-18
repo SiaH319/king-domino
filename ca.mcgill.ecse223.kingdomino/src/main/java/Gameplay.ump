@@ -3,7 +3,6 @@ namespace ca.mcgill.ecse223.kingdomino.model;
 class Gameplay {
 	depend ca.mcgill.ecse223.kingdomino.controller.GameplayController;
     gamestatus {
-        // TODO: complete gameplay state machine
         SettingUp {
         	createNewUser(String name) -> /{createUser(name);} SettingUp;
             startNewGame(int numOfPlayers, boolean mkActivated, boolean harmonyActivated,String[] userNames) 
@@ -122,8 +121,8 @@ class Gameplay {
      * Actions
      */
      
-    public void createUser(String name) {
-    
+    public String createUser(String name) {
+    	 return GameplayController.acceptCreateUserCallFromSM(name);
     }
     
     public void resolveTieBreak() {
@@ -163,7 +162,7 @@ class Gameplay {
     }
     
     public void setGameOptions(boolean mkActivated, boolean harmonyActivated) {
-        // TODO: implement this
+       GameplayController.acceptSetBonusOptionFromSM(mkActivated, harmonyActivated);
     }
     
     public void currentPlayerSelectDomino(int id) {
@@ -188,14 +187,6 @@ class Gameplay {
     
     public void calculateCurrentPlayerScore() {
     	GameplayController.acceptCallFromSM("calculateCurrentPlayerScore");
-    }
-    
-    public void calculateRanking() {
-    	// TODO: implement this
-    }
-    
-    public void resolveTieBreak() {
-    	// TODO: implement this
     }
     
     public void switchCurrentPlayer() {

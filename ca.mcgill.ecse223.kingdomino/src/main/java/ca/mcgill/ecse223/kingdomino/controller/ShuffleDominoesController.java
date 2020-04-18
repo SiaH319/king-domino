@@ -48,16 +48,12 @@ import java.util.Random;
 public class ShuffleDominoesController {
 	/**
 	 * 
-	 * @author Mohamad 
 	 * Chose randomly the ID and shuffle the linked list by modifing
 	 * the linked list
-	 *
+	 * @author Mohamad
 	 */
 	public static void shuffle(boolean toUpdate) {
-		System.out.println("shuffling the dominoes");
-
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-
 		ArrayList<Integer> listOfIDs = new ArrayList<Integer>();
 
 		int maxInPile = game.getMaxPileSize();
