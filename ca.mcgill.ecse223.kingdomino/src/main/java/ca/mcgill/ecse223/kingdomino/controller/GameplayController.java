@@ -19,6 +19,7 @@ import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
 import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
+import ca.mcgill.ecse223.kingdomino.model.Gameplay.Gamestatus;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
@@ -498,6 +499,10 @@ public class GameplayController {
 		GameController.setBonusOptionForCurrentGame(mkActivated,harmonyActivated);
 	}
 
+	/**
+	 * Accept place domino call from state machine
+	 * @author Cecilia Jiang
+	 */
 	public static void acceptPlaceDominoFromSM() {
 		Player currentPlayer = kingdomino.getCurrentGame().getNextPlayer();
 		Domino domino = currentPlayer.getDominoSelection().getDomino();
@@ -518,6 +523,19 @@ public class GameplayController {
 	 */
 	private static void switchCurrentPlayerInitiated() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		if(statemachine.getGamestatus()==Gamestatus.Initializing) {
+			int curPlayerRanking = game.getNextPlayer().getCurrentRanking();
+			if(!isCurrentPlayerTheLastInTurn()) {
+				for(Player player: game.getPlayers()) {
+					if(player.getDominoSelection()==null&&player.getCurrentRanking()-1 == curPlayerRanking) {
+						game.setNextPlayer(player);
+						return;
+					}
+				}
+				return;
+			}
+		}
+		
 		List<DominoSelection> selections = game.getCurrentDraft().getSelections();
 		int minIndex= 100;
 		int minVal= 100;
