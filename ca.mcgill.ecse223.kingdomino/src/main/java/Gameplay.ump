@@ -4,7 +4,7 @@ class Gameplay {
 	depend ca.mcgill.ecse223.kingdomino.controller.GameplayController;
     gamestatus {
         // TODO: complete gameplay state machine
-        SettingUp{
+        SettingUp {
             startNewGame(int numOfPlayers, boolean mkActivated, boolean harmonyActivated) 
             -> /{initializeGame(numOfPlayers);setGameOptions(mkActivated, harmonyActivated);shuffleDominoPile(); createNextDraft(); orderNextDraft();} Initializing.SelectingFirstDomino;
             loadGame(String filename) [isLoadedGameValid(filename)] -> /{} InGame;
@@ -15,14 +15,14 @@ class Gameplay {
            		entry/{revealNextDraft(); generateInitialPlayerOrder();switchDraft();createNextDraft();}
                 makeSelection(int id) -> /{currentPlayerSelectDomino(id);} Initializing.ProceedingToNextPlayerOrNextTurn;
             }
-            ProceedingToNextPlayerOrNextTurn{
+            ProceedingToNextPlayerOrNextTurn {
                 proceed [!isCurrentPlayerTheLastInTurn()] -> /{} Initializing.SelectingFirstDomino;
                 proceed [isCurrentPlayerTheLastInTurn()] -> /{} InGame.OrderingNextDraft;
                 exit/{switchCurrentPlayer();}
             }
         }
-        InGame{
-            PreplacingDomino{
+        InGame {
+            PreplacingDomino {
                 moveDomino(String dir) -> /{moveCurrentDomino(dir);} InGame.PreplacingDomino;
                 rotateDomino(int dir) -> /{rotateCurrentDomino(dir);} InGame.PreplacingDomino;
                 place [isCorrectlyPreplaced() && !isCurrentTurnTheLastInGame()] -> /{placeDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
@@ -34,29 +34,27 @@ class Gameplay {
                 discard  [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.PreplacingDomino;
                 
             }
-            SelectingNextDomino{
+            SelectingNextDomino {
                 makeSelection(int id) -> /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
-               
             }
-            ProceedingToNextPlayerOrNextTurn{
+            ProceedingToNextPlayerOrNextTurn {
                 proceed [!isCurrentPlayerTheLastInTurn()] -> /{switchCurrentPlayer();} InGame.PreplacingDomino;
                 proceed [isCurrentPlayerTheLastInTurn()] -> /{switchDraft();} InGame.OrderingNextDraft;
-                
             }
-            OrderingNextDraft{
+            OrderingNextDraft {
                 order [areAllDominoesInCurrentDraftSelected()]-> /{orderNextDraft();} InGame.RevealingNextDraft;
             }
-            RevealingNextDraft{
+            RevealingNextDraft {
                 reveal -> /{revealNextDraft();switchCurrentPlayer();} InGame.PreplacingDomino;
             }
             saveGame -> /{save();} SettingUp;
         }
-        EndofGame{
-        	CalculatingScore{
+        EndofGame {
+        	CalculatingScore {
            		entry/{calculateScore();}
            		showRankings->/{}EndofGame.ShowingRankings;
             }
-            ShowingRankings{
+            ShowingRankings {
             	entry/{showRanking();}
             }
         }
@@ -66,7 +64,7 @@ class Gameplay {
      * Setter for test setup
      */
 
-    public void setGamestatus(String status){
+    public void setGamestatus(String status) {
         switch (status) {
         case "SelectingFirstDomino":
             gamestatus = Gamestatus.Initializing;
@@ -90,7 +88,7 @@ class Gameplay {
 
        	// TODO add further cases here to set desired state
        	default:
-       	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
+       	    throw new RuntimeException("Invalid Game Status string was provided: " + status);
        	}
     }
 
@@ -98,12 +96,11 @@ class Gameplay {
      * Guards
      */
      
-    public boolean areAllDominoesInCurrentDraftSelected(){
+    public boolean areAllDominoesInCurrentDraftSelected() {
     	return GameplayController.areAllDominoesInCurrentDraftSelected();
     }
     
     public boolean isCurrentPlayerTheLastInTurn() {
-        
         return GameplayController.isCurrentPlayerTheLastInTurn();
     }
         
@@ -120,8 +117,7 @@ class Gameplay {
         return GameplayController.isLoadedGameValid(filename);
     }
 
-    public boolean impossibleToPlaceDomino(){
-        
+    public boolean impossibleToPlaceDomino() {
         return GameplayController.impossibleToPlaceDomino();
     }
     // You may need to add more guards here
@@ -129,13 +125,13 @@ class Gameplay {
     /*
      * Actions
      */
-    public void showRanking(){
+    public void showRanking() {
     
     }
-    public void calculateScore(){
+    public void calculateScore() {
     
     }
-    public void switchDraft(){
+    public void switchDraft() {
      	
     }
     public void shuffleDominoPile() {
@@ -160,58 +156,56 @@ class Gameplay {
         GameplayController.acceptCallFromSM("revealNextDraft");
     }
     
-    public void initializeGame(int numOfPlayers){
+    public void initializeGame(int numOfPlayers) {
         GameplayController.acceptInitializeGameCallFromSM(numOfPlayers);
 
     }
     
-    public void setGameOptions(boolean mkActivated, boolean harmonyActivated){
+    public void setGameOptions(boolean mkActivated, boolean harmonyActivated) {
         // TODO: implement this
     }
     
-    public void currentPlayerSelectDomino(int id){
+    public void currentPlayerSelectDomino(int id) {
     	// TODO: implement this
     }
     
-    public void moveCurrentDomino(String dir){
+    public void moveCurrentDomino(String dir) {
     	GameplayController.acceptMoveDominoCallFromSM(dir);
     }
     
-    public void rotateCurrentDomino(int dir){
+    public void rotateCurrentDomino(int dir) {
     	// TODO: implement this
     }
     
-    public void placeDomino(){
+    public void placeDomino() {
     	GameplayController.acceptCallFromSM("placeDomino");
     }
     
-    public void discardDomino(){
+    public void discardDomino() {
     	GameplayController.acceptDiscardDominoFromSM();
-
     }
     
-    public void calculateCurrentPlayerScore(){
+    public void calculateCurrentPlayerScore() {
     	GameplayController.acceptCallFromSM("calculateCurrentPlayerScore");
-
     }
     
-    public void calculateRanking(){
+    public void calculateRanking() {
     	// TODO: implement this
     }
     
-    public void resolveTieBreak(){
+    public void resolveTieBreak() {
     	// TODO: implement this
     }
     
-    public void switchCurrentPlayer(){
+    public void switchCurrentPlayer() {
     	GameplayController.acceptCallFromSM("switchCurrentPlayer");
     }
      
-    public void save(){
+    public void save() {
     	// TODO: implement this
     }
     
-    public void load(){
+    public void load() {
     	// TODO: implement this
     }
     
