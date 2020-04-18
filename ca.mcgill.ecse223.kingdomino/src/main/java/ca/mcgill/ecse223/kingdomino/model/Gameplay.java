@@ -275,7 +275,7 @@ public class Gameplay
         {
           exitGamestatusInGame();
         // line 45 "../../../../../Gameplay.ump"
-          switchDraft();
+          
           setGamestatusInGame(GamestatusInGame.OrderingNextDraft);
           wasEventProcessed = true;
           break;
@@ -361,7 +361,7 @@ public class Gameplay
           exitGamestatusInGame();
         // line 34 "../../../../../Gameplay.ump"
           placeDomino();calculateCurrentPlayerScore();switchCurrentPlayer();
-          setGamestatusInGame(GamestatusInGame.PreplacingDomino);
+          setGamestatusInGame(GamestatusInGame.ProceedingToNextPlayerOrNextTurn);
           wasEventProcessed = true;
           break;
         }
@@ -404,7 +404,7 @@ public class Gameplay
           exitGamestatusInGame();
         // line 37 "../../../../../Gameplay.ump"
           discardDomino(); calculateCurrentPlayerScore();switchCurrentPlayer();
-          setGamestatusInGame(GamestatusInGame.PreplacingDomino);
+          setGamestatusInGame(GamestatusInGame.ProceedingToNextPlayerOrNextTurn);
           wasEventProcessed = true;
           break;
         }
@@ -451,7 +451,7 @@ public class Gameplay
       case RevealingNextDraft:
         exitGamestatusInGame();
         // line 51 "../../../../../Gameplay.ump"
-        revealNextDraft();switchCurrentPlayer();
+        revealNextDraft();createNextDraft();switchCurrentPlayer();
         setGamestatusInGame(GamestatusInGame.PreplacingDomino);
         wasEventProcessed = true;
         break;
@@ -698,7 +698,7 @@ public class Gameplay
 
   // line 180 "../../../../../Gameplay.ump"
    public void rotateCurrentDomino(int dir){
-    // TODO: implement this
+    GameplayController.acceptRotateCurrentDomino(dir);
   }
 
   // line 184 "../../../../../Gameplay.ump"

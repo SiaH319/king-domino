@@ -150,6 +150,9 @@ public class DominoController {
         }
         Player p = game.getNextPlayer();
         Domino domino = getDominobyId(dominoId);
+        //Set Player's Ranking of next Turn
+        p.setCurrentRanking(cDraft.indexOfIdSortedDomino(domino));
+        //Create selection object
         new DominoSelection(p, domino, cDraft);
         return true;
     }

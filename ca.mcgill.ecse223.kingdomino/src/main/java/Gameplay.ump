@@ -31,10 +31,10 @@ class Gameplay {
                 place [isCorrectlyPreplaced() && !isCurrentTurnTheLastInGame()] -> /{placeDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
                 place [isCorrectlyPreplaced() && isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->
                     /{placeDomino();calculateCurrentPlayerScore();} EndofGame;
-                place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.PreplacingDomino;
+                place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.ProceedingToNextPlayerOrNextTurn;
                 discard [impossibleToPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
                 discard  [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();} EndofGame;
-                discard  [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.PreplacingDomino;
+                discard  [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.ProceedingToNextPlayerOrNextTurn;
                 
             }
             SelectingNextDomino {
@@ -42,7 +42,7 @@ class Gameplay {
             }
             ProceedingToNextPlayerOrNextTurn {
                 proceed [!isCurrentPlayerTheLastInTurn()] -> /{switchCurrentPlayer();} InGame.PreplacingDomino;
-                proceed [isCurrentPlayerTheLastInTurn()] -> /{switchDraft();} InGame.OrderingNextDraft;
+                proceed [isCurrentPlayerTheLastInTurn()] -> /{} InGame.OrderingNextDraft;
             }
             OrderingNextDraft {
                 order [areAllDominoesInCurrentDraftSelected()]-> /{orderNextDraft();} InGame.RevealingNextDraft;
@@ -177,7 +177,7 @@ class Gameplay {
     }
     
     public void rotateCurrentDomino(int dir) {
-    	// TODO: implement this
+    	GameplayController.acceptRotateCurrentDomino(dir);
     }
     
     public void placeDomino() {

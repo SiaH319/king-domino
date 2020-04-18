@@ -113,14 +113,29 @@ public class GameplayController {
 		statemachine.makeSelection(id);
 	}
 
+	/**
+	 * Trigger loadGame action in state machine
+	 * @author Cecilia Jiang
+	 * @param filename, fileName for load file
+	 */
 	public static void triggerLoadGameInSM(String filename) {
 		statemachine.loadGame(filename);
 	}
 
+	/**
+	 * Trigger moveDomino action in state machine
+	 * @author Cecilia Jiang
+	 * @param dir, direction of movement
+	 */
 	public void triggerMoveDominoInSM(String dir) {
 		statemachine.moveCurrentDomino(dir);
 	}
 
+	/**
+	 * Trigger RotateDomino action in state machine
+	 * @author Cecilia Jiang
+	 * @param dir, 1 clockwise or 0 counterwise
+	 */
 	public void triggerRotateDominoInSM(int dir) {
 		statemachine.rotateCurrentDomino(dir);
 	}
@@ -317,8 +332,10 @@ public class GameplayController {
 			CalculationController.calculateCurrentPlayerScore();
 			break;
 		case "calculateRanking":
+			
 			break;
 		case "resolveTieBreak":
+			
 			break;
 		case "switchCurrentPlayer":
 			switchCurrentPlayerInitiated();
@@ -331,13 +348,6 @@ public class GameplayController {
 
 	}
 	
-	public static boolean acceptLoadGameCall(String filename) {
-		try {
-			return SaveLoadGameController.loadGame(filename);
-		} catch (IOException e) {
-			return false;
-		}
-	}
 
 	/**
 	 * Accept create user call from state machine
@@ -418,7 +428,8 @@ public class GameplayController {
 		GameController.setBonusOptionForCurrentGame(mkActivated,harmonyActivated);
 	}
 
-	public static void acceptPlaceDominoFromSM(Player currentPlayer, int id) {
+	public static void acceptPlaceDominoFromSM(int id) {
+		Player currentPlayer = kingdomino.getCurrentGame().getNextPlayer();
 		DominoController.placeDomino(currentPlayer, id);
 	}
 
@@ -493,27 +504,68 @@ public class GameplayController {
 		for(Player player: players) {
 			player.setCurrentRanking(ranks.remove(0));
 		}
+		
+		int i = 0;
+		int indexMin = 0;
+		for(Player player: players) {
+			if(player.getCurrentRanking() == 1) {
+				indexMin = i;
+			}
+			i++;
+		}
+		currentGame.setNextPlayer(currentGame.getPlayer(indexMin));
 	}
 
+	/**
+	 * Accept selectDominoCall from state machine
+	 * @author Cecilia Jiang
+	 * @param dominoId, chosen domino id
+	 */
 	public static void acceptSelectDominoCallFromSM(int dominoId) {
 		Game game = kingdomino.getCurrentGame();
 		DominoController.chooseNextDomino(game, dominoId);
 	}
 	
 
+	/**
+	 * Accept moveDominoCall from state machine
+	 * @author Cecilia Jiang
+	 * @param dir, direction in String
+	 */
 	public static void acceptMoveDominoCallFromSM(String dir) {
 		Kingdomino kd = KingdominoApplication.getKingdomino();
 		Game game = kd.getCurrentGame();
 		Player p = game.getNextPlayer();
+		Domino domino = p.getDominoSelection().getDomino();
+		Kingdom kingdom = p.getKingdom();
+		DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(domino.getId(), kingdom);
+        if(dik == null){
+            dik = new DominoInKingdom(0,0,kingdom,domino);
+        }
 		DominoController.moveCurrentDomino(p, p.getDominoSelection().getDomino().getId(), dir);
 	}
 
 	
-
+	/**
+	 * Accept rotateCurrentDominoCall from state machine
+	 * @author Cecilia Jiang
+	 * @param dir,rotationDir 1 for clockwise, -1 for anticlockwise
+	 */
 	public static void acceptRotateCurrentDomino(int dir) {
-
+		Kingdomino kd = KingdominoApplication.getKingdomino();
+		Game game = kd.getCurrentGame();
+		Player p = game.getNextPlayer();
+		Castle castle = KingdomController.getCastle(p.getKingdom());
+		Square[] grid = GameController.getGrid(p.getUser().getName());
+		Domino domino = p.getDominoSelection().getDomino();
+		DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(domino.getId(), p.getKingdom());
+		DominoController.rotateExistingDomino(castle, grid, p.getKingdom().getTerritories(), dik, dir);
 	}
 
+	
+	///////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
 	private static Castle getCastle(Kingdom kingdom) {
 		for (KingdomTerritory territory : kingdom.getTerritories()) {
 			if (territory instanceof Castle)
