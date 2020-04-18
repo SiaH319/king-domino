@@ -89,8 +89,8 @@ public class GameplayController {
 	 * @param harmonyActivated, true if harmony bonus is activated
 	 */
 	
-	public static void triggerStartNewGameInSM(int numOfPlayers, boolean mkActivated, boolean harmonyActivated) {
-		statemachine.startNewGame(numOfPlayers,mkActivated,harmonyActivated);
+	public static void triggerStartNewGameInSM(int numOfPlayers, boolean mkActivated, boolean harmonyActivated,String[] userNames) {
+		statemachine.startNewGame(numOfPlayers,mkActivated,harmonyActivated,userNames);
 	}
 	/**
 	 * 
@@ -366,33 +366,35 @@ public class GameplayController {
 	 * @author Mohamad
 	 * @param numOfPlayer, number of player for the new game
 	 */
-	public static void acceptInitializeGameCallFromSM(int numOfPlayer){
+	public static void acceptInitializeGameCallFromSM(int numOfPlayer, String[] userNames){
 		System.out.println("creating the new game");
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		Game PreviousGame =game;
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		// Populate game
-		addDefaultUsersAndPlayersFour(game);
-		createAllDominoes(game);
-		game.setNextPlayer(game.getPlayer(0));
-		KingdominoApplication.setKingdomino(kingdomino);
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game;
+		if(numOfPlayer == 4){
+			game = new Game(48, kingdomino);
+			game.setNumberOfPlayers(4);
+			kingdomino.setCurrentGame(game);
+			// Populate game
+			addDefaultUsersAndPlayersFour(game);
+			createAllDominoes(game);
+			game.setNextPlayer(game.getPlayer(0));
+			KingdominoApplication.setKingdomino(kingdomino);
+		}
+
 		if(numOfPlayer==3) {
-			Game game2 = new Game(36, PreviousGame.getKingdomino());
+			game = new Game(36, kingdomino);
 			game.setNumberOfPlayers(3);
-		;
-			PreviousGame.getKingdomino().setCurrentGame(game);
+			game.getKingdomino().setCurrentGame(game);
 			addDefaultUsersAndPlayersThree(game);
 			createAllDominoes(game);
 			game.setNextPlayer(game.getPlayer(0));
 			KingdominoApplication.setKingdomino(game.getKingdomino());
 		}
 		if(numOfPlayer==2) {
-			Game game3 = new Game(36, PreviousGame.getKingdomino());
-			game.setNumberOfPlayers(3);
+			game = new Game(24, kingdomino);
+			game.setNumberOfPlayers(2);
 		
-			PreviousGame.getKingdomino().setCurrentGame(game);
+			game.getKingdomino().setCurrentGame(game);
 			addDefaultUsersAndPlayersThree(game);
 			createAllDominoes(game);
 			game.setNextPlayer(game.getPlayer(0));

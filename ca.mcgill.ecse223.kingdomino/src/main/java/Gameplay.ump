@@ -5,8 +5,9 @@ class Gameplay {
     gamestatus {
         // TODO: complete gameplay state machine
         SettingUp {
-            startNewGame(int numOfPlayers, boolean mkActivated, boolean harmonyActivated) 
-            -> /{initializeGame(numOfPlayers);setGameOptions(mkActivated, harmonyActivated);shuffleDominoPile(); createNextDraft(); orderNextDraft();} Initializing.SelectingFirstDomino;
+        	createNewUser(String name) -> /{createUser(name);} SettingUp;
+            startNewGame(int numOfPlayers, boolean mkActivated, boolean harmonyActivated,String[] userNames) 
+            -> /{initializeGame(numOfPlayers,userNames);setGameOptions(mkActivated, harmonyActivated);shuffleDominoPile(); createNextDraft(); orderNextDraft();} Initializing.SelectingFirstDomino;
             loadGame(String filename) [isLoadedGameValid(filename)] -> /{} InGame;
             loadGame(String filename) [!isLoadedGameValid(filename)] -> /{} SettingUp;
         }
@@ -50,13 +51,8 @@ class Gameplay {
             saveGame -> /{save();} SettingUp;
         }
         EndofGame {
-        	CalculatingScore {
-           		entry/{calculateScore();}
-           		showRankings->/{}EndofGame.ShowingRankings;
-            }
-            ShowingRankings {
-            	entry/{showRanking();}
-            }
+           	entry/{calculatePlayerRanking();resolveTieBreak();}
+           	restart -> /{} SettingUp;
         }
     }
 
@@ -125,10 +121,15 @@ class Gameplay {
     /*
      * Actions
      */
-    public void showRanking() {
+     
+    public void createUser(String name) {
     
     }
-    public void calculateScore() {
+    
+    public void resolveTieBreak() {
+    
+    }
+    public void calculatePlayerRanking() {
     
     }
     public void switchDraft() {
@@ -156,8 +157,8 @@ class Gameplay {
         GameplayController.acceptCallFromSM("revealNextDraft");
     }
     
-    public void initializeGame(int numOfPlayers) {
-        GameplayController.acceptInitializeGameCallFromSM(numOfPlayers);
+    public void initializeGame(int numOfPlayers,String[] userNames) {
+        GameplayController.acceptInitializeGameCallFromSM(numOfPlayers,userNames);
 
     }
     
