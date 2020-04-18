@@ -210,6 +210,7 @@ public class CalculationController {
             RankingWithTie();
         }
     }
+    
     /**
      * @author Mohamad
      * Sort the array of scores, since all scores are distinct (i.e no tie) we can get the payers from their scores.

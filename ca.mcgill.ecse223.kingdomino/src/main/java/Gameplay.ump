@@ -16,12 +16,9 @@ class Gameplay {
                 draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
             }
             SelectingFirstDomino {
-                makeSelection(int id) -> /{currentPlayerSelectDomino(id);} Initializing.ProceedingToNextPlayerOrNextTurn;
-            }
-            ProceedingToNextPlayerOrNextTurn {
-                proceed [!isCurrentPlayerTheLastInTurn()] -> /{} Initializing.SelectingFirstDomino;
-                proceed [isCurrentPlayerTheLastInTurn()] -> /{} InGame.OrderingNextDraft;
-                exit/{switchCurrentPlayer();}
+                makeSelection(int id) [!isCurrentPlayerTheLastInTurn()]-> 
+                /{currentPlayerSelectDomino(id);switchCurrentPlayer();} Initializing.SelectingFirstDomino;
+                makeSelection(int id) [isCurrentPlayerTheLastInTurn()] ->/ {switchCurrentPlayer();} InGame.PreplacingDomino;
             }
         }
         InGame {
@@ -55,7 +52,7 @@ class Gameplay {
             saveGame -> /{save();} SettingUp;
         }
         EndofGame {
-           	entry/{calculatePlayerRanking();resolveTieBreak();}
+           	entry/{calculatePlayerRanking();}
            	restart -> /{} SettingUp;
         }
     }
@@ -69,10 +66,6 @@ class Gameplay {
         case "SelectingFirstDomino":
             gamestatus = Gamestatus.Initializing;
             gamestatusInitializing = GamestatusInitializing.SelectingFirstDomino;
-            break;
-        case "ProceedingToNextPlayerOrNextTurn":
-            gamestatus = Gamestatus.Initializing;
-            gamestatusInitializing = GamestatusInitializing.ProceedingToNextPlayerOrNextTurn;
             break;
        	case "OrderingNextDraft":
        		gamestatus = Gamestatus.InGame;
@@ -133,12 +126,11 @@ class Gameplay {
     public void resolveTieBreak() {
     
     }
+    
     public void calculatePlayerRanking() {
     
     }
-    public void switchDraft() {
-     	
-    }
+   
     public void shuffleDominoPile() {
         GameplayController.acceptCallFromSM("shuffleDominoPile");
 

@@ -337,10 +337,7 @@ public class GameplayController {
 			CalculationController.calculateCurrentPlayerScore();
 			break;
 		case "calculateRanking":
-			//TODO
-			break;
-		case "resolveTieBreak":
-			//TODO
+			calculateRanking();
 			break;
 		case "switchCurrentPlayer":
 			switchCurrentPlayerInitiated();
@@ -349,6 +346,30 @@ public class GameplayController {
 			throw new java.lang.IllegalArgumentException("Invalid trigger event: " + methodName);
 		}
 
+	}
+
+	/**
+	 * Accept calculateRanking call from sm
+	 */
+	public static void calculateRanking(){
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		boolean noTie = true;
+		for(Player p1 : game.getPlayers()) {
+			for(Player p2:game.getPlayers()) {
+				if(p1.getColor()!=p2.getColor()) {
+					if((p2.getBonusScore()+p2.getPropertyScore())==(p1.getBonusScore()+p1.getPropertyScore())) {// if we catch any pair of different
+						//players with the same score then there is a tie
+						noTie=false;
+					}
+				}
+
+			}
+		}
+		ArrayList<Integer> scoreList = new ArrayList<>();
+		for(Player player: game.getPlayers()) {
+			scoreList.add(player.getTotalScore());
+		}
+		CalculationController.calculateRanking(noTie, scoreList);
 	}
 	
 	/**
