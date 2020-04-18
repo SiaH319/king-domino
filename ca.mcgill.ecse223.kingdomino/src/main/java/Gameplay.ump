@@ -15,7 +15,7 @@ class Gameplay {
            		entry/{revealNextDraft(); generateInitialPlayerOrder();switchDraft();createNextDraft();}
                 makeSelection(int id) -> /{currentPlayerSelectDomino(id);} Initializing.ProceedingToNextPlayerOrNextTurn;
             }
-            ProceedingToNextPlayerOrNextTurn{
+            ProceedingToNextPlayerOrNextTurn {
                 proceed [!isCurrentPlayerTheLastInTurn()] -> /{} Initializing.SelectingFirstDomino;
                 proceed [isCurrentPlayerTheLastInTurn()] -> /{} InGame.OrderingNextDraft;
                 exit/{switchCurrentPlayer();}
@@ -36,12 +36,10 @@ class Gameplay {
             }
             SelectingNextDomino {
                 makeSelection(int id) -> /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
-               
             }
             ProceedingToNextPlayerOrNextTurn {
                 proceed [!isCurrentPlayerTheLastInTurn()] -> /{switchCurrentPlayer();} InGame.PreplacingDomino;
                 proceed [isCurrentPlayerTheLastInTurn()] -> /{switchDraft();} InGame.OrderingNextDraft;
-                
             }
             OrderingNextDraft {
                 order [areAllDominoesInCurrentDraftSelected()]-> /{orderNextDraft();} InGame.RevealingNextDraft;
@@ -157,58 +155,56 @@ class Gameplay {
         GameplayController.acceptCallFromSM("revealNextDraft");
     }
     
-    public void initializeGame(int numOfPlayers){
+    public void initializeGame(int numOfPlayers) {
         GameplayController.acceptInitializeGameCallFromSM(numOfPlayers);
 
     }
     
-    public void setGameOptions(boolean mkActivated, boolean harmonyActivated){
+    public void setGameOptions(boolean mkActivated, boolean harmonyActivated) {
         // TODO: implement this
     }
     
-    public void currentPlayerSelectDomino(int id){
+    public void currentPlayerSelectDomino(int id) {
     	// TODO: implement this
     }
     
-    public void moveCurrentDomino(String dir){
+    public void moveCurrentDomino(String dir) {
     	GameplayController.acceptMoveDominoCallFromSM(dir);
     }
     
-    public void rotateCurrentDomino(int dir){
+    public void rotateCurrentDomino(int dir) {
     	// TODO: implement this
     }
     
-    public void placeDomino(){
+    public void placeDomino() {
     	GameplayController.acceptCallFromSM("placeDomino");
     }
     
-    public void discardDomino(){
+    public void discardDomino() {
     	GameplayController.acceptDiscardDominoFromSM();
-
     }
     
-    public void calculateCurrentPlayerScore(){
+    public void calculateCurrentPlayerScore() {
     	GameplayController.acceptCallFromSM("calculateCurrentPlayerScore");
-
     }
     
-    public void calculateRanking(){
+    public void calculateRanking() {
     	// TODO: implement this
     }
     
-    public void resolveTieBreak(){
+    public void resolveTieBreak() {
     	// TODO: implement this
     }
     
-    public void switchCurrentPlayer(){
+    public void switchCurrentPlayer() {
     	GameplayController.acceptCallFromSM("switchCurrentPlayer");
     }
      
-    public void save(){
+    public void save() {
     	// TODO: implement this
     }
     
-    public void load(){
+    public void load() {
     	// TODO: implement this
     }
     
