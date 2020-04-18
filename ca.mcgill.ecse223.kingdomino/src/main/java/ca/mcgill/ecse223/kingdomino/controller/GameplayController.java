@@ -88,6 +88,10 @@ public class GameplayController {
 		statemachine.discard();
 	}
 	
+	public static void triggerSaveInSM(String filename) {
+		statemachine.save(filename);
+	}
+	
 	/**
 	 * Trigger createnewuser action in statemachine
 	 * @author Cecilia Jiang
