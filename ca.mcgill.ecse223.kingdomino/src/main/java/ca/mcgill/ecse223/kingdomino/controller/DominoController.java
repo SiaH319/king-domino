@@ -143,45 +143,16 @@ public class DominoController {
      *         false if selection for next draft remains same
      * @author Violet Wei
      */
-    public static boolean chooseNextDomino(Game game, PlayerColor color, Draft draft, int dominoId) {
-        //Draft draft = getNextDraft(nextDraft, game);
-        game = KingdominoApplication.getKingdomino().getCurrentGame();
+    public static boolean chooseNextDomino(Game game,int dominoId) {
 
-        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-        game.setNumberOfPlayers(4);
-        kingdomino.setCurrentGame(game);
-    
-        game.setNextPlayer(game.getPlayer(0));
-        KingdominoApplication.setKingdomino(kingdomino);
-        String name = game.getPlayer(0).getUser().getName();
-        GameController.setGrid(name, new Square[81]);
-
-        //Player currentPlayer = null;
-        List<Domino> nextDraftDominos = getNextDraftDominos(draft);
-        List<DominoSelection> dominoSelection = getDominoSelection(draft);
-        List<Player> players = game.getPlayers();
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getColor().equals(color)) {
-                currentPlayer = players.get(i);
-            }
+        Draft cDraft = game.getNextDraft();
+        for(DominoSelection dominoSelection: cDraft.getSelections()){
+            if(dominoSelection.getDomino().getId() == dominoId)
+                return false;
         }
-        List<DominoSelection> newDominoSelection = new ArrayList<>();
-        for (int i = 0; i < nextDraftDominos.size(); i++) {
-            if (nextDraftDominos.get(i).getId() == dominoId) {
-                if (nextDraftDominos.get(i).getDominoSelection() == null) {  
-                    DominoSelection selection = new DominoSelection(currentPlayer, nextDraftDominos.get(i), draft);
-                    currentPlayer.setDominoSelection(selection);
-                    draft.addSelectionAt(selection, i);
-                    newDominoSelection.add(selection);
-                } else {
-                    newDominoSelection = dominoSelection;
-                    return false;
-                }
-            } else {
-                //newDominoSelection.add(dominoSelection.get(i));
-            }
-            game.setNextDraft(draft);
-        }
+        Player p = game.getNextPlayer();
+        Domino domino = getDominobyId(dominoId);
+        new DominoSelection(p, domino, cDraft);
         return true;
     }
 
@@ -263,11 +234,11 @@ public class DominoController {
      * by rotating it (clockwise or counter-clockwise).
      * rotationDir 1 for clockwise, -1 for anticlockwise
      * @author Cecilia Jiang
-     * @param castle
-     * @param grid
-     * @param territories
-     * @param dominoInKingdom
-     * @param rotationDir
+     * @param castle, the castle
+     * @param grid, the square[] grid
+     * @param territories, territories under current player's control
+     * @param dominoInKingdom, currently selected domino
+     * @param rotationDir, rotation direction as String
      */
     public static void rotateExistingDomino(Castle castle, Square[] grid, List<KingdomTerritory> territories,
                                             DominoInKingdom dominoInKingdom, int rotationDir){
@@ -295,7 +266,7 @@ public class DominoController {
      * @param id which is id of the domino to place
      * @author: Cecilia Jiang
      */
-    public static void placeDomino(Player player, int id){
+    public static void placeDomino(Player player, int id) throws java.lang.IllegalArgumentException{
         Domino domino = player.getDominoSelection().getDomino();
         if(domino.getId() == id && domino.getStatus() == DominoStatus.CorrectlyPreplaced){
             domino.setStatus(DominoStatus.PlacedInKingdom);
