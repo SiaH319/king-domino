@@ -1,8 +1,7 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -141,9 +140,9 @@ public class SaveLoadGameController {
         List<Integer> p3tiles = new ArrayList<>();
         List<Integer> p4tiles = new ArrayList<>();
 
-        List<Integer> claimedTiles = new ArrayList<>();
-        List<Integer> unclaimedTiles = new ArrayList<>();
 
+        List<Integer> unclaimedTiles = new ArrayList<>();
+        HashMap<Integer,Integer> claimedTiles = new HashMap<>();
 
         if (file.exists()) {
             try {
@@ -155,9 +154,10 @@ public class SaveLoadGameController {
                     if (currentLine.startsWith("C")) {
                         String newLine = currentLine.substring(3);
                         String[] claimedTile = newLine.split(", ");
-                        Draft draft = new Draft(Draft.DraftStatus.Sorted,currentGame);
+
                         for (int i = 0; i < claimedTile.length; i++) {
-                            claimedTiles.add(Integer.parseInt(claimedTile[i]));
+                            claimedTiles.put(i,Integer.parseInt(claimedTile[i]));
+
 //                            Domino domino = getdominoByID(Integer.parseInt(claimedTile[i]));
 //                            draft.addIdSortedDomino(domino);
 //                            Player player = currentGame.getPlayer(i);
@@ -189,6 +189,122 @@ public class SaveLoadGameController {
                     }
                 }
                 bufferedReader.close();
+                int numOfPlayer = 4;
+                if(p4tiles.size()==0)
+                    numOfPlayer = 3;
+
+                if(numOfPlayer == 4){
+                    int maxTileSize = -1;
+                    for(int i = 1; i <=  4; i++){
+                        List<Integer> ptiles = new ArrayList<>();
+                        switch (i){
+                            case 1:
+                                ptiles = p1tiles;
+                                break;
+                            case 2:
+                                ptiles = p2tiles;
+                                break;
+                            case 3:
+                                ptiles = p3tiles;
+                                break;
+                            case 4:
+                                ptiles = p4tiles;
+                                break;
+                        }
+                        if(ptiles.size()>maxTileSize)
+                            maxTileSize = ptiles.size();
+                    }
+                    List<Integer> playersNotYetClaimedTiles = new ArrayList<>();
+                    List<Integer> playersClaimedTiles = new ArrayList<>();
+                    //Fill selection
+                    for(int i = 1; i <=  4; i++){
+                        List<Integer> ptiles = new ArrayList<>();
+                        switch (i){
+                            case 1:
+                                ptiles = p1tiles;
+                                break;
+                            case 2:
+                                ptiles = p2tiles;
+                                break;
+                            case 3:
+                                ptiles = p3tiles;
+                                break;
+                            case 4:
+                                ptiles = p4tiles;
+                                break;
+                        }
+                        if(ptiles.size()<maxTileSize)
+                            playersNotYetClaimedTiles.add(i);
+                        else
+                            playersClaimedTiles.add(i);
+                    }
+
+                    //Sort players who has not yet claimed tiles according to claimed tile id
+                    if(playersNotYetClaimedTiles.size() == 0){
+                        Set<Integer> indexSet = claimedTiles.keySet();
+                        int minDominoId = Integer.MAX_VALUE;
+                        int minIndex = -1;
+                        for(int i: indexSet){
+                            if(claimedTiles.get(i)<minDominoId){
+                                minDominoId = claimedTiles.get(i);
+                                minIndex = i;
+                            }
+                        }
+                        Kingdomino kingdomino= KingdominoApplication.getKingdomino();
+                        Game game = kingdomino.getCurrentGame();
+                        game.setNextPlayer(game.getPlayer(minIndex));
+                    }else{
+                        int minDominoId = Integer.MAX_VALUE;
+                        int minIndex = -1;
+                        for(int i: playersNotYetClaimedTiles){
+                            if(claimedTiles.get(i-1)<minDominoId){
+                                minDominoId = claimedTiles.get(i-1);
+                                minIndex = i-1;
+                            }
+                        }
+                        Kingdomino kingdomino= KingdominoApplication.getKingdomino();
+                        Game game = kingdomino.getCurrentGame();
+                        game.setNextPlayer(game.getPlayer(minIndex));
+                    }
+                    //Constructing current draft
+                    Kingdomino kingdomino= KingdominoApplication.getKingdomino();
+                    Game game = kingdomino.getCurrentGame();
+                    Draft curDraft = new Draft(Draft.DraftStatus.FaceUp,game);
+                    for(int i: playersNotYetClaimedTiles){
+                        int id = 0;
+                        switch (i){
+                            case 1:
+                                 id = p1tiles.get(p1tiles.size()-1);
+                                curDraft.addIdSortedDomino(getdominoByID(id));
+                                break;
+                            case 2:
+                                id = p2tiles.get(p2tiles.size()-1);
+                                curDraft.addIdSortedDomino(getdominoByID(id));
+                                break;
+                            case 3:
+                                id = p3tiles.get(p3tiles.size()-1);
+                                curDraft.addIdSortedDomino(getdominoByID(id));
+                                break;
+                            case 4:
+                                id = p4tiles.get(p4tiles.size()-1);
+                                curDraft.addIdSortedDomino(getdominoByID(id));
+                                break;
+
+                        }
+                    }
+                    game.setCurrentDraft(curDraft);
+
+                    //Adding Unclaimed Tiles and NextDraft claimed tiles to next craft
+                    Draft nextDraft = new Draft(Draft.DraftStatus.FaceUp,game);
+                    for(int id: unclaimedTiles){
+                        nextDraft.addIdSortedDomino(getdominoByID(id));
+                    }
+
+                    for(int playerIndex: playersClaimedTiles){
+                        int id = claimedTiles.get(playerIndex-1);
+                        nextDraft.addIdSortedDomino(getdominoByID(id));
+                    }
+                }
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

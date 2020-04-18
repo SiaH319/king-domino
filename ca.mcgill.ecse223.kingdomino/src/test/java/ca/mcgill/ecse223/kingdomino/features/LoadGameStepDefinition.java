@@ -1,6 +1,6 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -87,25 +87,17 @@ public class LoadGameStepDefinition {
 
     @Then("it shall be player {int}'s turn")
     public void it_shall_be_player_players_turn(int playerid) {
-        /*Player player = new Player(game);
-        if (playerid == 1) {
-            player.setColor(PlayerColor.Blue);
-        } else if (playerid == 2) {
-            player.setColor(PlayerColor.Green);
-        } else if (playerid == 3) {
-            player.setColor(PlayerColor.Pink);
-        } else {
-            player.setColor(PlayerColor.Yellow);
-        } 
-        boolean playerTurn = (player.getColor() != null);
-        assertEquals(true, playerTurn);*/
-        boolean isPlayerTurn;
-        if (playerid >= 1 && playerid <= 4) {
-            isPlayerTurn = true;
-        } else {
-            isPlayerTurn = false;
-        }
-        assertEquals(true, isPlayerTurn);
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        Player player = game.getNextPlayer();
+        int currentPlayerIndex = 0;
+        for(int i = 0; i<4;i++){
+        	if(game.getPlayer(i).getUser().getName().equals(player.getUser().getName())){
+				currentPlayerIndex = i;
+				break;
+			}
+		}
+
+        assertEquals(currentPlayerIndex+1, playerid);
     }
 
     @Then("each of the players should have the corresponding tiles on their grid:")
@@ -160,16 +152,16 @@ public class LoadGameStepDefinition {
     public void tiles_unclaimed_shall_be_unclaimed_on_the_board(String unclaimed) {
         List<Integer> unclaimedTiles = SaveLoadGameController.getUnclaimedTiles(unclaimed);
         assertNotNull(unclaimedTiles);
-        for (int i = 0; i < unclaimedTiles.size(); i++) {
-            Domino domino = getdominoByID(unclaimedTiles.get(i));
-            domino.setStatus(DominoStatus.InPile);
-        }
+		for (Integer unclaimedTile : unclaimedTiles) {
+			Domino domino = getdominoByID(unclaimedTile);
+			domino.setStatus(DominoStatus.InPile);
+		}
     }
 
     @Then("the game shall become ready to start")
     public void the_game_shall_become_ready_to_start() {
         boolean ready = game.hasNextPlayer() && game.hasAllDominos() && game.hasPlayers();
-        assertEquals(true, ready);
+		assertTrue(ready);
     }
 
 
@@ -179,7 +171,7 @@ public class LoadGameStepDefinition {
         boolean isValid;
         try {
             isValid = SaveLoadGameController.loadGame(name);
-            assertEquals(false, isValid);
+			assertFalse(isValid);
         } catch (IOException e) {
             e.printStackTrace();
         }    
