@@ -408,12 +408,22 @@ public class GameplayController {
     	DominoController.moveCurrentDomino(p, p.getDominoSelection().getDomino().getId(), dir);
     }
 	
-	
-	public static void acceptSelectDominoCallFromSM(int dominoId){
+	/**
+	 * @author Violet
+	 * @param dominoId
+	 */
+	public static void acceptSelectDominoCallFromSM(int dominoId) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		Player player = game.getNextPlayer();
+		// Domino domino = player.getDominoSelection().getDomino();
+		DominoController.placeDomino(player, dominoId);
 		
 	}
 	
-	public static void acceptRotateCurrentDomino(int dir){
+	public static void acceptRotateCurrentDomino(int dir) {
+		// rotateExistingDomino(Castle castle, Square[] grid, List<KingdomTerritory> territories,
+                //                           DominoInKingdom dominoInKingdom, int rotationDir)
     	
     }
 	private static Castle getCastle (Kingdom kingdom) {
