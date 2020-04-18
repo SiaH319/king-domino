@@ -5,8 +5,9 @@ class Gameplay {
     gamestatus {
         // TODO: complete gameplay state machine
         SettingUp{
-            startNewGame(int numOfPlayers) -> /{initializeGame(numOfPlayers);setGameOptions();shuffleDominoPile(); createNextDraft(); orderNextDraft();} Initializing.SelectingFirstDomino;
-            loadGame [isLoadedGameValid()] -> /{load();} InGame;
+            startNewGame(int numOfPlayers, boolean mkActivated, boolean harmonyActivated) 
+            -> /{initializeGame(numOfPlayers);setGameOptions(mkActivated, harmonyActivated);shuffleDominoPile(); createNextDraft(); orderNextDraft();} Initializing.SelectingFirstDomino;
+            loadGame [isLoadedGameValid()] -> /{} InGame;
             loadGame [!isLoadedGameValid()] -> /{} SettingUp;
         }
         Initializing {
@@ -164,7 +165,7 @@ class Gameplay {
 
     }
     
-    public void setGameOptions(){
+    public void setGameOptions(boolean mkActivated, boolean harmonyActivated){
         // TODO: implement this
     }
     
