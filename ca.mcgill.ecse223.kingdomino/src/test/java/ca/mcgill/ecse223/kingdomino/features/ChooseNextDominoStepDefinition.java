@@ -164,7 +164,6 @@ public class ChooseNextDominoStepDefinition {
     }
 
     /* Scenario Outline: Player choses an occupied domino */
-
     @Then("the selection for the next draft selection is still {string}")
     public void the_selection_for_the_next_draft_selection_is_still_selection(String newselection) {
         String[] newSelections = newselection.split(",");

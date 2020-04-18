@@ -38,7 +38,9 @@ public class SelectingFirstDominoStepDefinitions {
 	public void the_game_has_been_initialized_for_selecting_first_domino() {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		KingdominoApplication.getStateMachine();
-		GameplayController.triggerStartNewGameInSM(4);
+		String[] names = {"User1","User2","User3","User4"};
+		GameplayController.initStatemachine();
+		GameplayController.setStateMachineState("SelectingFirstDomino");
 
 	}
 

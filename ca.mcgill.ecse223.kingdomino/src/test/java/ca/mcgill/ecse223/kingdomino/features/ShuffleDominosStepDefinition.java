@@ -1,26 +1,21 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.ShuffleDominoesController;
-import ca.mcgill.ecse223.kingdomino.model.Castle;
-import ca.mcgill.ecse223.kingdomino.model.Domino;
-import ca.mcgill.ecse223.kingdomino.model.Game;
-import ca.mcgill.ecse223.kingdomino.model.Kingdom;
-import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
-import ca.mcgill.ecse223.kingdomino.model.Player;
+import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
-import ca.mcgill.ecse223.kingdomino.model.TerrainType;
-import ca.mcgill.ecse223.kingdomino.model.User;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
+import static org.junit.Assert.*;
+
 /**
  * TODO Put here a description of what this class does.
  *
@@ -74,21 +69,22 @@ public class ShuffleDominosStepDefinition {
 	}
 	
 	@When("the shuffling of dominoes is initiated")
-	public void the_shuffling_of_dominoes_is_initiated() {
-		ShuffleDominoesController.shuffle(true);
+	public void the_shuffling_of_dominoes_is_initiated() throws Exception {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		ShuffleDominoesController.shuffleDomino(game.getAllDominos(),game);
 		
 	}
 	@When("I initiate to arrange the domino in the fixed order {string}")
 	public void I_initiate_to_arrange_the_domino_in_the_fixed_order(String orderedList) {
-		ShuffleDominoesController.fixedOrder(orderedList);
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		ShuffleDominoesController.fixedArrangement(orderedList,game);
 	}
 	
 	@Then("the first draft shall exist")
 	public void the_first_draft_shall_exist() {
-		
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		int size = game.getAllDrafts().size();
-		assertEquals(1,size);
+		Draft firstDraft = game.getAllDraft(0);
+		assertNotNull(firstDraft);
 	}
 	
 	@Then("the first draft should have {int} dominoes on the board face down")
@@ -103,41 +99,41 @@ public class ShuffleDominosStepDefinition {
 	@Then("there should be {int} dominoes left in the draw pile")
 	public void there_should_be_dominoes_left_in_the_draw_pile(Integer ExpectedSizeOfPile) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		int actualSizeOfPile=0;
-		Domino Current =game.getTopDominoInPile();
-		while(Current!=null) {
-			actualSizeOfPile+=1;
-			Current=Current.getNextDomino();
+		List<Draft> draftList = game.getAllDrafts();
+		int num = 0;
+		for(Draft draft: draftList){
+			if(draft.getDraftStatus() != Draft.DraftStatus.Sorted){
+				num+=draft.getIdSortedDominos().size();
+			}
 		}
 	
-		assertEquals((int)ExpectedSizeOfPile,actualSizeOfPile);
+		assertEquals((int)ExpectedSizeOfPile,num);
 	}
 	
 	@Then("the draw pile should consist of everything in {string} except the first {int} dominoes with their order preserved")
 	public void the_draw_pile_should_consist_of_everything_in_except_the_first_dominoes_with_their_order_preserved(String orderedList,Integer numOfDominoes) {
 		ArrayList<Integer> expectedList =getListOfIDs(orderedList);
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		int actualSizeOfPile=0;
-		Domino Current =game.getTopDominoInPile();
-		while(Current!=null) {
-			actualSizeOfPile+=1;
-			Current=Current.getNextDomino();
-		}
-		assertEquals((expectedList.size()-numOfDominoes),actualSizeOfPile);
-		ArrayList<Integer> actualList = new ArrayList<Integer>();
-		Current=game.getTopDominoInPile();
-		for(int i=0;i<actualSizeOfPile;i++) {
-			actualList.add(Current.getId());
-			Current=Current.getNextDomino();
-		}
-		for(int i=4;i<expectedList.size();i++) {
-			if(game.getNumberOfPlayers()==3) {
-				assertEquals((int)expectedList.get(i),(int)actualList.get(i-3));
+		List<Draft> drafts = game.getAllDrafts();
+		int index = 4;
+		if(game.getNumberOfPlayers()%2 == 1)
+			index = 3;
+		for(Draft draft: drafts){
+			if(draft.getDraftStatus() == Draft.DraftStatus.Sorted) continue;
+
+			if(game.getNumberOfPlayers()%2 == 1){
+				for(int i = 0; i< 3; i++){
+					assertEquals((int)draft.getIdSortedDomino(i).getId(),(int)(expectedList.get(index + i)));
+
+				}
+				index+=3;
+			}else{
+				for(int i = 0; i< 4; i++){
+					assertEquals((int)draft.getIdSortedDomino(i).getId(),(int)(expectedList.get(index + i)));
+
+				}
+				index+=4;
 			}
-			else {
-				assertEquals((int)expectedList.get(i),(int)actualList.get(i-4));
-			}
-			
 		}
 		
 		

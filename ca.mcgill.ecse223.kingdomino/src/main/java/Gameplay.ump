@@ -6,13 +6,16 @@ class Gameplay {
         SettingUp {
         	createNewUser(String name) -> /{createUser(name);} SettingUp;
             startNewGame(int numOfPlayers, boolean mkActivated, boolean harmonyActivated,String[] userNames) 
-            -> /{initializeGame(numOfPlayers,userNames);setGameOptions(mkActivated, harmonyActivated);shuffleDominoPile(); createNextDraft(); orderNextDraft();} Initializing.SelectingFirstDomino;
+            -> /{initializeGame(numOfPlayers,userNames);setGameOptions(mkActivated, harmonyActivated);} Initializing.CreatingFirstDraft;
             loadGame(String filename) [isLoadedGameValid(filename)] -> /{} InGame;
             loadGame(String filename) [!isLoadedGameValid(filename)] -> /{} SettingUp;
         }
         Initializing {
+        	CreatingFirstDraft {
+                entry/{shuffleDominoPile(); createNextDraft(); orderNextDraft();}
+                draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
+            }
             SelectingFirstDomino {
-           		entry/{revealNextDraft(); generateInitialPlayerOrder();switchDraft();createNextDraft();}
                 makeSelection(int id) -> /{currentPlayerSelectDomino(id);} Initializing.ProceedingToNextPlayerOrNextTurn;
             }
             ProceedingToNextPlayerOrNextTurn {
@@ -166,7 +169,7 @@ class Gameplay {
     }
     
     public void currentPlayerSelectDomino(int id) {
-    	// TODO: implement this
+    	GameplayController.acceptSelectDominoCallFromSM(id);
     }
     
     public void moveCurrentDomino(String dir) {
@@ -194,10 +197,6 @@ class Gameplay {
     }
      
     public void save() {
-    	// TODO: implement this
-    }
-    
-    public void load() {
     	// TODO: implement this
     }
     

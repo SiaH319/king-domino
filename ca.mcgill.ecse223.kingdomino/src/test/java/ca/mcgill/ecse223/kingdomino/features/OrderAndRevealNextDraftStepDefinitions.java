@@ -84,7 +84,6 @@ public class OrderAndRevealNextDraftStepDefinitions {
 		ArrayList<Integer> expected =getListOfIDs(listOfIDs);
 		ArrayList<Integer> actual = new ArrayList<Integer>();
 		for(Domino d:game.getNextDraft().getIdSortedDominos()) {
-			System.out.println("d has id :"+d.getId());
 			actual.add(d.getId());
 		}
 		assertEquals(expected.size(),actual.size());

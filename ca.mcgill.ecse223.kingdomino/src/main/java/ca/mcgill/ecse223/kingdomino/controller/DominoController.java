@@ -135,10 +135,8 @@ public class DominoController {
     ///////////////////////////        //////
     /**
      * Controller implemented for Feature 10: Choose Next Domino
-     * @param game
-     * @param color
-     * @param draft
-     * @param dominoId
+     * @param game, current game
+     * @param dominoId, domino id
      * @return true if selection for next draft is different
      *         false if selection for next draft remains same
      * @author Violet Wei

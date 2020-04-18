@@ -36,44 +36,19 @@ public class DraftController {
     /**
      * Feature 8: Create Next Draft
      * Create a next draft and the first few dominoes in the pile to it
-     * @author Mohamad
+     * @author Mohamad, Cecilia Jiang
      * 
      */
     public static void createNewDraftIsInitiated() {
-    	System.out.println("Creating the next draft");
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        if(game.getAllDrafts().size()!=0) {// if its not the first turn
-        if(game.getNextDraft()==null) {// if next draft is not there then set  one
-            if(game.getAllDraft(game.getAllDrafts().size()-1)!=null) {
-            	game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1)); //last draft is the newest so the next one
-            }
-            else {
-            	game.setNextDraft(new Draft(null, game));
-            }
-        }    
-        }
-        game.setCurrentDraft(game.getNextDraft()); // now set it as the new next Draft
+        int maxDraftSize = game.getMaxPileSize();
+        int curDraftSize = game.getAllDrafts().size();
+        if(curDraftSize == maxDraftSize){
 
-        if(thereCanBeMoreDrafts(game)) { // if we can create more drafts
-        	
-            Draft newNextDraft = new Draft(Draft.DraftStatus.FaceDown,game);
+            return;
+        }
+        int nextDraftindex = maxDraftSize - curDraftSize + 1;
 
-            for(int i=0;i<newNextDraft.maximumNumberOfIdSortedDominos();i++) { // populate the draft with the corresponding number of dominoes from the linked list
-                Domino Top =game.getTopDominoInPile();
-                newNextDraft.addIdSortedDomino(Top);
-                Top.setStatus(Domino.DominoStatus.InNextDraft);// update the linked ist
-                game.setTopDominoInPile(Top.getNextDomino());
-            }
-            if(game.getCurrentDraft()!=null) {
-                game.getCurrentDraft().setDraftStatus(Draft.DraftStatus.FaceUp);
-            }
-            game.addAllDraft(newNextDraft);// add draft to list of drafts
-            game.setNextDraft(newNextDraft);// set draft as the next one
-        }
-        else {
-            game.setNextDraft(null);
-            game.setTopDominoInPile(null); // then the pile should be empty
-        }
 
     }
 
@@ -98,7 +73,6 @@ public class DraftController {
 
         ArrayList<Domino> newIdSorted = new ArrayList<Domino>();
         for(Integer id : listIDs) {
-        	System.out.println("added an id to the list");
             newIdSorted.add(getdominoByID(id));
         }
         nextDraft.setIdSortedDominos(newIdSorted.get(0),newIdSorted.get(1),newIdSorted.get(2),newIdSorted.get(3));// add them back to the next draft 
