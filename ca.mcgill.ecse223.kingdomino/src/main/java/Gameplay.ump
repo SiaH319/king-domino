@@ -31,10 +31,12 @@ class Gameplay {
                 place [isCorrectlyPreplaced() && !isCurrentTurnTheLastInGame()] -> /{placeDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
                 place [isCorrectlyPreplaced() && isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->
                     /{placeDomino();calculateCurrentPlayerScore();} EndofGame;
-                place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] ->/{placeDomino();calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.ProceedingToNextPlayerOrNextTurn;
+                place [isCorrectlyPreplaced() && !isCurrentPlayerTheLastInTurn() && isCurrentTurnTheLastInGame()] 
+                	->/{placeDomino();calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.PreplacingDomino;
                 discard [impossibleToPlaceDomino() && !isCurrentTurnTheLastInGame()]-> /{discardDomino(); calculateCurrentPlayerScore();} InGame.SelectingNextDomino;
                 discard  [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();} EndofGame;
-                discard  [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]-> /{discardDomino(); calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.ProceedingToNextPlayerOrNextTurn;
+                discard  [impossibleToPlaceDomino() && isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()]
+                -> /{discardDomino(); calculateCurrentPlayerScore();switchCurrentPlayer();} InGame.PreplacingDomino;
                 
             }
             SelectingNextDomino {
@@ -42,13 +44,13 @@ class Gameplay {
             }
             ProceedingToNextPlayerOrNextTurn {
                 proceed [!isCurrentPlayerTheLastInTurn()] -> /{switchCurrentPlayer();} InGame.PreplacingDomino;
-                proceed [isCurrentPlayerTheLastInTurn()] -> /{} InGame.OrderingNextDraft;
+                proceed [isCurrentPlayerTheLastInTurn()] -> /{createNextDraft();} InGame.OrderingNextDraft;
             }
             OrderingNextDraft {
                 order [areAllDominoesInCurrentDraftSelected()]-> /{orderNextDraft();} InGame.RevealingNextDraft;
             }
             RevealingNextDraft {
-                reveal -> /{revealNextDraft();createNextDraft();switchCurrentPlayer();} InGame.PreplacingDomino;
+                reveal -> /{revealNextDraft();switchCurrentPlayer();} InGame.PreplacingDomino;
             }
             saveGame -> /{save();} SettingUp;
         }

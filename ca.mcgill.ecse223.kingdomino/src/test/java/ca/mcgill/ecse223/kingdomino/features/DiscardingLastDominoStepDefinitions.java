@@ -87,6 +87,7 @@ public class DiscardingLastDominoStepDefinitions {
 		Gamestatus actualEndOfGame = KingdominoApplication.getStateMachine().getGamestatus();
 		assertEquals(expectedEndOfGame,actualEndOfGame);
 	}
+
 	@Then("the final results after discard shall be computed")
 	public void the_final_results_after_discard_shall_be_computed() {
 

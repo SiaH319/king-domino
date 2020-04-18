@@ -42,7 +42,7 @@ public class SortingAndRevealingDraftStepDefinitions {
 	public void there_is_a_next_draft_face_down() {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		KingdominoApplication.getStateMachine();
-        Game game = new Game(48, kingdomino);
+        Game game = new Game(12, kingdomino);
         game.setNumberOfPlayers(4);
         kingdomino.setCurrentGame(game);
         // Populate game
@@ -95,6 +95,21 @@ public class SortingAndRevealingDraftStepDefinitions {
 				d.setDominoSelection(newDominoSelection);
 			}
 		}
+		Domino domino40 = getdominoByID(40);
+		domino40.setStatus(DominoStatus.InPile);
+		Domino domino41 = getdominoByID(41);
+		domino41.setStatus(DominoStatus.InPile);
+		Domino domino42 = getdominoByID(42);
+		domino42.setStatus(DominoStatus.InPile);
+		Domino domino43 = getdominoByID(43);
+		domino43.setStatus(DominoStatus.InPile);
+		Domino domino44 = getdominoByID(44);
+		domino44.setStatus(DominoStatus.InPile);
+		domino40.setNextDomino(domino41);
+		domino41.setNextDomino(domino42);
+		domino42.setNextDomino(domino43);
+		domino43.setNextDomino(domino44);
+		game.setTopDominoInPile(domino40);
 		boolean expectedResult =true;
 		boolean actualResult=GameplayController.areAllDominoesInCurrentDraftSelected();
 		assertEquals(expectedResult,actualResult);
@@ -103,6 +118,10 @@ public class SortingAndRevealingDraftStepDefinitions {
 	}
 	@When("next draft is sorted")
 	public void next_draft_is_sorted() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		if(game.getNextDraft()==null){
+			System.out.println("Next Draft is null");
+		}
 		System.out.println("triggering the order event");
 		GameplayController.triggerEventsInSM("order");
 	}
@@ -118,8 +137,10 @@ public class SortingAndRevealingDraftStepDefinitions {
 		boolean actualSortedResult=false;
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Draft nextDraft=game.getNextDraft();
-		
-		for(int i=1;i<nextDraft.getIdSortedDominos().size();i++) {
+		if(nextDraft == null)
+			System.out.println("This is null");
+		assert nextDraft != null;
+		for(int i = 1; i < nextDraft.getIdSortedDominos().size(); i++) {
 			actualSortedResult=(nextDraft.getIdSortedDomino(i).getId()>nextDraft.getIdSortedDomino(i-1).getId());
 			assertEquals(expectedSortedResult,actualSortedResult);
 		}
@@ -139,23 +160,14 @@ public class SortingAndRevealingDraftStepDefinitions {
 	@Then("it shall be the player's turn with the lowest domino ID selection")
 	public void it_shall_be_the_player_s_turn_with_the_lowest_domino_ID_selection() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		boolean expectedLowest=true;
-		boolean actualLowest=true;
-		Player nextPlayer=game.getNextPlayer();
-		if(nextPlayer==null) {
-			System.out.println("There is no nxt player");
+		Player player = game.getNextPlayer();
+		int id = player.getDominoSelection().getDomino().getId();
+		boolean isLowestId = true;
+		for(Domino domino:game.getCurrentDraft().getIdSortedDominos()){
+			if(domino.getId() > id)
+				isLowestId = false;
 		}
-		System.out.println("Current Player has selected domino"+ nextPlayer.getDominoSelection().getDomino().getId());
-		for(Player p: game.getPlayers()) {
-			if(p.getDominoSelection()==null) {
-				System.out.println("Player does not have a domino selection");
-			}
-			actualLowest=(p.getDominoSelection().getDomino().getId()>=nextPlayer.getDominoSelection().getDomino().getId());
-			if(actualLowest==false) {
-				break;
-			}
-		}
-		assertEquals(expectedLowest,actualLowest);
+		assertTrue(isLowestId);
 	}
 	
 

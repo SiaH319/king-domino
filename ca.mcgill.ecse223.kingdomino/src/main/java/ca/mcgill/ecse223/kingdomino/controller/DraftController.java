@@ -97,7 +97,7 @@ public class DraftController {
         }
         nextDraft.setIdSortedDominos(newIdSorted.get(0),newIdSorted.get(1),newIdSorted.get(2),newIdSorted.get(3));// add them back to the next draft 
         nextDraft.setDraftStatus(Draft.DraftStatus.Sorted);														  //in the right order
-        game.setNextDraft(nextDraft);
+        //game.setNextDraft(nextDraft);
     }
 
     /**
@@ -108,7 +108,8 @@ public class DraftController {
     public static void revealDominoesInitiated() {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();
-        System.out.println("revealing the next draft");
+        if(nextDraft == null)
+            System.out.println("revealing the next draft");
         nextDraft.setDraftStatus(Draft.DraftStatus.FaceUp);// flip up the dominoes
     }
     /**

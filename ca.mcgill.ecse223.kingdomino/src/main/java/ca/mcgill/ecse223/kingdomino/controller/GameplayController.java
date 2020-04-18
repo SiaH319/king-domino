@@ -332,17 +332,16 @@ public class GameplayController {
 			CalculationController.calculateCurrentPlayerScore();
 			break;
 		case "calculateRanking":
-			
+			//TODO
 			break;
 		case "resolveTieBreak":
-			
+			//TODO
 			break;
 		case "switchCurrentPlayer":
 			switchCurrentPlayerInitiated();
 			break;
-		case "switchDraft":
-			break;
 		case "save":
+			//TODO
 			break;
 		}
 
@@ -443,24 +442,22 @@ public class GameplayController {
 
 	/**
 	 * Method that switches the current player to find what players'turn it is.
-	 * @author Mohamad
+	 * @author Mohamad, Cecilia Jiang
 	 */
 	private static void switchCurrentPlayerInitiated() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		ArrayList<Integer> listOfIds = new ArrayList<Integer>();
-		for (Domino d : game.getCurrentDraft().getIdSortedDominos()) {
-			listOfIds.add(d.getId());
-		}
-		Collections.sort(listOfIds);
-
-		for (Integer i : listOfIds) {
-			if (getdominoByID((int) i).hasDominoSelection()
-					&& getdominoByID((int) i).getStatus() == DominoStatus.InCurrentDraft) {
-				System.out.println("switched player");
-				game.setNextPlayer(getdominoByID((int) i).getDominoSelection().getPlayer());
-				break;
+		List<DominoSelection> selections = game.getCurrentDraft().getSelections();
+		int minIndex= 100;
+		int minVal= 100;
+		int counter = 0;
+		for(DominoSelection selection: selections){
+			if(selection.getPlayer().getCurrentRanking() < minVal){
+				minVal = selection.getPlayer().getCurrentRanking();
+				minIndex = counter;
 			}
+			counter++;
 		}
+		game.setNextPlayer(selections.get(minIndex).getPlayer());
 	}
 
 	/**
