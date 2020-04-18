@@ -1,5 +1,5 @@
 package ca.mcgill.ecse223.kingdomino.features;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.DisjointSet;
-import ca.mcgill.ecse223.kingdomino.controller.DominoController;
 import ca.mcgill.ecse223.kingdomino.controller.GameController;
 import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
 import ca.mcgill.ecse223.kingdomino.controller.Square;
@@ -16,13 +15,7 @@ import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
-import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
-import ca.mcgill.ecse223.kingdomino.model.Draft;
-import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Game;
-import ca.mcgill.ecse223.kingdomino.model.Gameplay.Gamestatus;
-import ca.mcgill.ecse223.kingdomino.model.Gameplay.GamestatusEndofGame;
-import ca.mcgill.ecse223.kingdomino.model.Gameplay.GamestatusInGame;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
@@ -31,7 +24,6 @@ import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.User;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 /**
  * TODO Put here a description of what this class does.
@@ -67,17 +59,10 @@ public class PlacingDominoStepDefinitions {
 	@And("the preplaced domino has the status {string}")
 	public void the_preplaced_domino_has_the_status(String dominoStatusString) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		Kingdom kingdom = game.getNextPlayer().getKingdom();
-        DominoInKingdom dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
-		boolean isCorrectlyPreplaced=GameplayController.isCorrectlyPreplaced();
-		
-		DominoStatus expectedStatus = getDominoStatus(dominoStatusString);
-		DominoStatus actualStatus=dominoInKingdom.getDomino().getStatus();
-		assertEquals(expectedStatus,actualStatus);
-		KingdominoApplication.getStateMachine().setGamestatus("PreplacingDomino");
-		System.out.println("State machine ste to preplacing");
-
-
+		Player player = game.getNextPlayer();
+		Domino curDomino = player.getDominoSelection().getDomino();
+		curDomino.setStatus(DominoStatus.CorrectlyPreplaced);
+		assertTrue(GameplayController.isCorrectlyPreplaced());
 		
 	}
 	@When("the current player places his\\/her domino")

@@ -1,10 +1,12 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
@@ -26,12 +28,24 @@ import ca.mcgill.ecse223.kingdomino.model.User;
 
 public class GameplayController {
 	private static Gameplay statemachine;
+	public Kingdomino kingdomino;
 	private static ArrayList<Player> Orders=new ArrayList<Player>();
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////Helper Methods/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public static void initStatemachine() {
 		statemachine = KingdominoApplication.getStateMachine();
 	}
 	
-	//Trigger Relevant Events In SM
+	public static void setStateMachineState(String stateName) {
+		statemachine.setGamestatus(stateName);
+	}
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////Trigger Relevant Events In SM//////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public static void triggerEventsInSM(String methodName) {
 		initStatemachine();
 		switch(methodName) {
@@ -64,12 +78,12 @@ public class GameplayController {
 	/**
 	 * 
 	 * given a dominoInKingdom, we will try to discard
-	 * @author Mohamad
+	 * @author Cecilia Jiang
 	 * @param dominoInKingdom
 	 */
-	public static void triggerDiscardDominoInSM(DominoInKingdom dominoInKingdom) {
+	public static void triggerDiscardDominoInSM() {
 		initStatemachine();
-		statemachine.discard(dominoInKingdom);
+		statemachine.discard();
 	}
 	/**
 	 * 
@@ -79,7 +93,6 @@ public class GameplayController {
 	 */
 	
 	public static void triggerStartNewGameInSM(int numOfPlayers) {
-		System.out.println("triggeringStartNewGame");
 		initStatemachine();
 		statemachine.startNewGame(numOfPlayers);
 	}
@@ -143,12 +156,11 @@ public class GameplayController {
 
         	return true;
         }
-        if((dominoesInNextDraftSelected==2) && game.getNumberOfPlayers()==3) {									//if almost all dominoes in next draft 
-            System.out.println("CurrentPlayer is last in turn");												// are selected
+        if((dominoesInNextDraftSelected==2) && game.getNumberOfPlayers()==3) {									//if almost all dominoes in next draft 												// are selected
 
         	return true;
         }
-        System.out.println("CurrentPlayer is not last in turn");
+        
         return false;
     }
     /**
@@ -169,29 +181,19 @@ public class GameplayController {
         
     }
     /**
-     * 
-     * checks if the status of the domino is CorrectlyPreplaced
+     * Checks if the domino status of the current player's domino selection's domino is CorrectlyPreplaced
      * @author Mohamad
      * @return true if it's CorrectlyPreplaced, false otherwise
      */
     public static boolean isCorrectlyPreplaced() {
-    	
     	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
     	Player currentPl=game.getNextPlayer();
-    	Kingdom kingdom = currentPl.getKingdom();       
-        DominoInKingdom dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
-        if(dominoInKingdom.getDomino().getStatus()==DominoStatus.CorrectlyPreplaced) {
-            return true;
-        }
-        DominoController.moveCurrentDomino(currentPl, dominoInKingdom.getDomino().getId(),null);//in case it wasn't computed before
-    	if(dominoInKingdom.getDomino().getStatus()==DominoStatus.CorrectlyPreplaced) {
-
-             return true;
-         }
-        return false;
+    	Domino currentlyChosedDomino = currentPl.getDominoSelection().getDomino();
+    	DominoStatus curDominoStatus = currentlyChosedDomino.getStatus();
+    	return curDominoStatus == DominoStatus.CorrectlyPreplaced;
     }
+
     /**
-     * 
      * checks if all dominoes in current draft have selections
      * @author Mohamad
      * @return true if they all have, false otherwise.
@@ -301,7 +303,12 @@ public class GameplayController {
 	public static void acceptPlaceDominoFromSM(Player currentPlayer,int id) {
 		DominoController.placeDomino(currentPlayer,id);
 	}
-	public static void acceptDiscardDominoFromSM(DominoInKingdom dominoInKingdom) {
+	
+	public static void acceptDiscardDominoFromSM() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Player player = game.getNextPlayer();
+		List<KingdomTerritory> list= player.getKingdom().getTerritories();
+        DominoInKingdom dominoInKingdom = (DominoInKingdom)list.get(list.size() - 1);
 		DominoController.attemptDiscardSelectedDomino(dominoInKingdom);
 	}
 	
@@ -339,7 +346,7 @@ public class GameplayController {
 	}
 	public static boolean specificPlayerChosesDomino( Player player, Draft draft, int dominoId) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		return DominoController.chooseNextDomino(game,player.getColor(),draft,dominoId);
+		return DominoController.chooseNextDomino(game,dominoId);
 	}
 	/**
 	 * 
@@ -425,14 +432,7 @@ public class GameplayController {
         }
         return null;
     }
-	
-	
-	
-	
-	
-	
-	
-	
+
 	private static void addDefaultUsersAndPlayersFour(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
 		for (int i = 0; i < userNames.length; i++) {

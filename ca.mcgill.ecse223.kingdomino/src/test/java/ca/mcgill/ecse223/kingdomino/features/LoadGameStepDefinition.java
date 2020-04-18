@@ -1,6 +1,6 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -37,7 +37,7 @@ import io.cucumber.java.en.When;
  * it from the last position
  */
 public class LoadGameStepDefinition {
-    Kingdomino kingdomino = new Kingdomino();
+    Kingdomino kingdomino = KingdominoApplication.getKingdomino();
     Game game = new Game(48, kingdomino);
     String name;
     
@@ -50,13 +50,16 @@ public class LoadGameStepDefinition {
        addDefaultUsersAndPlayers(game);
        createAllDominoes(game);
        game.setNextPlayer(game.getPlayer(0));
-       KingdominoApplication.setKingdomino(kingdomino);
-		String name = game.getPlayer(0).getUser().getName();
-		GameController.setGrid(name,new Square[81]);
-		Square[] grid = GameController.getGrid(name);
-        for(int i = 4; i >=-4; i-- )
-            for(int j = -4 ; j <= 4; j++)
-                grid[Square.convertPositionToInt(i,j)] = new Square(i,j);
+       for(Player player: game.getPlayers()){
+		   String nameCur =player.getUser().getName();
+		   GameController.setGrid(nameCur, new Square[81]);
+		   GameController.setSet(nameCur, new DisjointSet(81));
+		   Square[] grid = GameController.getGrid(nameCur);
+		   for(int i = 4; i >=-4; i-- )
+			   for(int j = -4 ; j <= 4; j++)
+				   grid[Square.convertPositionToInt(i,j)] = new Square(i,j);
+	   }
+
     }
 
     /* Scenario Outline: Load valid incomplete game */
@@ -84,25 +87,17 @@ public class LoadGameStepDefinition {
 
     @Then("it shall be player {int}'s turn")
     public void it_shall_be_player_players_turn(int playerid) {
-        /*Player player = new Player(game);
-        if (playerid == 1) {
-            player.setColor(PlayerColor.Blue);
-        } else if (playerid == 2) {
-            player.setColor(PlayerColor.Green);
-        } else if (playerid == 3) {
-            player.setColor(PlayerColor.Pink);
-        } else {
-            player.setColor(PlayerColor.Yellow);
-        } 
-        boolean playerTurn = (player.getColor() != null);
-        assertEquals(true, playerTurn);*/
-        boolean isPlayerTurn;
-        if (playerid >= 1 && playerid <= 4) {
-            isPlayerTurn = true;
-        } else {
-            isPlayerTurn = false;
-        }
-        assertEquals(true, isPlayerTurn);
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        Player player = game.getNextPlayer();
+        int currentPlayerIndex = 0;
+        for(int i = 0; i<4;i++){
+        	if(game.getPlayer(i).getUser().getName().equals(player.getUser().getName())){
+				currentPlayerIndex = i;
+				break;
+			}
+		}
+
+        assertEquals(currentPlayerIndex+1, playerid);
     }
 
     @Then("each of the players should have the corresponding tiles on their grid:")
@@ -117,9 +112,21 @@ public class LoadGameStepDefinition {
             assertNotNull(playerTiles);
             String[] dominoIds = playerTiles.split(",");
             Kingdom kingdom = game.getPlayer(playerNumber-1).getKingdom();
+            System.out.println("Domino size"+kingdom.getTerritories().size());
             Domino dominoToPlace1 = getdominoByID(Integer.parseInt(dominoIds[0]));
             assertNotNull(kingdom);
             assertNotNull(dominoToPlace1);
+		}
+
+		String player0Name = (game.getPlayer(0).getUser().getName());
+		Square[] grid = GameController.getGrid(player0Name);
+		for(int i = 4; i >=-4; i-- ){
+			for(int j = -4 ; j <= 4; j++){
+				int cur = Square.convertPositionToInt(j,i);
+				char c = (grid[cur].getTerrain() == null) ?'/':printTerrain(grid[cur].getTerrain());
+				System.out.print(""+cur+""+c+" ");
+			}
+			System.out.println();
 		}
     }
 
@@ -145,16 +152,16 @@ public class LoadGameStepDefinition {
     public void tiles_unclaimed_shall_be_unclaimed_on_the_board(String unclaimed) {
         List<Integer> unclaimedTiles = SaveLoadGameController.getUnclaimedTiles(unclaimed);
         assertNotNull(unclaimedTiles);
-        for (int i = 0; i < unclaimedTiles.size(); i++) {
-            Domino domino = getdominoByID(unclaimedTiles.get(i));
-            domino.setStatus(DominoStatus.InPile);
-        }
+		for (Integer unclaimedTile : unclaimedTiles) {
+			Domino domino = getdominoByID(unclaimedTile);
+			domino.setStatus(DominoStatus.InPile);
+		}
     }
 
     @Then("the game shall become ready to start")
     public void the_game_shall_become_ready_to_start() {
         boolean ready = game.hasNextPlayer() && game.hasAllDominos() && game.hasPlayers();
-        assertEquals(true, ready);
+		assertTrue(ready);
     }
 
 
@@ -164,7 +171,7 @@ public class LoadGameStepDefinition {
         boolean isValid;
         try {
             isValid = SaveLoadGameController.loadGame(name);
-            assertEquals(false, isValid);
+			assertFalse(isValid);
         } catch (IOException e) {
             e.printStackTrace();
         }    
@@ -283,5 +290,33 @@ public class LoadGameStepDefinition {
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
 		}
+	}
+
+	private char printTerrain(TerrainType terrainType){
+		char c;
+		switch(terrainType){
+			case WheatField:
+				c = 'W';
+				break;
+			case Mountain:
+				c = 'M';
+				break;
+			case Lake:
+				c = 'L';
+				break;
+			case Forest:
+				c = 'F';
+				break;
+			case Grass:
+				c = 'G';
+				break;
+			case Swamp:
+				c = 'S';
+				break;
+			default:
+				c = '/';
+				break;
+		}
+		return c;
 	}
 }

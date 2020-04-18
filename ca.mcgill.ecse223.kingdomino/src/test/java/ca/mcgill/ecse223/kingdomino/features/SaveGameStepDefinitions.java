@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.GameController;
 import ca.mcgill.ecse223.kingdomino.controller.SaveLoadGameController;
+import ca.mcgill.ecse223.kingdomino.controller.Square;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -36,7 +38,7 @@ import io.cucumber.java.en.When;
  */
 public class SaveGameStepDefinitions {
 
-    Kingdomino kingdomino = new Kingdomino();
+    Kingdomino kingdomino = KingdominoApplication.getKingdomino();
     Game game = new Game(48, kingdomino);
     private static String filename = "src/test/resources/save_game_test.mov";
 
@@ -50,6 +52,14 @@ public class SaveGameStepDefinitions {
 		addDefaultUsersAndPlayers(game);
 		createAllDominoes(game);
 		game.setNextPlayer(game.getPlayer(0));
+		//Player 0 Tiles
+		Domino dominoToPlace = getdominoByID(10);
+		Kingdom kingdom = game.getPlayer(0).getKingdom();
+		int posx = 0;
+		int posy = 0;
+		DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
+		domInKingdom.setDirection(DirectionKind.Up);
+		dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
 		KingdominoApplication.setKingdomino(kingdomino);
     }
 

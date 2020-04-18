@@ -38,7 +38,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 /**
- * TODO Put here a description of what this class does.
+ * Step Definition Class for Calculating Player Score
  *
  * @author Mohamad. Created Apr 12, 2020.
  */
@@ -82,6 +82,7 @@ public class CalculatingPlayerScoreStepDefinitions {
 		}
 		assertEquals(1,game.getNextPlayer().getKingdom().getTerritories().size()); //should only have the castle
 	}
+
 
 	@Given("the score of the current player is {int}")
 	public void the_score_of_the_current_player_is(Integer int1) {

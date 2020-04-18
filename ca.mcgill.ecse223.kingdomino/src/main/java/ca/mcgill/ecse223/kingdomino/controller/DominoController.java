@@ -143,45 +143,16 @@ public class DominoController {
      *         false if selection for next draft remains same
      * @author Violet Wei
      */
-    public static boolean chooseNextDomino(Game game, PlayerColor color, Draft draft, int dominoId) {
-        //Draft draft = getNextDraft(nextDraft, game);
-        game = KingdominoApplication.getKingdomino().getCurrentGame();
+    public static boolean chooseNextDomino(Game game,int dominoId) {
 
-        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-        game.setNumberOfPlayers(4);
-        kingdomino.setCurrentGame(game);
-    
-        game.setNextPlayer(game.getPlayer(0));
-        KingdominoApplication.setKingdomino(kingdomino);
-        String name = game.getPlayer(0).getUser().getName();
-        GameController.setGrid(name, new Square[81]);
-
-        //Player currentPlayer = null;
-        List<Domino> nextDraftDominos = getNextDraftDominos(draft);
-        List<DominoSelection> dominoSelection = getDominoSelection(draft);
-        List<Player> players = game.getPlayers();
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getColor().equals(color)) {
-                currentPlayer = players.get(i);
-            }
+        Draft cDraft = game.getNextDraft();
+        for(DominoSelection dominoSelection: cDraft.getSelections()){
+            if(dominoSelection.getDomino().getId() == dominoId)
+                return false;
         }
-        List<DominoSelection> newDominoSelection = new ArrayList<>();
-        for (int i = 0; i < nextDraftDominos.size(); i++) {
-            if (nextDraftDominos.get(i).getId() == dominoId) {
-                if (nextDraftDominos.get(i).getDominoSelection() == null) {  
-                    DominoSelection selection = new DominoSelection(currentPlayer, nextDraftDominos.get(i), draft);
-                    currentPlayer.setDominoSelection(selection);
-                    draft.addSelectionAt(selection, i);
-                    newDominoSelection.add(selection);
-                } else {
-                    newDominoSelection = dominoSelection;
-                    return false;
-                }
-            } else {
-                //newDominoSelection.add(dominoSelection.get(i));
-            }
-            game.setNextDraft(draft);
-        }
+        Player p = game.getNextPlayer();
+        Domino domino = getDominobyId(dominoId);
+        new DominoSelection(p, domino, cDraft);
         return true;
     }
 
@@ -271,11 +242,11 @@ public class DominoController {
      * by rotating it (clockwise or counter-clockwise).
      * rotationDir 1 for clockwise, -1 for anticlockwise
      * @author Cecilia Jiang
-     * @param castle
-     * @param grid
-     * @param territories
-     * @param dominoInKingdom
-     * @param rotationDir
+     * @param castle, the castle
+     * @param grid, the square[] grid
+     * @param territories, territories under current player's control
+     * @param dominoInKingdom, currently selected domino
+     * @param rotationDir, rotation direction as String
      */
     public static void rotateExistingDomino(Castle castle, Square[] grid, List<KingdomTerritory> territories,
                                             DominoInKingdom dominoInKingdom, int rotationDir){
@@ -299,11 +270,11 @@ public class DominoController {
      * Feature 13: As a player, I wish to place my selected domino to my kingdom. If I am satisfied with its placement,
      * and its current position respects the adjacency rules, I wish to finalize the placement.
      * (Actual checks of adjacency conditions are implemented as separate features)
-     * @param player
+     * @param player, the current player
      * @param id which is id of the domino to place
      * @author: Cecilia Jiang
      */
-    public static void placeDomino(Player player, int id){
+    public static void placeDomino(Player player, int id) throws java.lang.IllegalArgumentException{
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         DominoInKingdom dominoInKingdom=null;
         Kingdom kingdom=null;
@@ -355,12 +326,12 @@ public class DominoController {
      * @param DominoInKingdom that we want to see if it can be discarded.
      * @return true if the domino can be placed correctly placed in the kingdom, false otherwise.
      */
-    public static boolean attemptDiscardSelectedDomino(DominoInKingdom dominoInKingdom) {
+    public static boolean attemptDiscardSelectedDomino(DominoInKingdom dominoInKingdom) throws java.lang.IllegalArgumentException{
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Player currentPl = game.getPlayer(0);
         Kingdom kingdom = currentPl.getKingdom();
         if(dominoInKingdom==null) {
-        	dominoInKingdom=(DominoInKingdom)kingdom.getTerritory(kingdom.getTerritories().size()-1);
+        	throw new java.lang.IllegalArgumentException("DominoInKingdom is not created");
         }
         Castle castle = getCastle(kingdom);        
         Square[] grid = GameController.getGrid(currentPl.getUser().getName());
