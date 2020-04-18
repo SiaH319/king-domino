@@ -383,6 +383,7 @@ public class Gameplay
       case PreplacingDomino:
         if (impossibleToPlaceDomino()&&!(isCurrentTurnTheLastInGame()))
         {
+          System.out.println("Impossible to place domino");
           exitGamestatusInGame();
         // line 36 "../../../../../Gameplay.ump"
           discardDomino(); calculateCurrentPlayerScore();

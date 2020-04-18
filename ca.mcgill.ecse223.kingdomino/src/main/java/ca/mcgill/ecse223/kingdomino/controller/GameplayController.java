@@ -27,7 +27,7 @@ import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.User;
 
 public class GameplayController {
-	private static Gameplay statemachine;
+	public static Gameplay statemachine;
 	public static Kingdomino kingdomino;
 	private static ArrayList<Player> Orders = new ArrayList<Player>();
 
@@ -214,10 +214,12 @@ public class GameplayController {
 	 * @return true if it's CorrectlyPreplaced, false otherwise
 	 */
 	public static boolean isCorrectlyPreplaced() {
+		
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Player currentPl = game.getNextPlayer();
 		Domino currentlyChosedDomino = currentPl.getDominoSelection().getDomino();
 		DominoStatus curDominoStatus = currentlyChosedDomino.getStatus();
+		System.out.println(curDominoStatus == DominoStatus.CorrectlyPreplaced?"kkkkkkkkkkkkkkkkkk":"");
 		return curDominoStatus == DominoStatus.CorrectlyPreplaced;
 	}
 
@@ -474,9 +476,10 @@ public class GameplayController {
 		GameController.setBonusOptionForCurrentGame(mkActivated,harmonyActivated);
 	}
 
-	public static void acceptPlaceDominoFromSM(int id) {
+	public static void acceptPlaceDominoFromSM() {
 		Player currentPlayer = kingdomino.getCurrentGame().getNextPlayer();
-		DominoController.placeDomino(currentPlayer, id);
+		Domino domino = currentPlayer.getDominoSelection().getDomino();
+		DominoController.placeDomino(currentPlayer, domino.getId());
 	}
 
 	public static void acceptDiscardDominoFromSM() {

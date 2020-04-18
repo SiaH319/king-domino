@@ -183,7 +183,7 @@ class Gameplay {
     }
     
     public void placeDomino() {
-    	GameplayController.acceptCallFromSM("placeDomino");
+    	GameplayController.acceptPlaceDominoFromSM();
     }
     
     public void discardDomino() {

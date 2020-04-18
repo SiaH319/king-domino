@@ -37,7 +37,7 @@ public class PlacingDominoStepDefinitions {
 	public void the_game_has_been_initialized_for_placing_domino() {
 		// Intialize empty game
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-        Game game = new Game(48, kingdomino);
+        Game game = new Game(12, kingdomino);
         game.setNumberOfPlayers(4);
         kingdomino.setCurrentGame(game);
         // Populate game
@@ -69,6 +69,7 @@ public class PlacingDominoStepDefinitions {
 		GameplayController.initStatemachine();
 		GameplayController.setStateMachineState("PreplacingDomino");
 		GameplayController.triggerEventsInSM("place");
+		System.out.println("gAME STATUS"+GameplayController.statemachine.getGamestatusInGame().toString());
 	}
 	
 	
