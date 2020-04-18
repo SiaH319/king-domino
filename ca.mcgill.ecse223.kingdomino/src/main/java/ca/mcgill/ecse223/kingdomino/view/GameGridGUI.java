@@ -1,3 +1,5 @@
+package ca.mcgill.ecse223.kingdomino.view;
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
+
+import ca.mcgill.ecse223.kingdomino.controller.DominoController;
 
 /**
  * @author Violet 
@@ -134,7 +138,9 @@ public class GameGridGUI {
 	    btnNewButton.setBackground(Color.ORANGE);
 	    btnNewButton.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
+			// DominoController.placeDomino(Player player, int id)
 	    		// Add controller - Place domino
+		        // Feature 13
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton);
@@ -143,7 +149,9 @@ public class GameGridGUI {
 	    btnNewButton_1.setBackground(Color.PINK);
 	    btnNewButton_1.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		// Add controller - Move
+			// Feature 11: Move Current Domino
+	    		// Add controller - Move domino
+			// DominoController.initialMoveDominoToKingdom(Player player, int dominoId)
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton_1);
@@ -152,7 +160,10 @@ public class GameGridGUI {
 	    btnNewButton_2.setBackground(Color.CYAN);
 	    btnNewButton_2.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		// Add controller - Rotate
+			// Feature 12
+	    		// Add controller - Rotate domino
+			// DominoController.rotateExistingDomino(Castle castle, Square[] grid, List<KingdomTerritory> territories,
+                        //                    DominoInKingdom dominoInKingdom, int rotationDir)
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton_2);
@@ -161,7 +172,9 @@ public class GameGridGUI {
 	    btnNewButton_3.setBackground(Color.MAGENTA);
 	    btnNewButton_3.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
+			// Feature 18 : Discard Domino
 	    		// Add controller - Discard
+			// DominoController.attemptDiscardSelectedDomino(DominoInKingdom dominoInKingdom)
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton_3);
@@ -170,7 +183,9 @@ public class GameGridGUI {
 	    btnNewButton_4.setBackground(Color.GRAY);
 	    btnNewButton_4.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		// Add controller - Next
+			// Feature 10: Choose Next Domino
+	    		// Add controller - Next Domino
+			// DominoController.chooseNextDomino(Game game,int dominoId)
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton_4);
