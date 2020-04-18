@@ -44,24 +44,46 @@ public class ShuffleDominosStepDefinition {
 	public void there_are_players_playing(Integer numPlayers) {
 		
 		if((int)numPlayers==3) { 
-			Game game = new Game(36, PreviousGame.getKingdomino());
+			Game game = new Game(12, PreviousGame.getKingdomino());
 			game.setNumberOfPlayers(3);
-		
-			PreviousGame.getKingdomino().setCurrentGame(game);
-			addDefaultUsersAndPlayersThree(game);
+			String[] usernames = {"Kser1","Kser2","Kser3"};
+			addUsersAndPlayers(usernames,game);
 			createAllDominoes(game);
+			for(int i = 0 ; i<12;i++) {
+				int size = game.getAllDominos().size();
+				int index = (int)(Math.random() * (size));
+				Domino domino = game.getAllDomino(index);
+				while(domino.getStatus()== Domino.DominoStatus.Excluded) {
+					index = (int)(Math.random() * (size));
+					domino = game.getAllDomino(index);
+				}
+				domino.setStatus(Domino.DominoStatus.Excluded);
+
+			}
 			game.setNextPlayer(game.getPlayer(0));
+			KingdominoApplication.getKingdomino().setCurrentGame(game);
 			KingdominoApplication.setKingdomino(game.getKingdomino());
 		}
 		else if((int)numPlayers==2) {
-			Game game2 = new Game(24, PreviousGame.getKingdomino());
-			game2.setNumberOfPlayers(2);
-			
-			PreviousGame.getKingdomino().setCurrentGame(game2);
-			addDefaultUsersAndPlayersTwo(game2);
-			createAllDominoes(game2);
-			game2.setNextPlayer(game2.getPlayer(0));
-			KingdominoApplication.setKingdomino(game2.getKingdomino());
+			Game game = new Game(6, PreviousGame.getKingdomino());
+			game.setNumberOfPlayers(2);
+			String[] usernames = {"Aser1","Aser2"};
+			addUsersAndPlayers(usernames,game);
+			createAllDominoes(game);
+			for(int i = 0 ; i<24;i++) {
+				int size = game.getAllDominos().size();
+				int index = (int)(Math.random() * (size));
+				Domino domino = game.getAllDomino(index);
+				while(domino.getStatus()== Domino.DominoStatus.Excluded) {
+					index = (int)(Math.random() * (size));
+					domino = game.getAllDomino(index);
+				}
+				domino.setStatus(Domino.DominoStatus.Excluded);
+
+			}
+			game.setNextPlayer(game.getPlayer(0));
+			KingdominoApplication.getKingdomino().setCurrentGame(game);
+			KingdominoApplication.setKingdomino(game.getKingdomino());
 			
 			
 		}
@@ -99,11 +121,10 @@ public class ShuffleDominosStepDefinition {
 	@Then("there should be {int} dominoes left in the draw pile")
 	public void there_should_be_dominoes_left_in_the_draw_pile(Integer ExpectedSizeOfPile) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		List<Draft> draftList = game.getAllDrafts();
 		int num = 0;
-		for(Draft draft: draftList){
-			if(draft.getDraftStatus() != Draft.DraftStatus.Sorted){
-				num+=draft.getIdSortedDominos().size();
+		for(Domino domino: game.getAllDominos()){
+			if(domino.getStatus() == Domino.DominoStatus.InPile){
+				num++;
 			}
 		}
 	
@@ -227,6 +248,18 @@ public class ShuffleDominosStepDefinition {
 			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
 		}
 	}
+
+	private static void addUsersAndPlayers(String[] userNames, Game game) {
+		for (int i = 0; i < userNames.length; i++) {
+			User user = game.getKingdomino().addUser(userNames[i]);
+			Player player = new Player(game);
+			player.setUser(user);
+			player.setColor(PlayerColor.values()[i]);
+			Kingdom kingdom = new Kingdom(player);
+			new Castle(0, 0, kingdom, player);
+		}
+	}
+
 	private Domino getdominoByID(int id) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		for (Domino domino : game.getAllDominos()) {

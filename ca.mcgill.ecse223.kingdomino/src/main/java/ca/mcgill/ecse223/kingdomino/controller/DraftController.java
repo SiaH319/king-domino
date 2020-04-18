@@ -41,14 +41,35 @@ public class DraftController {
      */
     public static void createNewDraftIsInitiated() {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        int maxDraftSize = game.getMaxPileSize();
         int curDraftSize = game.getAllDrafts().size();
-        if(curDraftSize == maxDraftSize){
-
+        if(curDraftSize == 1){
+            game.setCurrentDraft(game.getAllDraft(0));
             return;
-        }
-        int nextDraftindex = maxDraftSize - curDraftSize + 1;
+        }else{
+            Domino tmp = game.getTopDominoInPile();
+            Draft formerNextDraft = game.getNextDraft();
+            game.setCurrentDraft(formerNextDraft);
+            int step;
+            if(game.getNumberOfPlayers() % 2== 0){
+                step =4;
+            }else{
+                step = 3;
+            }
+            if (tmp != null) {
+                Draft nextDraft = new Draft(Draft.DraftStatus.FaceDown,game);
+                for(int i = 0 ;i<step;i++){
+                    tmp.setStatus(Domino.DominoStatus.InNextDraft);
+                    nextDraft.addIdSortedDomino(tmp);
+                    tmp = tmp.getNextDomino();
+                    game.setTopDominoInPile(tmp);
+                }
+                game.setNextDraft(nextDraft);
+                game.addAllDraft(nextDraft);
+            }else{
+                game.setNextDraft(null);
+            }
 
+        }
 
     }
 

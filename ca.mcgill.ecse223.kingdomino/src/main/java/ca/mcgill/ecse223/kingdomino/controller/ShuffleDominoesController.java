@@ -44,47 +44,73 @@ public class ShuffleDominoesController {
         List <Domino> shuffledDominos = new ArrayList<Domino>();
         shuffledDominos.addAll(dominoes);
         Collections.shuffle(shuffledDominos);
-        int playerNum = game.getNumberOfPlayers();
-        if(game.numberOfPlayers() % 2 ==0){
-        	int counter = 0;
-            for( int i=0; i< 3 * playerNum; i++) {
 
-                    Draft drafttmp = new Draft(DraftStatus.FaceDown, game);
-                    for (int j = 0; j < 4; j++) {
-                        Domino curDomino = shuffledDominos.get(counter);
-                        while (curDomino.getStatus() == DominoStatus.Excluded) {
-                            counter++;
-                            curDomino = shuffledDominos.get(counter);
-                        }
-                        Domino realDomino = getdominoByID(curDomino.getId());
-                        realDomino.setStatus(DominoStatus.InPile);
-                        counter++;
-                        boolean result = drafttmp.addIdSortedDomino(realDomino);
-                        if (!result) throw new Exception("Shuffle Domino Failed");
-                    }
-
-            }
-        }else{
-        	int counter = 0;
-            for( int i=0; i< 12; i++) {
-                Draft drafttmp = new Draft(DraftStatus.FaceDown, game);
-                for (int j = 0; j < 3; j++) {
-                	Domino curDomino = shuffledDominos.get(counter);
-                    while(curDomino.getStatus() == DominoStatus.Excluded) {
-                    	counter++;
-                    	curDomino = shuffledDominos.get(counter);
-                    }
-                    Domino realDomino = getdominoByID(curDomino.getId());
-                    realDomino.setStatus(DominoStatus.InPile);
+        if(game.numberOfPlayers() == 2 || game.numberOfPlayers() == 4){
+            int counter = 0;
+            Domino lastDomino = null;
+            for(int i = 0 ; i< 3 * game.getNumberOfPlayers(); i++){
+            for( int j = 0; j< 4; j++) {
+                Domino curDomino = shuffledDominos.get(counter);
+                while(curDomino.getStatus()==DominoStatus.Excluded){
                     counter++;
-                    boolean result = drafttmp.addIdSortedDomino(realDomino);
-                    if (!result) throw new Exception("Shuffle Domino Failed");
+                    curDomino = shuffledDominos.get(counter);
+                }
+                curDomino = getdominoByID(curDomino.getId());
+                if(lastDomino == null) {
+                    game.setTopDominoInPile(curDomino);
+                    lastDomino = curDomino;
+
+                }else {
+                    lastDomino.setNextDomino(curDomino);
+                    curDomino.setPrevDomino(lastDomino);
+                    lastDomino = lastDomino.getNextDomino();
+                }
+                counter++;
+            }
+            }
+
+        }else{
+            int counter = 0;
+            Domino lastDomino = null;
+            for( int i=0; i< 12; i++) {
+                for (int j = 0; j < 3; j++) {
+                    Domino curDomino = shuffledDominos.get(counter);
+                    while(curDomino.getStatus()==DominoStatus.Excluded){
+                        counter++;
+                        curDomino = shuffledDominos.get(counter);
+                    }
+                    curDomino = getdominoByID(curDomino.getId());
+                    if(lastDomino == null) {
+                        game.setTopDominoInPile(curDomino);
+                        lastDomino = curDomino;
+
+                    }else {
+                        lastDomino.setNextDomino(curDomino);
+                        curDomino.setPrevDomino(lastDomino);
+                        lastDomino = lastDomino.getNextDomino();
+                    }
+                    counter++;
                 }
             }
         }
 
 
-        Draft firstDraft = game.getAllDrafts().get(0);
+        Draft firstDraft = new Draft(DraftStatus.FaceDown, game);
+        if(game.getNumberOfPlayers() %2 ==0){
+            Domino tmp =  game.getTopDominoInPile();
+            for(int i = 0; i< 4;i++){
+                firstDraft.addIdSortedDomino(tmp);
+                tmp = tmp.getNextDomino();
+                game.setTopDominoInPile(tmp);
+            }
+        }else{
+            Domino tmp = game.getTopDominoInPile();
+            for(int i = 0; i< 3;i++){
+                firstDraft.addIdSortedDomino(tmp);
+                tmp = tmp.getNextDomino();
+                game.setTopDominoInPile(tmp);
+            }
+        }
 
         ArrayList<Integer> listIDs = new ArrayList<Integer>();
         if(firstDraft!=null) {
@@ -111,6 +137,7 @@ public class ShuffleDominoesController {
         for(Domino domino1: firstDraft.getIdSortedDominos()){
             domino1.setStatus(DominoStatus.InCurrentDraft);
         }
+        game.addAllDraft(firstDraft);
 
     }
 
