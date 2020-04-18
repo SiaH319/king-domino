@@ -25,6 +25,11 @@ import javax.swing.text.JTextComponent;
 import ca.mcgill.ecse223.kingdomino.controller.QueryMethodController;
 import ca.mcgill.ecse223.kingdomino.controller.TOPlayer;
 import ca.mcgill.ecse223.kingdomino.controller.TOUser;
+/**
+ * 
+ * @author Mohamad
+ *
+ */
 	
 public class EndOfGamePage extends JFrame {
 	
