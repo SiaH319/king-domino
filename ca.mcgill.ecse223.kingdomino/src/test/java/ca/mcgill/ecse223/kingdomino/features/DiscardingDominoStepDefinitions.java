@@ -184,7 +184,7 @@ public class DiscardingDominoStepDefinitions {
 		if(dominoInKingdom==null) {
 			System.out.println("dominkingdom is null!!");
 		}
-		GameplayController.triggerDiscardDominoInSM(dominoInKingdom);
+		GameplayController.triggerDiscardDominoInSM();
 		;
 	}
 

@@ -270,7 +270,7 @@ public class DominoController {
      * Feature 13: As a player, I wish to place my selected domino to my kingdom. If I am satisfied with its placement,
      * and its current position respects the adjacency rules, I wish to finalize the placement.
      * (Actual checks of adjacency conditions are implemented as separate features)
-     * @param player
+     * @param player, the current player
      * @param id which is id of the domino to place
      * @author: Cecilia Jiang
      */
@@ -326,12 +326,12 @@ public class DominoController {
      * @param DominoInKingdom that we want to see if it can be discarded.
      * @return true if the domino can be placed correctly placed in the kingdom, false otherwise.
      */
-    public static boolean attemptDiscardSelectedDomino(DominoInKingdom dominoInKingdom) {
+    public static boolean attemptDiscardSelectedDomino(DominoInKingdom dominoInKingdom) throws java.lang.IllegalArgumentException{
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Player currentPl = game.getPlayer(0);
         Kingdom kingdom = currentPl.getKingdom();
         if(dominoInKingdom==null) {
-        	dominoInKingdom=(DominoInKingdom)kingdom.getTerritory(kingdom.getTerritories().size()-1);
+        	throw new java.lang.IllegalArgumentException("DominoInKingdom is not created");
         }
         Castle castle = getCastle(kingdom);        
         Square[] grid = GameController.getGrid(currentPl.getUser().getName());

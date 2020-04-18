@@ -89,7 +89,7 @@ public class CalculatePlayerScoreStepDefinition {
 		int propertyScore = player.getPropertyScore();
 		int bonusScore = player.getBonusScore();
 		this.playerScore = propertyScore + bonusScore;
-		System.out.println(propertyScore);
+
 
 	}
 
