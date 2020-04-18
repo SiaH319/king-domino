@@ -74,23 +74,22 @@ public class GameplayController {
 		
 	}
 	/**
-	 * 
-	 * given a dominoInKingdom, we will try to discard
+	 * Trigger discard action in statemachine
 	 * @author Cecilia Jiang
-	 * @param dominoInKingdom
 	 */
 	public static void triggerDiscardDominoInSM() {
 		statemachine.discard();
 	}
+
 	/**
-	 * 
-	 * Given a number of player, we will try to create a new game.
-	 * @author Mohamad
-	 * @param numOfPlayers
+	 * Tigger startANewGame action in statemachine
+	 * @autor Cecilia Jiang
+	 * @param numOfPlayers, number of players for the new game
+	 * @param mkActivated, true if middleKingdom bonus is activated
+	 * @param harmonyActivated, true if harmony bonus is activated
 	 */
 	
 	public static void triggerStartNewGameInSM(int numOfPlayers, boolean mkActivated, boolean harmonyActivated) {
-		initStatemachine();
 		statemachine.startNewGame(numOfPlayers,mkActivated,harmonyActivated);
 	}
 	/**
@@ -197,7 +196,7 @@ public class GameplayController {
     	int expectedNumberOfDominoesSelected=game.getCurrentDraft().getIdSortedDominos().size();
     	int actualNumberOfDominoesSelected=0;
     	for(Domino d: game.getCurrentDraft().getIdSortedDominos()) {
-    		if(d.hasDominoSelection()==true) {
+    		if(d.hasDominoSelection()) {
     			actualNumberOfDominoesSelected++;
     		}
     	}
@@ -365,7 +364,7 @@ public class GameplayController {
 	 * 
 	 * Given the number of players, initialise the game accordingly.
 	 * @author Mohamad
-	 * @param numOfPlayer
+	 * @param numOfPlayer, number of player for the new game
 	 */
 	public static void acceptInitializeGameCallFromSM(int numOfPlayer){
 		System.out.println("creating the new game");
