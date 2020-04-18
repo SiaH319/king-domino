@@ -9,6 +9,14 @@ import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 
+/**
+ * @author Violet 
+ *
+ * This class contains the layout of the Kingdomino board grid
+ * and the Place Domino button, Move Domino button
+ * Rotate Domino button, Dicard Domino button
+ * the Next button
+ */
 public class GameGridGUI {
 
 	private JFrame frame;
