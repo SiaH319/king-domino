@@ -82,7 +82,6 @@ public class GameplayController {
 	 * @param dominoInKingdom
 	 */
 	public static void triggerDiscardDominoInSM() {
-		initStatemachine();
 		statemachine.discard();
 	}
 	/**
@@ -220,8 +219,8 @@ public class GameplayController {
         return false;
     }
     /**
-     * 
-     * checks all positions in the kingdom.
+     * Guard method in sate machine.
+     * Check if it's impossible to place the currently selected domino
      * @author Mohamad
      * @return true if can't place the domino anywhere, false if it can.
      */
@@ -255,8 +254,6 @@ public class GameplayController {
     	    //couldn't place the domino anywhere.
     	    dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
     	    return true;
-        
-        
     }
 	
 	//Accept Action Calls

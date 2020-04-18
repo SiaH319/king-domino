@@ -174,13 +174,12 @@ public class DiscardingDominoStepDefinitions {
 		boolean expectedImpossible = true;
 		boolean actualImpossible = GameplayController.impossibleToPlaceDomino();
 		assertEquals(expectedImpossible, actualImpossible);
-		KingdominoApplication.getStateMachine().setGamestatus("PreplacingDomino");
 	}
 
 	@When("the current player discards his\\/her domino")
 	public void the_current_player_discards_his_her_domino() {
-//		System.out.println("is current player last in turn " + GameplayController.isCurrentPlayerTheLastInTurn());
-//		System.out.println("is current turn last in game " + GameplayController.isCurrentTurnTheLastInGame());
+		GameplayController.initStatemachine();
+		GameplayController.setStateMachineState("PreplacingDomino");
 		if(dominoInKingdom==null) {
 			System.out.println("dominkingdom is null!!");
 		}

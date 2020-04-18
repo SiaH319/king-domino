@@ -33,7 +33,6 @@ import io.cucumber.java.en.When;
  */
 public class PlacingDominoStepDefinitions {
 	Player CurrentPlayer;
-	DominoInKingdom dominoInKingdom;
 	@Given("the game has been initialized for placing domino")
 	public void the_game_has_been_initialized_for_placing_domino() {
 		// Intialize empty game
@@ -61,14 +60,15 @@ public class PlacingDominoStepDefinitions {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Player player = game.getNextPlayer();
 		Domino curDomino = player.getDominoSelection().getDomino();
-		curDomino.setStatus(DominoStatus.CorrectlyPreplaced);
+		curDomino.setStatus(getDominoStatus(dominoStatusString));
 		assertTrue(GameplayController.isCorrectlyPreplaced());
 		
 	}
 	@When("the current player places his\\/her domino")
 	public void the_current_player_places_his_her_domino() {
+		GameplayController.initStatemachine();
+		GameplayController.setStateMachineState("PreplacingDomino");
 		GameplayController.triggerEventsInSM("place");
-		System.out.println("Finished placing");
 	}
 	
 	
@@ -115,16 +115,6 @@ public class PlacingDominoStepDefinitions {
 		}
 	}
 
-	private Domino getdominoByID(int id) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		for (Domino domino : game.getAllDominos()) {
-			if (domino.getId() == id) {
-				return domino;
-			}
-		}
-		throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
-	}
-
 	private TerrainType getTerrainType(String terrain) {
 		switch (terrain) {
 		case "W":
@@ -141,21 +131,6 @@ public class PlacingDominoStepDefinitions {
 			return TerrainType.Lake;
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
-		}
-	}
-
-	private DirectionKind getDirection(String dir) {
-		switch (dir) {
-		case "up":
-			return DirectionKind.Up;
-		case "down":
-			return DirectionKind.Down;
-		case "left":
-			return DirectionKind.Left;
-		case "right":
-			return DirectionKind.Right;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
 		}
 	}
 
