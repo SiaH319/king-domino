@@ -47,7 +47,6 @@ public class SetGameOptionsStepDefinition {
 		game.hasAllDominos();
 		game.hasAllDrafts();
 		game.hasPlayers();
-		//game.setNumberOfPlayers(game.getNumberOfPlayers());
 	}
 
 

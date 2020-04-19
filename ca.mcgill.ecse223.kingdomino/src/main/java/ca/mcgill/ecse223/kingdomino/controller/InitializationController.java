@@ -9,7 +9,7 @@ import java.util.List;
 
 public class InitializationController {
 	/**
-	 *  initialize the setup
+	 *  This class contains controller methods for Initializing Game, Initializing Draft, Initializing
 	 *  @author: Sia Ham
 	 */
 	public static User findUserByName(String name, Kingdomino kingdomino){
@@ -47,14 +47,23 @@ public class InitializationController {
 		}
 	}
 
+	/**
+	 * Create a new user
+	 * @author Sia Ham
+	 * @param string, user's name
+	 * @throws InvalidInputException
+	 */
 	public static void initializeUser(String string) throws InvalidInputException{
 		if (User.getWithName(string) == null &&
 				KingdominoApplication.getKingdomino()!=null&&
 				string.matches("[a-z0-9]+")) {
-			KingdominoApplication.getKingdomino().addUser(string);
+			try{
+				KingdominoApplication.getKingdomino().addUser(string);
+			}catch(Exception e) {
+				throw new InvalidInputException(e.getMessage());
+			}
 		}
 		// no duplicate name
-
 		else {
 			throw new InvalidInputException("There already is a same user");
 		}

@@ -1,9 +1,7 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.model.Domino;
-import ca.mcgill.ecse223.kingdomino.model.Draft;
-import ca.mcgill.ecse223.kingdomino.model.Game;
+import ca.mcgill.ecse223.kingdomino.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,43 +34,44 @@ public class DraftController {
     /**
      * Feature 8: Create Next Draft
      * Create a next draft and the first few dominoes in the pile to it
-     * @author Mohamad
+     * @author Mohamad, Cecilia Jiang
      * 
      */
     public static void createNewDraftIsInitiated() {
-    	System.out.println("Creating the next draft");
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        if(game.getAllDrafts().size()!=0) {// if its not the first turn
-        if(game.getNextDraft()==null) {// if next draft is not there then set  one
-            if(game.getAllDraft(game.getAllDrafts().size()-1)!=null) {
-            	game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1)); //last draft is the newest so the next one
+        int curDraftSize = game.getAllDrafts().size();
+        if(curDraftSize == 1 && game.getNextDraft() == null){
+            game.setNextDraft(game.getAllDraft(0));
+        }else{
+            Domino tmp = game.getTopDominoInPile();
+            Draft formerNextDraft = game.getNextDraft();
+            game.setCurrentDraft(formerNextDraft);
+            for(Player player:game.getPlayers()){
+                if(player.getDominoSelection()!=null && player.getDominoSelection().getDraft()==formerNextDraft){
+                    Domino domino = player.getDominoSelection().getDomino();
+                    player.setCurrentRanking(formerNextDraft.indexOfIdSortedDomino(domino));
+                }
             }
-            else {
-            	game.setNextDraft(new Draft(null, game));
+            int step;
+            if(game.getNumberOfPlayers() % 2== 0){
+                step =4;
+            }else{
+                step = 3;
             }
-        }    
-        }
-        game.setCurrentDraft(game.getNextDraft()); // now set it as the new next Draft
+            if (tmp != null && curDraftSize != game.getMaxPileSize()) {
+                Draft nextDraft = new Draft(Draft.DraftStatus.FaceDown,game);
+                for(int i = 0 ;i<step;i++){
+                    tmp.setStatus(Domino.DominoStatus.InNextDraft);
+                    nextDraft.addIdSortedDomino(tmp);
+                    tmp = tmp.getNextDomino();
+                    game.setTopDominoInPile(tmp);
+                }
+                game.setNextDraft(nextDraft);
+                game.addAllDraft(nextDraft);
+            }else{
+                game.setNextDraft(null);
+            }
 
-        if(thereCanBeMoreDrafts(game)) { // if we can create more drafts
-        	
-            Draft newNextDraft = new Draft(Draft.DraftStatus.FaceDown,game);
-
-            for(int i=0;i<newNextDraft.maximumNumberOfIdSortedDominos();i++) { // populate the draft with the corresponding number of dominoes from the linked list
-                Domino Top =game.getTopDominoInPile();
-                newNextDraft.addIdSortedDomino(Top);
-                Top.setStatus(Domino.DominoStatus.InNextDraft);// update the linked ist
-                game.setTopDominoInPile(Top.getNextDomino());
-            }
-            if(game.getCurrentDraft()!=null) {
-                game.getCurrentDraft().setDraftStatus(Draft.DraftStatus.FaceUp);
-            }
-            game.addAllDraft(newNextDraft);// add draft to list of drafts
-            game.setNextDraft(newNextDraft);// set draft as the next one
-        }
-        else {
-            game.setNextDraft(null);
-            game.setTopDominoInPile(null); // then the pile should be empty
         }
 
     }
@@ -98,12 +97,11 @@ public class DraftController {
 
         ArrayList<Domino> newIdSorted = new ArrayList<Domino>();
         for(Integer id : listIDs) {
-        	System.out.println("added an id to the list");
             newIdSorted.add(getdominoByID(id));
         }
         nextDraft.setIdSortedDominos(newIdSorted.get(0),newIdSorted.get(1),newIdSorted.get(2),newIdSorted.get(3));// add them back to the next draft 
         nextDraft.setDraftStatus(Draft.DraftStatus.Sorted);														  //in the right order
-        game.setNextDraft(nextDraft);
+        //game.setNextDraft(nextDraft);
     }
 
     /**
@@ -112,9 +110,10 @@ public class DraftController {
      * @author Mohamad
      */
     public static void revealDominoesInitiated() {
+        if(GameplayController.statemachine.getGamestatusInitializing()== Gameplay.GamestatusInitializing.CreatingFirstDraft)
+            return;
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();
-        System.out.println("revealing the next draft");
         nextDraft.setDraftStatus(Draft.DraftStatus.FaceUp);// flip up the dominoes
     }
     /**

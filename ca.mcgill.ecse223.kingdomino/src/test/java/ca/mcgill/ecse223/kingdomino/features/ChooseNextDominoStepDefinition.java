@@ -2,6 +2,7 @@ package ca.mcgill.ecse223.kingdomino.features;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.DominoController;
+import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
@@ -41,6 +42,7 @@ public class ChooseNextDominoStepDefinition {
         createAllDominoes(game);
         game.setNextPlayer(game.getPlayer(0));
         KingdominoApplication.setKingdomino(kingdomino);
+        GameplayController.initStatemachine();
     }
 
     /* Scenario Outline: Player choses a free domino */
@@ -61,6 +63,8 @@ public class ChooseNextDominoStepDefinition {
 
     @Given("player's domino selection {string}")
     public void players_domino_selection_(String selection) {
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+        Game game = kingdomino.getCurrentGame();
         String[] selections = selection.split(",");
         nDraft = game.getNextDraft();
         for(int i= 0; i < selections.length; i++){
@@ -84,12 +88,14 @@ public class ChooseNextDominoStepDefinition {
             for(Player player: game.getPlayers()){
                 if(player.getColor()==playercolor){
                     Domino domino = nDraft.getIdSortedDomino(i);
+                    if(player.getDominoSelection()!=null)
+                        player.getDominoSelection().delete();
                     new DominoSelection(player,domino,nDraft);
                     break;
                 }
             }
         }
-        game.setCurrentDraft(nDraft);
+       // game.setCurrentDraft(nDraft);
         assertNotNull(selections);
     }
 
@@ -164,7 +170,6 @@ public class ChooseNextDominoStepDefinition {
     }
 
     /* Scenario Outline: Player choses an occupied domino */
-
     @Then("the selection for the next draft selection is still {string}")
     public void the_selection_for_the_next_draft_selection_is_still_selection(String newselection) {
         String[] newSelections = newselection.split(",");

@@ -23,33 +23,32 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 /**
- * TODO Put here a description of what this class does.
+ * Gherkin Scenario for initializing game
  *
- * @author Mohamad.
+ * @author Mohamad, Cecilia Jiang
  *         Created Apr 13, 2020.
  */
 public class InitializingGameStepDefinitions {
-	
 	@Given("the game has not been started")
 	public void the_game_has_not_been_started() {
 		KingdominoApplication.getKingdomino().setCurrentGame(null);
+		String[] names = {"User1","User2","User3","User4"};
+		GameplayController.initStatemachine();
+		GameplayController.setStateMachineState("SettingUp");
+		GameplayController.triggerStartNewGameInSM(4,false,false,names);
 	}
 	
 	@When("start of the game is initiated")
 	public void start_of_the_game_is_initiated() {
-		GameplayController.triggerStartNewGameInSM(4);
+		GameplayController.triggerEventsInSM("draftReady");
 	}
 	@Then("the pile shall be shuffled")
 	public void the_pile_shall_be_shuffled() {
-		System.out.println("------------The pile-----------");
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		List<Domino> pile = game.getAllDominos();
 		for (int i = 0; i < pile.size(); i++) {
 			System.out.print(pile.get(i).getId() + ", ");
 		}
-		
-		System.out.println("------------Finished pile-----------");
-
 		
 	}
 	@Then("the first draft shall be on the table")
@@ -66,7 +65,7 @@ public class InitializingGameStepDefinitions {
 	@Then("the first draft shall be revealed")
 	public void the_first_draft_shall_be_revealed() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		assertEquals(DraftStatus.FaceUp, game.getCurrentDraft().getDraftStatus());
+		assertEquals(DraftStatus.FaceUp, game.getAllDraft(0).getDraftStatus());
 		System.out.println("------------The draft is faced up-----------");
 
 	}

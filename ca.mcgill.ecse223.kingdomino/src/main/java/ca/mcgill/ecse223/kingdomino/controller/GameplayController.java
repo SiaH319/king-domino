@@ -1,15 +1,14 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.InitializationController.InvalidInputException;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
@@ -19,6 +18,7 @@ import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
 import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
+import ca.mcgill.ecse223.kingdomino.model.Gameplay.Gamestatus;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
@@ -27,52 +27,56 @@ import ca.mcgill.ecse223.kingdomino.model.TerrainType;
 import ca.mcgill.ecse223.kingdomino.model.User;
 
 public class GameplayController {
-	private static Gameplay statemachine;
-	public Kingdomino kingdomino;
-	private static ArrayList<Player> Orders=new ArrayList<Player>();
-	private String errorMessage;
-	
+	public static Gameplay statemachine;
+	public static Kingdomino kingdomino;
+	private static ArrayList<Player> Orders = new ArrayList<Player>();
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////Helper Methods/////////////////////////////////////////////////////
+//////////////////////////////////////////Helper Methods/////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 	public static void initStatemachine() {
 		statemachine = KingdominoApplication.getStateMachine();
+		kingdomino = KingdominoApplication.getKingdomino();
 	}
-	
+
 	public static void setStateMachineState(String stateName) {
 		statemachine.setGamestatus(stateName);
 	}
 	
+	
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////Trigger Relevant Events In SM//////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
+	/**
+	 * A wrppaer method that triggers actions without parameters in state machine
+	 * @param methodName, method name in string
+	 */
 	public static void triggerEventsInSM(String methodName) {
 		initStatemachine();
-		switch(methodName) {
-		case "saveGame":
-			statemachine.saveGame();
-			break;
+		switch (methodName) {
 		case "proceed":
 			statemachine.proceed();
 			break;
 		case "place":
 			statemachine.place();
 			break;
-		
 		case "order":
-			System.out.println("calling statemachine to order");
 			statemachine.order();
 			break;
 		case "reveal":
 			statemachine.reveal();
 			break;
-		default :
+		case "draftReady":
+			statemachine.draftReady();
+			break;
+		default:
 			throw new java.lang.IllegalArgumentException("Invalid trigger event: " + methodName);
 		}
-		
-		
+
 	}
+
 	/**
 	 * Trigger discard action in statemachine
 	 * @author Cecilia Jiang
@@ -80,20 +84,32 @@ public class GameplayController {
 	public static void triggerDiscardDominoInSM() {
 		statemachine.discard();
 	}
+	
+	public static void triggerSaveInSM(String filename) {
+		statemachine.save(filename);
+	}
+	
+	/**
+	 * Trigger createnewuser action in statemachine
+	 * @author Cecilia Jiang
+	 */
+	public static String triggerCreateNewUser(String name) {
+		return statemachine.createUser(name);
+	}
 
 	/**
 	 * Tigger startANewGame action in statemachine
 	 * @autor Cecilia Jiang
-	 * @param numOfPlayers, number of players for the new game
-	 * @param mkActivated, true if middleKingdom bonus is activated
+	 * @param numOfPlayers,     number of players for the new game
+	 * @param mkActivated,      true if middleKingdom bonus is activated
 	 * @param harmonyActivated, true if harmony bonus is activated
 	 */
-	
-	public static void triggerStartNewGameInSM(int numOfPlayers, boolean mkActivated, boolean harmonyActivated) {
-		statemachine.startNewGame(numOfPlayers,mkActivated,harmonyActivated);
+	public static void triggerStartNewGameInSM(int numOfPlayers, boolean mkActivated, boolean harmonyActivated,
+			String[] userNames) {
+		statemachine.startNewGame(numOfPlayers, mkActivated, harmonyActivated, userNames);
 	}
+
 	/**
-	 * 
 	 * Given an id of a domino, the current player will try to select it.
 	 * @author Mohamad
 	 * @param id
@@ -101,167 +117,234 @@ public class GameplayController {
 	public static void triggerMakeSelectionInSM(int id) {
 		statemachine.makeSelection(id);
 	}
-	
+
+	/**
+	 * Trigger loadGame action in state machine
+	 * @author Cecilia Jiang
+	 * @param filename, fileName for load file
+	 */
 	public static void triggerLoadGameInSM(String filename) {
 		statemachine.loadGame(filename);
 	}
-	
+
+	/**
+	 * Trigger moveDomino action in state machine
+	 * @author Cecilia Jiang
+	 * @param dir, direction of movement
+	 */
 	public void triggerMoveDominoInSM(String dir) {
 		statemachine.moveCurrentDomino(dir);
 	}
+
+	/**
+	 * Trigger RotateDomino action in state machine
+	 * @author Cecilia Jiang
+	 * @param dir, 1 clockwise or 0 counterwise
+	 */
 	public void triggerRotateDominoInSM(int dir) {
 		statemachine.rotateCurrentDomino(dir);
 	}
-	
-	//Guards
+
+	// Guards
 	/**
 	 * 
-	 * Checks is the current player is last in turn
-	 * If there is a next draft, see how many selection
-	 * have been made
+	 * Checks is the current player is last in turn If there is a next draft, see
+	 * how many selection have been made
 	 * 
-	 * If there is no next draft, compare selected domino Id to the ones in the current draft
+	 * If there is no next draft, compare selected domino Id to the ones in the
+	 * current draft
 	 * 
 	 * @author Mohamad
 	 * @return true if curren tplayer is last, false otherwise
 	 */
 	public static boolean isCurrentPlayerTheLastInTurn() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		int dominoesInNextDraftSelected=0;
+
+
+		int rank = game.getNextPlayer().getCurrentRanking();
+		if(game.getNumberOfPlayers() %2 == 0)
+			return rank == 3;
+		return rank == 2;
+//		if (game.getNextDraft() != null) {
+//
+//			for (Domino d : game.getNextDraft().getIdSortedDominos()) {
+//				if (d.hasDominoSelection()) {
+//					dominoesInNextDraftSelected++;
+//				}
+//			}
+//		} else {
+//			boolean foundBigger = false;
+//			for (Domino d : game.getCurrentDraft().getIdSortedDominos()) {
+//				if (d.getId() > game.getNextPlayer().getDominoSelection().getDomino().getId()) {
+//					foundBigger = true; // if found an id bigger than that of current player
+//					break;
+//				}
+//			}
+//			return !foundBigger; // if no bigger, return true
+//		}
+//		if ((dominoesInNextDraftSelected == 3) && (game.getNumberOfPlayers() == 2 || game.getNumberOfPlayers() == 4)) {// if
+//																														// almost
+//																														// all
+//																														// dominoes
+//																														// in
+//																														// next
+//																														// draft
+//			return true;
+//		}
+//		if ((dominoesInNextDraftSelected == 2) && game.getNumberOfPlayers() == 3) { // if almost all dominoes in next
+//																					// draft // are selected
+//
+//			return true;
+//		}
+//		return false;
+	}
+
+	/**
+	 * Guard In StateMachine. 
+	 * Checks if the current turn is the last turn in game.
+	 * @author Mohamad
+	 * @return true if next draft doesn't exist
+	 */
+	public static boolean isCurrentTurnTheLastInGame() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		return (game.getNextDraft() == null);
+
+	}
+
+	
+	/**
+	 * Guard In StateMachine. Checks if the domino status of the current player's
+	 * domino selection's domino is CorrectlyPreplaced
+	 * @author Mohamad
+	 * @return true if it's CorrectlyPreplaced, false otherwise
+	 */
+	public static boolean isCorrectlyPreplaced() {
 		
-		if(game.getNextDraft()!=null) {
-			
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Player currentPl = game.getNextPlayer();
+		Domino currentlyChosedDomino = currentPl.getDominoSelection().getDomino();
+		DominoStatus curDominoStatus = currentlyChosedDomino.getStatus();
+		return curDominoStatus == DominoStatus.CorrectlyPreplaced;
+	}
 
-			for(Domino d : game.getNextDraft().getIdSortedDominos()) {
-				if(d.hasDominoSelection()) {
-					dominoesInNextDraftSelected++;
-				}
-			}
-		}
-		else {
-			boolean foundBigger=false;
-			for(Domino d : game.getCurrentDraft().getIdSortedDominos()) {
-				if(d.getId()>game.getNextPlayer().getDominoSelection().getDomino().getId()) {
-					foundBigger=true;															// if found an id bigger than that of current player
-					break;
-				}
-			}
-			return !foundBigger;     // if no bigger, return true
-		}
-        if((dominoesInNextDraftSelected==3) && (game.getNumberOfPlayers()==2 || game.getNumberOfPlayers()==4)) {// if almost all dominoes in next draft
-            System.out.println("CurrentPlayer is last in turn");												// are sleected
+	public static boolean isSelectionValid(int id){
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Domino domino = getdominoByID(id);
+//		if(statemachine.getGamestatus() == Gamestatus.Initializing && domino.getStatus()!=DominoStatus.InCurrentDraft)
+//			return false;
+//		if(statemachine.getGamestatus() == Gamestatus.InGame && domino.getStatus()!=DominoStatus.InNextDraft)
+//			return false
+//			;
+//		Player curPlayer = game.getNextPlayer();
+//		for(Player p:game.getPlayers()){
+//			if(p.getDominoSelection()!=null &&p.getDominoSelection().getDomino()==domino&& p!=curPlayer){
+//				System.out.println(p.getColor().toString());
+//				return false;
+//			}
+//		}
+		return !domino.hasDominoSelection();
 
-        	return true;
-        }
-        if((dominoesInNextDraftSelected==2) && game.getNumberOfPlayers()==3) {									//if almost all dominoes in next draft 												// are selected
-
-        	return true;
-        }
-        
-        return false;
-    }
-    /**
-     * Guard In StateMachine.
-     * Checks if the current turn is the last turn in game.
-     * @author Mohamad
-     * @return true if next draft doesn't exist
-     */
-    public static boolean isCurrentTurnTheLastInGame() {
-    	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-    	return (game.getNextDraft()==null);
-        
-    }
-    /**
-     * Guard In StateMachine.
-     * Checks if the domino status of the current player's domino selection's domino is CorrectlyPreplaced
-     * @author Mohamad
-     * @return true if it's CorrectlyPreplaced, false otherwise
-     */
-    public static boolean isCorrectlyPreplaced() {
-    	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-    	Player currentPl=game.getNextPlayer();
-    	Domino currentlyChosedDomino = currentPl.getDominoSelection().getDomino();
-    	DominoStatus curDominoStatus = currentlyChosedDomino.getStatus();
-    	return curDominoStatus == DominoStatus.CorrectlyPreplaced;
-    }
-
-    /**
-     * Guard In StateMachine.
-     * checks if all dominoes in current draft have selections
-     * @author Mohamad
-     * @return true if they all have, false otherwise.
-     */
-    public static boolean areAllDominoesInCurrentDraftSelected() {
-    	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-    	int expectedNumberOfDominoesSelected=game.getCurrentDraft().getIdSortedDominos().size();
-    	int actualNumberOfDominoesSelected=0;
-    	for(Domino d: game.getCurrentDraft().getIdSortedDominos()) {
-    		if(d.hasDominoSelection()) {
-    			actualNumberOfDominoesSelected++;
-    		}
-    	}
-    	
-    	return ((expectedNumberOfDominoesSelected-actualNumberOfDominoesSelected)==0);
-    }
-
-    public static boolean isLoadedGameValid(String filename){
-        try {
-        	return SaveLoadGameController.loadGame(filename);
-        }catch(Exception e) {
-        	return false;
-        }
-        
-    }
-    /**
-     * Guard method in sate machine.
-     * Check if it's impossible to place the currently selected domino
-     * @author Mohamad
-     * @return true if can't place the domino anywhere, false if it can.
-     */
-    public static boolean impossibleToPlaceDomino(){
-    	   Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-    	    Player currentPl = game.getPlayer(0);
-    	    Kingdom kingdom = currentPl.getKingdom();
-    	    Castle castle = getCastle(kingdom);        
-    	    Square[] grid = GameController.getGrid(currentPl.getUser().getName());
-    	    DominoInKingdom dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
-    	    ArrayList<DominoInKingdom.DirectionKind> directions =new ArrayList<DominoInKingdom.DirectionKind>();
-    	    directions.add(DominoInKingdom.DirectionKind.Down);
-    	    directions.add(DominoInKingdom.DirectionKind.Left);
-    	    directions.add(DominoInKingdom.DirectionKind.Up);
-    	    directions.add(DominoInKingdom.DirectionKind.Right);
-    	    for(int x=-4;x<5;x++) {
-    	        for(int y=-4;y<5;y++) {
-    	            for(DominoInKingdom.DirectionKind dir :directions ) {
-    	                dominoInKingdom.setDirection(dir);
-    	                dominoInKingdom.setX(x);
-    	                dominoInKingdom.setY(y);
-
-    	                if((VerificationController.verifyGridSize(currentPl.getKingdom().getTerritories()))  && (VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom)) && ((VerificationController.verifyCastleAdjacency(castle,dominoInKingdom)) || (VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))) {
-    	                    System.out.println("Found a place where we can place the domino with x= "+x+" y="+y+"direction ="+dir);
-    	                    System.out.println("A this x,y there is :"+ grid[Square.convertPositionToInt(x,y)].getTerrain());
-    	                    return false; // as we have found a place where we can place the domino
-    	                }
-    	            }
-    	        }
-    	    }
-    	    //couldn't place the domino anywhere.
-    	    dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
-    	    return true;
     }
 	
-	//Accept Action Calls
-	public static void acceptCallFromSM(String methodName){
-		switch(methodName) {
+	/**
+	 * Guard In StateMachine. 
+	 * Checks if all dominoes in current draft have
+	 * selections
+	 * @author Mohamad
+	 * @return true if they all have, false otherwise.
+	 */
+	public static boolean areAllDominoesInCurrentDraftSelected() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		int expectedNumberOfDominoesSelected = game.getCurrentDraft().getIdSortedDominos().size();
+		int actualNumberOfDominoesSelected = 0;
+		for (Domino d : game.getCurrentDraft().getIdSortedDominos()) {
+			if (d.hasDominoSelection()) {
+				actualNumberOfDominoesSelected++;
+			}
+		}
+
+		return ((expectedNumberOfDominoesSelected - actualNumberOfDominoesSelected) == 0);
+	}
+
+	
+	/**
+	 * Guard In StateMachine.
+	 * Check if loading a string filename is successful
+	 * @author Cecilia Jiang
+	 * @param filename
+	 * @return true if succeeded
+	 */
+	public static boolean isLoadedGameValid(String filename) {
+		try {
+			return SaveLoadGameController.loadGame(filename);
+		} catch (Exception e) {
+			return false;
+		}
+
+	}
+
+	
+	/**
+	 * Guard method in sate machine. Check if it's impossible to place the currently
+	 * selected domino
+	 * @author Mohamad
+	 * @return true if can't place the domino anywhere, false if it can.
+	 */
+	public static boolean impossibleToPlaceDomino() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Player currentPl = game.getPlayer(0);
+		Kingdom kingdom = currentPl.getKingdom();
+		Castle castle = getCastle(kingdom);
+		Square[] grid = GameController.getGrid(currentPl.getUser().getName());
+		DominoInKingdom dominoInKingdom = (DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size() - 1);
+		ArrayList<DominoInKingdom.DirectionKind> directions = new ArrayList<DominoInKingdom.DirectionKind>();
+		directions.add(DominoInKingdom.DirectionKind.Down);
+		directions.add(DominoInKingdom.DirectionKind.Left);
+		directions.add(DominoInKingdom.DirectionKind.Up);
+		directions.add(DominoInKingdom.DirectionKind.Right);
+		for (int x = -4; x < 5; x++) {
+			for (int y = -4; y < 5; y++) {
+				for (DominoInKingdom.DirectionKind dir : directions) {
+					dominoInKingdom.setDirection(dir);
+					dominoInKingdom.setX(x);
+					dominoInKingdom.setY(y);
+
+					if ((VerificationController.verifyGridSize(currentPl.getKingdom().getTerritories()))
+							&& (VerificationController.verifyNoOverlapping(castle, grid, dominoInKingdom))
+							&& ((VerificationController.verifyCastleAdjacency(castle, dominoInKingdom))
+									|| (VerificationController.verifyNeighborAdjacency(castle, grid,
+											dominoInKingdom)))) {
+						System.out.println("Found a place where we can place the domino with x= " + x + " y=" + y
+								+ "direction =" + dir);
+						System.out.println(
+								"A this x,y there is :" + grid[Square.convertPositionToInt(x, y)].getTerrain());
+						return false; // as we have found a place where we can place the domino
+					}
+				}
+			}
+		}
+		// couldn't place the domino anywhere.
+		dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
+		return true;
+	}
+
+	// Accept Action Calls
+	public static void acceptCallFromSM(String methodName) {
+		switch (methodName) {
 		case "shuffleDominoPile":
-			System.out.println("Going to shuffle the dominoes");
-			ShuffleDominoesController.shuffle(false);
+			Game game = kingdomino.getCurrentGame();
+			List<Domino> dominoes = game.getAllDominos();
+			try {
+				ShuffleDominoesController.shuffleDomino(dominoes,game);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			break;
 		case "createNextDraft":
 			DraftController.createNewDraftIsInitiated();
 			break;
 		case "generateInitialPlayerOrder":
-			
+			generateInitialPlayerOrder();
 			break;
 		case "orderNextDraft":
 			DraftController.orderNewDraftInitiated();
@@ -270,194 +353,382 @@ public class GameplayController {
 			DraftController.revealDominoesInitiated();
 			break;
 		case "placeDomino":
-			DominoController.placeDomino(null,0);
+			DominoController.placeDomino(null, 0);
 			break;
 		case "calculateCurrentPlayerScore":
 			CalculationController.calculateCurrentPlayerScore();
 			break;
 		case "calculateRanking":
-			break;
-		case "resolveTieBreak":
+			calculateRanking();
 			break;
 		case "switchCurrentPlayer":
 			switchCurrentPlayerInitiated();
 			break;
-		case "switchDraft":
-			break;
-		case "save":
-			break;
-		case "load":
-			break;
+		default:
+			throw new java.lang.IllegalArgumentException("Invalid trigger event: " + methodName);
 		}
-		
+
 	}
-	public static void acceptPlaceDominoFromSM(Player currentPlayer,int id) {
-		DominoController.placeDomino(currentPlayer,id);
-	}
-	
-	public static void acceptDiscardDominoFromSM() {
+
+	/**
+	 * Accept calculateRanking call from sm
+	 */
+	public static void calculateRanking(){
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		Player player = game.getNextPlayer();
-		List<KingdomTerritory> list= player.getKingdom().getTerritories();
-        DominoInKingdom dominoInKingdom = (DominoInKingdom)list.get(list.size() - 1);
-		DominoController.attemptDiscardSelectedDomino(dominoInKingdom);
+		boolean noTie = true;
+		for(Player p1 : game.getPlayers()) {
+			for(Player p2:game.getPlayers()) {
+				if(p1.getColor()!=p2.getColor()) {
+					if((p2.getBonusScore()+p2.getPropertyScore())==(p1.getBonusScore()+p1.getPropertyScore())) {// if we catch any pair of different
+						//players with the same score then there is a tie
+						noTie=false;
+					}
+				}
+
+			}
+		}
+		ArrayList<Integer> scoreList = new ArrayList<>();
+		for(Player player: game.getPlayers()) {
+			scoreList.add(player.getTotalScore());
+		}
+		CalculationController.calculateRanking(noTie, scoreList);
 	}
 	
 	/**
-	 * Method that switches the current player to find what players'turn it is.
-	 *
-	 * @author Mohamad
+	 * Accept saveGame call from SM
+	 * @param filename
+	 * @return true if succeeded, false otherwise
 	 */
-	private static void switchCurrentPlayerInitiated() {
-		
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		ArrayList<Integer> listOfIds=new ArrayList<Integer>();
-		for(Domino d:game.getCurrentDraft().getIdSortedDominos()) {
-			listOfIds.add(d.getId());
+	public static boolean acceptSaveGameCallFromSM(String filename) {
+		try {
+			return SaveLoadGameController.saveGame(filename);
+		} catch (IOException e) {
+			return false;
 		}
-		Collections.sort(listOfIds);
-		
-		for(Integer i : listOfIds) {
-			if(getdominoByID((int)i).hasDominoSelection() && getdominoByID((int)i).getStatus()==DominoStatus.InCurrentDraft) {
-				System.out.println("switched player");
-				game.setNextPlayer(getdominoByID((int)i).getDominoSelection().getPlayer());
-				break;
+	}
+	
+	/**
+	 * Accept create user call from state machine
+	 * @author Cecilia Jiang
+	 * @param name, user's name
+	 * @return String, errorMessage if exception encountered, "" otherwise
+	 */
+	public static String acceptCreateUserCallFromSM(String name) {
+		try {
+			InitializationController.initializeUser(name);
+			return "";
+		} catch (InvalidInputException e) {
+			return e.getMessage();
+		}
+
+	}
+	
+	/**
+	 * Accept initializeGame call from state machine
+	 * Given the number of players, initialise the game accordingly.
+	 * @author Cecilia Jiang, Mohammad Dimassi
+	 * @param numOfPlayer, number of player for the new game
+	 */
+	public static void acceptInitializeGameCallFromSM(int numOfPlayer, String[] userNames) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game;
+		if (numOfPlayer == 4) {
+			game = new Game(12, kingdomino);
+			game.setNumberOfPlayers(4);
+			game.getKingdomino().setCurrentGame(game);
+			kingdomino.setCurrentGame(game);
+			// Populate game
+			addUsersAndPlayers(userNames,game);
+			createAllDominoes(game);
+			for(int k = 0; k < numOfPlayer; k++) {
+				String playerName = (game.getPlayer(k).getUser().getName());
+				GameController.setGrid(playerName, new Square[81]);
+				GameController.setSet(playerName, new DisjointSet(81));
+				Square[] grid = GameController.getGrid(playerName);
+				for (int i = 4; i >= -4; i--)
+					for (int j = -4; j <= 4; j++)
+						grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+			}
+		}
+
+		if (numOfPlayer == 3) {
+			game = new Game(12, kingdomino);
+			game.setNumberOfPlayers(3);
+			game.getKingdomino().setCurrentGame(game);
+			addUsersAndPlayers(userNames,game);
+			createAllDominoes(game);
+			for(int k = 0; k < numOfPlayer; k++) {
+				String playerName = (game.getPlayer(k).getUser().getName());
+				GameController.setGrid(playerName, new Square[81]);
+				GameController.setSet(playerName, new DisjointSet(81));
+				Square[] grid = GameController.getGrid(playerName);
+				for (int i = 4; i >= -4; i--)
+					for (int j = -4; j <= 4; j++)
+						grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+			}
+			for(int i = 0 ; i<12;i++) {
+				int size = game.getAllDominos().size();
+				int index = (int)(Math.random() * (size));
+				Domino domino = game.getAllDomino(index);
+				while(domino.getStatus()== DominoStatus.Excluded) {
+					index = (int)(Math.random() * (size));
+					domino = game.getAllDomino(index);
+				}
+				domino.setStatus(DominoStatus.Excluded);
+				
+			}
+
+		}
+		if (numOfPlayer == 2) {
+			game = new Game(6, kingdomino);
+			game.setNumberOfPlayers(2);
+			game.getKingdomino().setCurrentGame(game);
+			addUsersAndPlayers(userNames,game);
+			createAllDominoes(game);
+			for(int k = 0 ;k < 2; k++) {
+				String playerName = userNames[k];
+				GameController.setGrid(playerName, new Square[81]);
+				GameController.setSet(playerName, new DisjointSet(81));
+				Square[] grid = GameController.getGrid(playerName);
+				for (int i = 4; i >= -4; i--)
+					for (int j = -4; j <= 4; j++)
+						grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+			}
+			
+			for(int i = 0 ; i < 24; i++) {
+				int size = game.getAllDominos().size();
+				int index = (int)(Math.random() * (size));
+				Domino domino = game.getAllDomino(index);
+				while(domino.getStatus()==DominoStatus.Excluded) {
+					index = (int)(Math.random() * (size));
+					domino = game.getAllDomino(index);
+				}
+				domino.setStatus(DominoStatus.Excluded);
+				
 			}
 		}
 	}
+	
+	/**
+	 * Accept set bonus option call from state machine
+	 * @author Cecilia Jiang
+	 * @param mkActivated, middle kingdom activated or not,
+	 * @param harmonyActivated, harmony activated or not
+	 */
+	public static void acceptSetBonusOptionFromSM(boolean mkActivated, boolean harmonyActivated) {
+		GameController.setBonusOptionForCurrentGame(mkActivated,harmonyActivated);
+	}
+
+	/**
+	 * Accept place domino call from state machine
+	 * @author Cecilia Jiang
+	 */
+	public static void acceptPlaceDominoFromSM() {
+		Player currentPlayer = kingdomino.getCurrentGame().getNextPlayer();
+		Domino domino = currentPlayer.getDominoSelection().getDomino();
+		DominoController.placeDomino(currentPlayer, domino.getId());
+	}
+
+	public static void acceptDiscardDominoFromSM() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Player player = game.getNextPlayer();
+		List<KingdomTerritory> list = player.getKingdom().getTerritories();
+		DominoInKingdom dominoInKingdom = (DominoInKingdom) list.get(list.size() - 1);
+		DominoController.attemptDiscardSelectedDomino(dominoInKingdom);
+	}
+
+	/**
+	 * Method that switches the current player to find what players'turn it is.
+	 * @author Mohamad, Cecilia Jiang
+	 */
+	private static void switchCurrentPlayerInitiated() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		if(statemachine.getGamestatus()==Gamestatus.Initializing) {
+			int curPlayerRanking = game.getNextPlayer().getCurrentRanking();
+			if(!isCurrentPlayerTheLastInTurn()) {
+				for(Player player: game.getPlayers()) {
+					if(player.getDominoSelection()==null&&player.getCurrentRanking()-1 == curPlayerRanking) {
+						game.setNextPlayer(player);
+						return;
+					}
+				}
+				return;
+			}
+		}
+
+
+		int minIndex= 100;
+		int minVal= 100;
+		int counter = 0;
+		Player p = game.getNextPlayer();
+		int mod = (game.getNumberOfPlayers()%2==0)? 4 : 3;
+		int rank = (p.getCurrentRanking()+1) % mod;
+		for(Player player: game.getPlayers()){
+			if(player.getCurrentRanking() == rank)
+				game.setNextPlayer(player);
+		}
+
+	}
+
 	/**
 	 * Given an order of player set it
 	 * @author Mohamad
 	 */
 	public static void setOrderOfPlayer(Player[] order) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		for(int i=0;i<game.getPlayers().size();i++) {
-			game.addOrMovePlayerAt(order[i],i);
+		for (int i = 0; i < game.getPlayers().size(); i++) {
+			game.addOrMovePlayerAt(order[i], i);
 		}
 	}
-	public static boolean specificPlayerChosesDomino( Player player, Draft draft, int dominoId) {
+
+	public static boolean specificPlayerChosesDomino(Player player, Draft draft, int dominoId) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		return DominoController.chooseNextDomino(game,dominoId);
+		return DominoController.chooseNextDomino(game, dominoId);
 	}
+
 	/**
-	 * 
-	 * randomly generate the order at the begining of the game
-	 * @author Mohamad
+	 * Randomly generate the order of players at the first turn of the game
+	 * @author Cecilia Jiang
 	 */
 	private static void generateInitialPlayerOrder() {
-		 Kingdomino kd = KingdominoApplication.getKingdomino();
-			Game currentGame = kd.getCurrentGame();
-			int numberOfPlayers = currentGame.getNumberOfPlayers();
-			Random r = new Random();
-			for(int i =0; i < numberOfPlayers; i++) {
-				int IndexOfplayerToTake = r.nextInt(numberOfPlayers);
-				int positionInListToInsert = r.nextInt(numberOfPlayers);
-				Player playerToTake = currentGame.getPlayers().get(IndexOfplayerToTake);
-				currentGame.addOrMovePlayerAt(playerToTake, positionInListToInsert);
-			}
-			for (int i =0; i < numberOfPlayers; i++) {
-				Orders.add(currentGame.getPlayers().get(i));
-			}
-			KingdominoApplication.getKingdomino().getCurrentGame().setNextPlayer(Orders.remove(0));
-	}
-	/**
-	 * 
-	 * Given the number of players, initialise the game accordingly.
-	 * @author Mohamad
-	 * @param numOfPlayer, number of player for the new game
-	 */
-	public static void acceptInitializeGameCallFromSM(int numOfPlayer){
-		System.out.println("creating the new game");
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		Game PreviousGame =game;
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		// Populate game
-		addDefaultUsersAndPlayersFour(game);
-		createAllDominoes(game);
-		game.setNextPlayer(game.getPlayer(0));
-		KingdominoApplication.setKingdomino(kingdomino);
-		if(numOfPlayer==3) {
-			Game game2 = new Game(36, PreviousGame.getKingdomino());
-			game.setNumberOfPlayers(3);
-		;
-			PreviousGame.getKingdomino().setCurrentGame(game);
-			addDefaultUsersAndPlayersThree(game);
-			createAllDominoes(game);
-			game.setNextPlayer(game.getPlayer(0));
-			KingdominoApplication.setKingdomino(game.getKingdomino());
+		Kingdomino kd = KingdominoApplication.getKingdomino();
+		Game currentGame = kd.getCurrentGame();
+		int playerNumber = currentGame.getNumberOfPlayers();
+		List<Integer> ranks = new ArrayList<>();
+		if(playerNumber % 2 ==0) {
+			ranks.add(1);
+			ranks.add(2);
+			ranks.add(3);
+			ranks.add(4);
+		}else {
+			ranks.add(1);
+			ranks.add(2);
+			ranks.add(3);
 		}
-		if(numOfPlayer==2) {
-			Game game3 = new Game(36, PreviousGame.getKingdomino());
-			game.setNumberOfPlayers(3);
+		Collections.shuffle(ranks);
+		List<Player> players = currentGame.getPlayers();
+		for(Player player: players) {
+			player.setCurrentRanking(ranks.remove(0));
+		}
 		
-			PreviousGame.getKingdomino().setCurrentGame(game);
-			addDefaultUsersAndPlayersThree(game);
-			createAllDominoes(game);
-			game.setNextPlayer(game.getPlayer(0));
-			KingdominoApplication.setKingdomino(game.getKingdomino());
+		int i = 0;
+		int indexMin = 0;
+		for(Player player: players) {
+			if(player.getCurrentRanking() == 1) {
+				indexMin = i;
+			}
+			i++;
 		}
+		currentGame.setNextPlayer(currentGame.getPlayer(indexMin));
+	}
+
+	/**
+	 * Accept selectDominoCall from state machine
+	 * @author Cecilia Jiang
+	 * @param dominoId, chosen domino id
+	 */
+	public static void acceptSelectDominoCallFromSM(int dominoId) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		DominoController.chooseNextDomino(game, dominoId);
 	}
 	
-	
-	public static void acceptMoveDominoCallFromSM(String dir){
+
+	/**
+	 * Accept moveDominoCall from state machine
+	 * @author Cecilia Jiang
+	 * @param dir, direction in String
+	 */
+	public static void acceptMoveDominoCallFromSM(String dir) {
 		Kingdomino kd = KingdominoApplication.getKingdomino();
 		Game game = kd.getCurrentGame();
 		Player p = game.getNextPlayer();
-    	DominoController.moveCurrentDomino(p, p.getDominoSelection().getDomino().getId(), dir);
-    }
+		Domino domino = p.getDominoSelection().getDomino();
+		Kingdom kingdom = p.getKingdom();
+		DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(domino.getId(), kingdom);
+        if(dik == null){
+            dik = new DominoInKingdom(0,0,kingdom,domino);
+        }
+		DominoController.moveCurrentDomino(p, p.getDominoSelection().getDomino().getId(), dir);
+	}
+
 	
+	/**
+	 * Accept rotateCurrentDominoCall from state machine
+	 * @author Cecilia Jiang
+	 * @param dir,rotationDir 1 for clockwise, -1 for anticlockwise
+	 */
+	public static void acceptRotateCurrentDomino(int dir) {
+		Kingdomino kd = KingdominoApplication.getKingdomino();
+		Game game = kd.getCurrentGame();
+		Player p = game.getNextPlayer();
+		Castle castle = KingdomController.getCastle(p.getKingdom());
+		Square[] grid = GameController.getGrid(p.getUser().getName());
+		Domino domino = p.getDominoSelection().getDomino();
+		DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(domino.getId(), p.getKingdom());
+		DominoController.rotateExistingDomino(castle, grid, p.getKingdom().getTerritories(), dik, dir);
+	}
+
 	
-	public static void acceptSelectDominoCallFromSM(int dominoId){
+	///////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
+	private static Castle getCastle(Kingdom kingdom) {
+		for (KingdomTerritory territory : kingdom.getTerritories()) {
+			if (territory instanceof Castle)
+				return (Castle) territory;
+		}
+		return null;
+	}
+
+	private static void addUsersAndPlayers(String[] userNames, Game game) {
+		if(userNames.length == 3 || userNames.length == 4) {
+			for (int i = 0; i < userNames.length; i++) {
+				List<User> users = game.getKingdomino().getUsers();
+				User curUser = null;
+				for(User user: users) {
+					if(user.getName().equals(userNames[i])) {
+						curUser = user;
+						break;
+					}
+				}
+				if(curUser != null) {
+					Player player = new Player(game);
+					player.setUser(curUser);
+					player.setColor(PlayerColor.values()[i]);
+					Kingdom kingdom = new Kingdom(player);
+					new Castle(0, 0, kingdom, player);
+				}
+			}
+		} else {
+			for (int i = 0; i < 2; i++) {
+				List<User> users = game.getKingdomino().getUsers();
+				User curUser = null;
+				for(User user: users) {
+					if(user.getName().equals(userNames[i])) {
+						curUser = user;
+						break;
+					}
+				}
+				if(curUser != null) {
+					Player player1 = new Player(game);
+					player1.setUser(curUser);
+					player1.setColor(PlayerColor.values()[2*i]);
+					Kingdom kingdom = new Kingdom(player1);
+					new Castle(0, 0, kingdom, player1);
+					Player player2 = new Player(game);
+					player2.setUser(curUser);
+					player2.setColor(PlayerColor.values()[2*i]);
+					Kingdom kingdom2 = new Kingdom(player2);
+					new Castle(0, 0, kingdom2, player2);
+				}
+				
+			}
+		}
 		
 	}
-	
-	public static void acceptRotateCurrentDomino(int dir){
-    	
-    }
-	private static Castle getCastle (Kingdom kingdom) {
-        for(KingdomTerritory territory: kingdom.getTerritories()){
-            if(territory instanceof Castle )
-                return (Castle)territory;
-        }
-        return null;
-    }
 
-	private static void addDefaultUsersAndPlayersFour(Game game) {
-		String[] userNames = { "User1", "User2", "User3", "User4" };
-		for (int i = 0; i < userNames.length; i++) {
-			User user = game.getKingdomino().addUser(userNames[i]);
-			Player player = new Player(game);
-			player.setUser(user);
-			player.setColor(PlayerColor.values()[i]);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
-		}
-	}
-	private static void addDefaultUsersAndPlayersThree(Game game) {
-		String[] userNames = { "User5", "User6", "User7"};
-		for (int i = 0; i < userNames.length; i++) {
-			User user = game.getKingdomino().addUser(userNames[i]);
-			Player player = new Player(game);
-			player.setUser(user);
-			player.setColor(PlayerColor.values()[i]);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
-		}
-	}
-	private void addDefaultUsersAndPlayersTwo(Game game) {
-		String[] userNames = { "User8", "User9"};
-		for (int i = 0; i < userNames.length; i++) {
-			User user = game.getKingdomino().addUser(userNames[i]);
-			Player player = new Player(game);
-			player.setUser(user);
-			player.setColor(PlayerColor.values()[i]);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
-		}
-	}
-	
+
 	private static void createAllDominoes(Game game) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
@@ -481,8 +752,7 @@ public class GameplayController {
 					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
 		}
 	}
-	
-	
+
 	private static TerrainType getTerrainType(String terrain) {
 		switch (terrain) {
 		case "W":
@@ -501,6 +771,7 @@ public class GameplayController {
 			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
 		}
 	}
+
 	private static Domino getdominoByID(int id) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		for (Domino domino : game.getAllDominos()) {
@@ -510,17 +781,16 @@ public class GameplayController {
 		}
 		throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
 	}
-	
-	
-	private ArrayList<Integer> getListOfIDs(String aListOfIDs){
-		boolean beforeIsDigit =false;
+
+	private ArrayList<Integer> getListOfIDs(String aListOfIDs) {
+		boolean beforeIsDigit = false;
 		ArrayList<Integer> myList = new ArrayList<Integer>();
-		String [] ids = aListOfIDs.split(", ");
-		for(int i=0; i<ids.length;i++) {
+		String[] ids = aListOfIDs.split(", ");
+		for (int i = 0; i < ids.length; i++) {
 			myList.add(Integer.parseInt(ids[i]));
 		}
 
 		return myList;
-		
+
 	}
 }

@@ -69,8 +69,9 @@ public class CreateNextDraftStepDefinitions {
 		Integer numDraft=number;
 		for(int i=0;i<numDraft;i++) { // add {int} drafts to the list of Drafts
 			 Draft D =new Draft(DraftStatus.FaceUp,game);
-			 game.addAllDraft(D);	
+			 game.addAllDraft(D);
 		}
+		game.setNextDraft(game.getAllDraft(game.getAllDrafts().size()-1));
 		
 		
 	}
@@ -129,6 +130,7 @@ public class CreateNextDraftStepDefinitions {
 		boolean HasNextDraft =game.hasNextDraft();
 		assertEquals(false,HasNextDraft);
 	}
+
 	@Then("the former next draft is now the current draft")
 	public void the_former_next_draft_is_now_current_draft() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
@@ -141,10 +143,9 @@ public class CreateNextDraftStepDefinitions {
 			Draft LastCreated =game.getAllDraft(game.getAllDrafts().size()-2);
 			assertEquals(LastCreated,current);
 		}
-		
 
-		
 	}
+
 	@Then("the top domino of the pile is ID {int}")
 	public void the_top_domino_of_the_pile_is_ID(int topID) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();

@@ -58,13 +58,15 @@ public class DiscardingDominoStepDefinitions {
 		game.setNextPlayer(game.getPlayer(0));
 		CurrentPlayer = game.getNextPlayer();
 		KingdominoApplication.setKingdomino(kingdomino);
-		String player0Name = (game.getPlayer(0).getUser().getName());
-		GameController.setGrid(player0Name, new Square[81]);
-		GameController.setSet(player0Name, new DisjointSet(81));
-		Square[] grid = GameController.getGrid(player0Name);
-		for (int i = 4; i >= -4; i--)
-			for (int j = -4; j <= 4; j++)
-				grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+		for(int k = 0; k<4;k++){
+			String player0Name = (game.getPlayer(k).getUser().getName());
+			GameController.setGrid(player0Name, new Square[81]);
+			GameController.setSet(player0Name, new DisjointSet(81));
+			Square[] grid = GameController.getGrid(player0Name);
+			for (int i = 4; i >= -4; i--)
+				for (int j = -4; j <= 4; j++)
+					grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+		}
 	}
 
 	@Given("it is not the last turn of the game")
@@ -119,26 +121,41 @@ public class DiscardingDominoStepDefinitions {
 	@Given("the current player is the last player in the turn")
 	public void the_current_player_is_the_last_player_in_the_turn() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		// current player is last in turn so he has selected the domino with the largest
-		// domino id
-		// all three other players have selected a domino from the next draft if there
-		// is one
 
-		if (game.getNextDraft() != null) {
-			game.getPlayer(1).setDominoSelection(new DominoSelection(game.getPlayer(1),
-					game.getNextDraft().getIdSortedDomino(2), game.getNextDraft()));// Last Player
-			game.getPlayer(2).setDominoSelection(new DominoSelection(game.getPlayer(2),
-					game.getNextDraft().getIdSortedDomino(0), game.getNextDraft()));
-			game.getPlayer(3).setDominoSelection(new DominoSelection(game.getPlayer(3),
-					game.getNextDraft().getIdSortedDomino(1), game.getNextDraft()));
-
+		Draft curDraft;
+		if(game.getCurrentDraft()==null){
+			curDraft = new Draft(DraftStatus.FaceUp,game);
+		}else{
+			curDraft = game.getCurrentDraft();
 		}
-		game.getNextPlayer().setDominoSelection(new DominoSelection(game.getNextPlayer(),
-				game.getCurrentDraft().getIdSortedDomino(3), game.getCurrentDraft()));// CurrentPlayer
-		game.getCurrentDraft().getIdSortedDomino(0).setStatus(DominoStatus.PlacedInKingdom);// or discarded
-		game.getCurrentDraft().getIdSortedDomino(1).setStatus(DominoStatus.PlacedInKingdom);// or discarded
-		game.getCurrentDraft().getIdSortedDomino(2).setStatus(DominoStatus.PlacedInKingdom);// or discarded
-		game.getCurrentDraft().getIdSortedDomino(3).setStatus(DominoStatus.InCurrentDraft);
+			game.setCurrentDraft(curDraft);
+			Domino domino1 = getdominoByID(15);
+			Domino domino2 = getdominoByID(20);
+			Domino domino3 = getdominoByID(25);
+			Domino domino4 = getdominoByID(30);
+			domino1.setStatus(DominoStatus.InCurrentDraft);
+		domino2.setStatus(DominoStatus.InCurrentDraft);
+		domino3.setStatus(DominoStatus.InCurrentDraft);
+		domino4.setStatus(DominoStatus.InCurrentDraft);
+			Player lastPlayer = null;
+			for(Player player: game.getPlayers()){
+				if(player.getColor() == PlayerColor.Yellow){
+					new DominoSelection(player,domino1,curDraft);
+					player.setCurrentRanking(0);
+				}else if(player.getColor() == PlayerColor.Blue){
+					new DominoSelection(player,domino2,curDraft);
+					player.setCurrentRanking(1);
+				}else if(player.getColor() == PlayerColor.Green){
+					new DominoSelection(player,domino3,curDraft);
+					player.setCurrentRanking(2);
+				}else if(player.getColor() == PlayerColor.Pink){
+					new DominoSelection(player,domino4,curDraft);
+					player.setCurrentRanking(3);
+					lastPlayer = player;
+				}
+			}
+			game.setNextPlayer(lastPlayer);
+
 		System.out.println("the domino selection of the current player is: "
 				+ game.getNextPlayer().getDominoSelection().getDomino().getId());
 		assertEquals(true, GameplayController.isCurrentPlayerTheLastInTurn());

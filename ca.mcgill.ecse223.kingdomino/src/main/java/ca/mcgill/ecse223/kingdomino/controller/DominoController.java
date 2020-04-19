@@ -78,7 +78,7 @@ public class DominoController {
 
     public static List<Domino> getAllDominobyleftTtile(TerrainType left) {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        List<Domino> dominosL = null;
+        dominosL = null;
         for(Domino domino: game.getAllDominos()) {
             if(domino.getLeftTile() == left)
                 dominosL.add(domino);
@@ -88,7 +88,7 @@ public class DominoController {
 
     public static List<Domino> getAllDominobyRightTile(TerrainType right) {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        List<Domino> dominosR = null;
+        dominosR = null;
         for(Domino domino: game.getAllDominos()) {
             if(domino.getRightTile() == right)
                 dominosR.add(domino);
@@ -98,7 +98,7 @@ public class DominoController {
 
     public static List<Domino> getAllDominobyTerrainType(String terrain) {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        List<Domino> dominos = null;
+        dominos = null;
         for(Domino domino: game.getAllDominos()) {
             if((domino.getRightTile()).toString().equalsIgnoreCase(terrain) || (domino.getLeftTile()).toString().equalsIgnoreCase(terrain))
                 dominos.add(domino);
@@ -128,6 +128,9 @@ public class DominoController {
         }
     }
     static Player currentPlayer;
+	private static List<Domino> dominosL;
+	private static List<Domino> dominosR;
+	private static List<Domino> dominos;
 
 
     /////////////////////////////        //////
@@ -135,22 +138,25 @@ public class DominoController {
     ///////////////////////////        //////
     /**
      * Controller implemented for Feature 10: Choose Next Domino
-     * @param game
-     * @param color
-     * @param draft
-     * @param dominoId
+     * @param game, current game
+     * @param dominoId, domino id
      * @return true if selection for next draft is different
      *         false if selection for next draft remains same
      * @author Violet Wei
      */
     public static boolean chooseNextDomino(Game game,int dominoId) {
-
         Draft cDraft = game.getNextDraft();
+        if(GameplayController.statemachine.getGamestatus() == Gameplay.Gamestatus.Initializing)
+            cDraft = game.getCurrentDraft();
         for(DominoSelection dominoSelection: cDraft.getSelections()){
             if(dominoSelection.getDomino().getId() == dominoId)
                 return false;
         }
         Player p = game.getNextPlayer();
+        if(p.getDominoSelection()!=null){
+            p.getDominoSelection().delete();
+        }
+
         Domino domino = getDominobyId(dominoId);
         new DominoSelection(p, domino, cDraft);
         return true;

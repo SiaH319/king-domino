@@ -37,7 +37,7 @@ public class PlacingDominoStepDefinitions {
 	public void the_game_has_been_initialized_for_placing_domino() {
 		// Intialize empty game
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-        Game game = new Game(48, kingdomino);
+        Game game = new Game(12, kingdomino);
         game.setNumberOfPlayers(4);
         kingdomino.setCurrentGame(game);
         // Populate game
@@ -46,13 +46,16 @@ public class PlacingDominoStepDefinitions {
         game.setNextPlayer(game.getPlayer(0));
         CurrentPlayer=game.getNextPlayer();
         KingdominoApplication.setKingdomino(kingdomino);
-        String player0Name = (game.getPlayer(0).getUser().getName());
-        GameController.setGrid(player0Name, new Square[81]);
-        GameController.setSet(player0Name, new DisjointSet(81));
-        Square[] grid = GameController.getGrid(player0Name);
-        for (int i = 4; i >= -4; i--)
-            for (int j = -4; j <= 4; j++)
-                grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+        for(int k = 0; k<4;k++){
+			String player0Name = (game.getPlayer(k).getUser().getName());
+			GameController.setGrid(player0Name, new Square[81]);
+			GameController.setSet(player0Name, new DisjointSet(81));
+			Square[] grid = GameController.getGrid(player0Name);
+			for (int i = 4; i >= -4; i--)
+				for (int j = -4; j <= 4; j++)
+					grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+		}
+
 	}
 	
 	@And("the preplaced domino has the status {string}")
@@ -69,6 +72,7 @@ public class PlacingDominoStepDefinitions {
 		GameplayController.initStatemachine();
 		GameplayController.setStateMachineState("PreplacingDomino");
 		GameplayController.triggerEventsInSM("place");
+		System.out.println("gAME STATUS"+GameplayController.statemachine.getGamestatusInGame().toString());
 	}
 	
 	
