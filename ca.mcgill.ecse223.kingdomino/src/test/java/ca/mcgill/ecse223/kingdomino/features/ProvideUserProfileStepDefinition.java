@@ -19,7 +19,7 @@ import ca.mcgill.ecse223.kingdomino.model.*;
 
 public class ProvideUserProfileStepDefinition {
 	/**
-	 *  Feature: Provide User Profile
+	 *  Gherkin scenario test for Feature: Provide User Profile
 	 *  @author: Sia Ham
 	 *  As a player,
 	 *  I wish to use my unique user name in when a game starts.

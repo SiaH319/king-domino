@@ -110,7 +110,7 @@ public class DraftController {
      * @author Mohamad
      */
     public static void revealDominoesInitiated() {
-        if(GameplayController.statemachine.getGamestatusInitializing()== Gameplay.GamestatusInitializing.CreatingFirstDraft)
+        if(KingdominoApplication.getStateMachine().getGamestatusInitializing()== Gameplay.GamestatusInitializing.CreatingFirstDraft)
             return;
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();

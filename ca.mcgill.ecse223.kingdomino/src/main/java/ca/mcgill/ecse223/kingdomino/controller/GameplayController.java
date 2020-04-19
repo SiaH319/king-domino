@@ -30,6 +30,7 @@ public class GameplayController {
 	public static Gameplay statemachine;
 	public static Kingdomino kingdomino;
 	private static ArrayList<Player> Orders = new ArrayList<Player>();
+	private static String error;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////Helper Methods/////////////////////////////////////////////
@@ -93,8 +94,8 @@ public class GameplayController {
 	 * Trigger createnewuser action in statemachine
 	 * @author Cecilia Jiang
 	 */
-	public static String triggerCreateNewUser(String name) {
-		return statemachine.createUser(name);
+	public static boolean triggerCreateNewUser(String name) {
+		return statemachine.createNewUser(name);
 	}
 
 	/**
@@ -413,14 +414,13 @@ public class GameplayController {
 	 * @param name, user's name
 	 * @return String, errorMessage if exception encountered, "" otherwise
 	 */
-	public static String acceptCreateUserCallFromSM(String name) {
+	public static String acceptCreateUserCallFromSM(String name){
 		try {
 			InitializationController.initializeUser(name);
 			return "";
 		} catch (InvalidInputException e) {
 			return e.getMessage();
 		}
-
 	}
 	
 	/**
@@ -792,5 +792,13 @@ public class GameplayController {
 
 		return myList;
 
+	}
+
+	public static String getError() {
+		return error;
+	}
+
+	public static void setError(String error) {
+		GameplayController.error = error;
 	}
 }

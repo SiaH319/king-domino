@@ -130,8 +130,9 @@ class Gameplay {
      * Actions
      */
      
-    public String createUser(String name) {
-    	 return GameplayController.acceptCreateUserCallFromSM(name);
+    public void createUser(String name){
+        String error = GameplayController.acceptCreateUserCallFromSM(name);
+		GameplayController.setError(error);
     }
     
     public void calculatePlayerRanking() {

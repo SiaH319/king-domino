@@ -67,17 +67,7 @@ public class ResolveTiebreakStepDefinitions {
 		}
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	private void addDefaultUsersAndPlayers(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
 		for (int i = 0; i < userNames.length; i++) {

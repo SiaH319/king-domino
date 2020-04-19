@@ -647,86 +647,87 @@ public class Gameplay
    * Actions
    */
   // line 134 "../../../../../Gameplay.ump"
-   public String createUser(String name){
-    return GameplayController.acceptCreateUserCallFromSM(name);
+   public void createUser(String name){
+    String error = GameplayController.acceptCreateUserCallFromSM(name);
+		GameplayController.setError(error);
   }
 
-  // line 138 "../../../../../Gameplay.ump"
+  // line 139 "../../../../../Gameplay.ump"
    public void calculatePlayerRanking(){
     GameplayController.acceptCallFromSM("calculateRanking");
   }
 
-  // line 142 "../../../../../Gameplay.ump"
+  // line 143 "../../../../../Gameplay.ump"
    public void shuffleDominoPile(){
     GameplayController.acceptCallFromSM("shuffleDominoPile");
   }
 
-  // line 147 "../../../../../Gameplay.ump"
+  // line 148 "../../../../../Gameplay.ump"
    public void generateInitialPlayerOrder(){
     GameplayController.acceptCallFromSM("generateInitialPlayerOrder");
   }
 
-  // line 151 "../../../../../Gameplay.ump"
+  // line 152 "../../../../../Gameplay.ump"
    public void createNextDraft(){
     GameplayController.acceptCallFromSM("createNextDraft");
   }
 
-  // line 156 "../../../../../Gameplay.ump"
+  // line 157 "../../../../../Gameplay.ump"
    public void orderNextDraft(){
     GameplayController.acceptCallFromSM("orderNextDraft");
   }
 
-  // line 160 "../../../../../Gameplay.ump"
+  // line 161 "../../../../../Gameplay.ump"
    public void revealNextDraft(){
     GameplayController.acceptCallFromSM("revealNextDraft");
   }
 
-  // line 164 "../../../../../Gameplay.ump"
+  // line 165 "../../../../../Gameplay.ump"
    public void initializeGame(int numOfPlayers, String [] userNames){
     GameplayController.acceptInitializeGameCallFromSM(numOfPlayers,userNames);
   }
 
-  // line 169 "../../../../../Gameplay.ump"
+  // line 170 "../../../../../Gameplay.ump"
    public void setGameOptions(boolean mkActivated, boolean harmonyActivated){
     GameplayController.acceptSetBonusOptionFromSM(mkActivated, harmonyActivated);
   }
 
-  // line 173 "../../../../../Gameplay.ump"
+  // line 174 "../../../../../Gameplay.ump"
    public void currentPlayerSelectDomino(int id){
     GameplayController.acceptSelectDominoCallFromSM(id);
   }
 
-  // line 177 "../../../../../Gameplay.ump"
+  // line 178 "../../../../../Gameplay.ump"
    public void moveCurrentDomino(String dir){
     GameplayController.acceptMoveDominoCallFromSM(dir);
   }
 
-  // line 181 "../../../../../Gameplay.ump"
+  // line 182 "../../../../../Gameplay.ump"
    public void rotateCurrentDomino(int dir){
     GameplayController.acceptRotateCurrentDomino(dir);
   }
 
-  // line 185 "../../../../../Gameplay.ump"
+  // line 186 "../../../../../Gameplay.ump"
    public void placeDomino(){
     GameplayController.acceptPlaceDominoFromSM();
   }
 
-  // line 189 "../../../../../Gameplay.ump"
+  // line 190 "../../../../../Gameplay.ump"
    public void discardDomino(){
     GameplayController.acceptDiscardDominoFromSM();
   }
 
-  // line 193 "../../../../../Gameplay.ump"
+  // line 194 "../../../../../Gameplay.ump"
    public void calculateCurrentPlayerScore(){
     GameplayController.acceptCallFromSM("calculateCurrentPlayerScore");
   }
 
-  // line 197 "../../../../../Gameplay.ump"
+  // line 198 "../../../../../Gameplay.ump"
    public void switchCurrentPlayer(){
     GameplayController.acceptCallFromSM("switchCurrentPlayer");
   }
 
-  // line 201 "../../../../../Gameplay.ump"
+  // line 202 "../../../../../Gameplay.ump"
    public void save(String filename){
     GameplayController.acceptSaveGameCallFromSM(filename);
   }

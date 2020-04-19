@@ -49,23 +49,23 @@ public class InitializationController {
 
 	/**
 	 * Create a new user
-	 * @author Sia Ham
+	 * @author Sia Ham, Cecilia Jiang
 	 * @param string, user's name
 	 * @throws InvalidInputException
 	 */
 	public static void initializeUser(String string) throws InvalidInputException{
-		if (User.getWithName(string) == null &&
-				KingdominoApplication.getKingdomino()!=null&&
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		if (KingdominoApplication.getKingdomino()!=null&&
 				string.matches("[a-z0-9]+")) {
 			try{
-				KingdominoApplication.getKingdomino().addUser(string);
-			}catch(Exception e) {
+				new User(string,kingdomino);
+			}catch (Exception e){
 				throw new InvalidInputException(e.getMessage());
 			}
 		}
 		// no duplicate name
 		else {
-			throw new InvalidInputException("There already is a same user");
+			throw new InvalidInputException("The name format is wrong");
 		}
 
 
