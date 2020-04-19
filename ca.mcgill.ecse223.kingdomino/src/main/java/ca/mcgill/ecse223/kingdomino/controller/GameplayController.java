@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.InitializationController.InvalidInputException;
@@ -160,40 +159,44 @@ public class GameplayController {
 	 */
 	public static boolean isCurrentPlayerTheLastInTurn() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		int dominoesInNextDraftSelected = 0;
 
-		if (game.getNextDraft() != null) {
 
-			for (Domino d : game.getNextDraft().getIdSortedDominos()) {
-				if (d.hasDominoSelection()) {
-					dominoesInNextDraftSelected++;
-				}
-			}
-		} else {
-			boolean foundBigger = false;
-			for (Domino d : game.getCurrentDraft().getIdSortedDominos()) {
-				if (d.getId() > game.getNextPlayer().getDominoSelection().getDomino().getId()) {
-					foundBigger = true; // if found an id bigger than that of current player
-					break;
-				}
-			}
-			return !foundBigger; // if no bigger, return true
-		}
-		if ((dominoesInNextDraftSelected == 3) && (game.getNumberOfPlayers() == 2 || game.getNumberOfPlayers() == 4)) {// if
-																														// almost
-																														// all
-																														// dominoes
-																														// in
-																														// next
-																														// draft
-			return true;
-		}
-		if ((dominoesInNextDraftSelected == 2) && game.getNumberOfPlayers() == 3) { // if almost all dominoes in next
-																					// draft // are selected
-
-			return true;
-		}
-		return false;
+		int rank = game.getNextPlayer().getCurrentRanking();
+		if(game.getNumberOfPlayers() %2 == 0)
+			return rank == 3;
+		return rank == 2;
+//		if (game.getNextDraft() != null) {
+//
+//			for (Domino d : game.getNextDraft().getIdSortedDominos()) {
+//				if (d.hasDominoSelection()) {
+//					dominoesInNextDraftSelected++;
+//				}
+//			}
+//		} else {
+//			boolean foundBigger = false;
+//			for (Domino d : game.getCurrentDraft().getIdSortedDominos()) {
+//				if (d.getId() > game.getNextPlayer().getDominoSelection().getDomino().getId()) {
+//					foundBigger = true; // if found an id bigger than that of current player
+//					break;
+//				}
+//			}
+//			return !foundBigger; // if no bigger, return true
+//		}
+//		if ((dominoesInNextDraftSelected == 3) && (game.getNumberOfPlayers() == 2 || game.getNumberOfPlayers() == 4)) {// if
+//																														// almost
+//																														// all
+//																														// dominoes
+//																														// in
+//																														// next
+//																														// draft
+//			return true;
+//		}
+//		if ((dominoesInNextDraftSelected == 2) && game.getNumberOfPlayers() == 3) { // if almost all dominoes in next
+//																					// draft // are selected
+//
+//			return true;
+//		}
+//		return false;
 	}
 
 	/**
@@ -221,10 +224,27 @@ public class GameplayController {
 		Player currentPl = game.getNextPlayer();
 		Domino currentlyChosedDomino = currentPl.getDominoSelection().getDomino();
 		DominoStatus curDominoStatus = currentlyChosedDomino.getStatus();
-		System.out.println(curDominoStatus == DominoStatus.CorrectlyPreplaced?"kkkkkkkkkkkkkkkkkk":"");
 		return curDominoStatus == DominoStatus.CorrectlyPreplaced;
 	}
 
+	public static boolean isSelectionValid(int id){
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Domino domino = getdominoByID(id);
+//		if(statemachine.getGamestatus() == Gamestatus.Initializing && domino.getStatus()!=DominoStatus.InCurrentDraft)
+//			return false;
+//		if(statemachine.getGamestatus() == Gamestatus.InGame && domino.getStatus()!=DominoStatus.InNextDraft)
+//			return false
+//			;
+//		Player curPlayer = game.getNextPlayer();
+//		for(Player p:game.getPlayers()){
+//			if(p.getDominoSelection()!=null &&p.getDominoSelection().getDomino()==domino&& p!=curPlayer){
+//				System.out.println(p.getColor().toString());
+//				return false;
+//			}
+//		}
+		return !domino.hasDominoSelection();
+
+    }
 	
 	/**
 	 * Guard In StateMachine. 
@@ -535,19 +555,19 @@ public class GameplayController {
 				return;
 			}
 		}
-		
-		List<DominoSelection> selections = game.getCurrentDraft().getSelections();
+
+
 		int minIndex= 100;
 		int minVal= 100;
 		int counter = 0;
-		for(DominoSelection selection: selections){
-			if(selection.getPlayer().getCurrentRanking() < minVal){
-				minVal = selection.getPlayer().getCurrentRanking();
-				minIndex = counter;
-			}
-			counter++;
+		Player p = game.getNextPlayer();
+		int mod = (game.getNumberOfPlayers()%2==0)? 4 : 3;
+		int rank = (p.getCurrentRanking()+1) % mod;
+		for(Player player: game.getPlayers()){
+			if(player.getCurrentRanking() == rank)
+				game.setNextPlayer(player);
 		}
-		game.setNextPlayer(selections.get(minIndex).getPlayer());
+
 	}
 
 	/**
@@ -608,6 +628,7 @@ public class GameplayController {
 	 * @param dominoId, chosen domino id
 	 */
 	public static void acceptSelectDominoCallFromSM(int dominoId) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
 		DominoController.chooseNextDomino(game, dominoId);
 	}

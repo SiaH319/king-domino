@@ -1,9 +1,7 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.model.Domino;
-import ca.mcgill.ecse223.kingdomino.model.Draft;
-import ca.mcgill.ecse223.kingdomino.model.Game;
+import ca.mcgill.ecse223.kingdomino.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +46,12 @@ public class DraftController {
             Domino tmp = game.getTopDominoInPile();
             Draft formerNextDraft = game.getNextDraft();
             game.setCurrentDraft(formerNextDraft);
+            for(Player player:game.getPlayers()){
+                if(player.getDominoSelection()!=null && player.getDominoSelection().getDraft()==formerNextDraft){
+                    Domino domino = player.getDominoSelection().getDomino();
+                    player.setCurrentRanking(formerNextDraft.indexOfIdSortedDomino(domino));
+                }
+            }
             int step;
             if(game.getNumberOfPlayers() % 2== 0){
                 step =4;
@@ -106,10 +110,10 @@ public class DraftController {
      * @author Mohamad
      */
     public static void revealDominoesInitiated() {
+        if(GameplayController.statemachine.getGamestatusInitializing()== Gameplay.GamestatusInitializing.CreatingFirstDraft)
+            return;
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();
-        if(nextDraft == null)
-            System.out.println("revealing the next draft");
         nextDraft.setDraftStatus(Draft.DraftStatus.FaceUp);// flip up the dominoes
     }
     /**

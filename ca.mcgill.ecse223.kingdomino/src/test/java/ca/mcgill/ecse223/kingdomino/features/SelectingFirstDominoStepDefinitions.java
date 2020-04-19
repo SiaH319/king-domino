@@ -1,31 +1,25 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
-import ca.mcgill.ecse223.kingdomino.model.Castle;
-import ca.mcgill.ecse223.kingdomino.model.Domino;
-import ca.mcgill.ecse223.kingdomino.model.Game;
-import ca.mcgill.ecse223.kingdomino.model.Kingdom;
-import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
-import ca.mcgill.ecse223.kingdomino.model.Player;
-import ca.mcgill.ecse223.kingdomino.model.TerrainType;
-import ca.mcgill.ecse223.kingdomino.model.User;
+import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
-import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.And;
+import org.junit.Assert;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Violet Wei and Mohamad Feature: Selecting First Domino
@@ -34,12 +28,20 @@ import io.cucumber.java.en.And;
 public class SelectingFirstDominoStepDefinitions {
 	private boolean selectionSuccessful;
 	/* Background */
+	public static int id;
 	@Given("the game has been initialized for selecting first domino")
 	public void the_game_has_been_initialized_for_selecting_first_domino() {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-		KingdominoApplication.getStateMachine();
-		String[] names = {"User1","User2","User3","User4"};
+		Game game = new Game(12,kingdomino);
+		kingdomino.setCurrentGame(game);
+		createAllDominoes(game);
 		GameplayController.initStatemachine();
+		GameplayController.setStateMachineState("SelectingNextDomino");
+		User user1 = new User("User1",kingdomino);
+		User user2 = new User("User2",kingdomino);
+		User user3 = new User("User3",kingdomino);
+		User user4 = new User("User4",kingdomino);
+		addUsersAndPlayers(new String[]{"User1","User2","User3","User4"},game);
 		GameplayController.setStateMachineState("SelectingFirstDomino");
 
 	}
@@ -49,14 +51,18 @@ public class SelectingFirstDominoStepDefinitions {
 	public void the_initial_order_of_players_is_playerorder(String playerOrder) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
-		StringTokenizer str = new StringTokenizer(playerOrder, ",");
-		Player[] orderOfPlayers=new Player[game.getPlayers().size()]; 
-		int i = 0;
-		while (str.hasMoreTokens()) {
-			orderOfPlayers[i] = getPlayerFromColor(str.nextToken()); 
-			i++;
+		String[] colors = playerOrder.split(",");
+		int rank = 0;
+		for(String color: colors){
+			Player.PlayerColor playerColor = getPlayerColor(color);
+			for(Player player: game.getPlayers()){
+				if(player.getColor() == playerColor){
+					player.setCurrentRanking(rank);
+					rank++;
+					break;
+				}
+			}
 		}
-		GameplayController.setOrderOfPlayer(orderOfPlayers);
 	}
 
 	@Given("the current draft has the dominoes with ID {string}")
@@ -66,23 +72,22 @@ public class SelectingFirstDominoStepDefinitions {
 		StringTokenizer str = new StringTokenizer(string, ",");
 		int [] ids = new int[str.countTokens()];
 		Draft newCurrentDraft = new Draft(DraftStatus.FaceUp,game);
-//		int i=0;
-//		while (str.hasMoreTokens()) {
-//			ids[i]=stringToInt(str.nextToken());
-//		}
-//		int k=0;
-//		while(k<ids.length) {
-//			newCurrentDraft.addIdSortedDomino(getdominoByID(ids[k]));
-//			k++;
-//		}
 
-		newCurrentDraft.addIdSortedDomino(getdominoByID(1));
-		newCurrentDraft.addIdSortedDomino(getdominoByID(2));		
-		newCurrentDraft.addIdSortedDomino(getdominoByID(3));
-		newCurrentDraft.addIdSortedDomino(getdominoByID(4));
+		Domino d1 = getdominoByID(1);
+		d1.setStatus(DominoStatus.InCurrentDraft);
+		Domino d2 = getdominoByID(2);
+		Domino d3 = getdominoByID(3);
+		Domino d4 = getdominoByID(4);
+		d2.setStatus(DominoStatus.InCurrentDraft);
+		d3.setStatus(DominoStatus.InCurrentDraft);
+		d4.setStatus(DominoStatus.InCurrentDraft);
+		newCurrentDraft.addIdSortedDominoAt(getdominoByID(1),0);
+		newCurrentDraft.addIdSortedDominoAt(getdominoByID(2),1);
+		newCurrentDraft.addIdSortedDominoAt(getdominoByID(3),2);
+		newCurrentDraft.addIdSortedDominoAt(getdominoByID(4),3);
 
 		game.addAllDraft(newCurrentDraft);
-		game.setNextDraft(newCurrentDraft);
+		game.setCurrentDraft(newCurrentDraft);
 		
 	}
 
@@ -90,68 +95,111 @@ public class SelectingFirstDominoStepDefinitions {
 	public void players_first_domino_selection_of_the_game_is_currentselection(String currentSelection) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
-		StringTokenizer st =new StringTokenizer(currentSelection,",");
-		String token=null;
-		int i=0;
-		while(st.hasMoreTokens()) {
-			token=st.nextToken();
-			if(!(token.equalsIgnoreCase("none"))) {
-				GameplayController.specificPlayerChosesDomino(getPlayerFromColor(token),game.getCurrentDraft(),game.getCurrentDraft().getIdSortedDomino(i).getId());
+		Gameplay statemachine = KingdominoApplication.getStateMachine();
+		statemachine.setGamestatus("SelectingFirstDomino");
+		Draft draft = game.getCurrentDraft();
+		String[] playerColors = currentSelection.split(",");
+		for(int i=0; i < playerColors.length;i++){
+			if(playerColors[i].equals("none")){
+				continue;
+			}else{
+				Player.PlayerColor playerColor = getPlayerColor(playerColors[i]);
+				for(Player player: game.getPlayers()){
+					if(player.getColor() == playerColor){
+						new DominoSelection(player,draft.getIdSortedDomino(i),draft);
+						break;
+					}
+				}
 			}
-			i++;
 		}
 	}
 
 	@Given("the {string} player is selecting his\\/her domino with ID {int}")
-	public void the_player_is_selecting_hisher_domino_with_ID(String currentPlayer, int chosenDominoId) {
+	public void the_player_is_selecting_hisher_domino_with_ID(String color, int int1) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
-		selectionSuccessful=GameplayController.specificPlayerChosesDomino(getPlayerFromColor(currentPlayer),game.getCurrentDraft(),chosenDominoId);
+		Draft curDraft = new Draft(Draft.DraftStatus.FaceUp,game);
+		GameplayController.statemachine.setGamestatus("SelectingFirstDomino");
+		game.setCurrentDraft(curDraft);
+		Domino domino = getdominoByID(int1);
+		Player.PlayerColor playerColor = getPlayerColor(color);
+		for(Player player: game.getPlayers()){
+			if(player.getColor() == playerColor){
+				game.setNextPlayer(player);
+				break;
+			}
+		}
+		id = int1;
+
 	}
 	@Given("the {string} player is selecting his\\/her first domino with ID {int}")
-	public void the_player_is_selecting_his_her_first_domino_with_ID(String currentPlayer, int chosenDominoId) {
+	public void the_player_is_selecting_his_her_first_domino_with_ID(String color, int int1) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
-		selectionSuccessful=GameplayController.specificPlayerChosesDomino(getPlayerFromColor(currentPlayer),game.getCurrentDraft(),chosenDominoId);
+		Draft curDraft = new Draft(Draft.DraftStatus.FaceUp,game);
+		Draft nextDraft = new Draft(DraftStatus.FaceDown,game);
+		game.setNextDraft(nextDraft);
+		GameplayController.statemachine.setGamestatus("SelectingFirstDomino");
+		game.setCurrentDraft(curDraft);
+		Player.PlayerColor playerColor = getPlayerColor(color);
+		for(Player player: game.getPlayers()){
+			if(player.getColor() == playerColor){
+				game.setNextPlayer(player);
+
+				break;
+			}
+		}
+
+		this.id = int1;
 	}
 
 	@When("the {string} player completes his\\/her domino selection")
-	public void the_player_completes_his_her_domino_selection(String currentplayer) {
-		
+	public void the_player_completes_his_her_domino_selection(String color) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		Player.PlayerColor playerColor = getPlayerColor(color);
+		for(Player player: game.getPlayers()){
+			if(player.getColor() == playerColor){
+				game.setNextPlayer(player);
+				break;
+			}
+		}
+		System.out.println(GameplayController.statemachine.getGamestatusFullName());
+		GameplayController.triggerMakeSelectionInSM(id);
+		GameplayController.triggerEventsInSM("proceed");
+
 	}
 
 	@Then("the {string} player shall be {string} his/her domino")
-	public void the_nextplayer_shall_be_action_his_her_domino(String nextplayer, String action) {
-
+	public void the_nextplayer_shall_be_action_his_her_domino(String color, String action) {
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game game = kingdomino.getCurrentGame();
+		Player acTualnextPlayer = game.getNextPlayer();
+		Player.PlayerColor playerColor = getPlayerColor(color);
+		Assert.assertEquals(acTualnextPlayer.getColor(),playerColor);
+		Gameplay.GamestatusInGame expectedStatusInGame =
+				(action.equals("placing")? Gameplay.GamestatusInGame.PreplacingDomino:Gameplay.GamestatusInGame.SelectingNextDomino);
+		Gameplay.GamestatusInGame realStatus = GameplayController.statemachine.getGamestatusInGame();
+		Assert.assertEquals(expectedStatusInGame,realStatus);
 	}
 
 	// We use the annotation @And to signal precondition check instead of
 	// initialization (which is done in @Given methods)
 	@And("the validation of domino selection returns {string}")
 	public void the_validation_of_domino_selection_returns(String expectedValidationResultString) {
-		boolean expectedValidationResult = true;
-		if ("success".equalsIgnoreCase(expectedValidationResultString.trim())) {
-			expectedValidationResult = true;
-		} else if ("error".equalsIgnoreCase(expectedValidationResultString.trim())) {
-			expectedValidationResult = false;
-		} else {
-			throw new IllegalArgumentException(
-					"Unknown validation result string \"" + expectedValidationResultString + "\"");
-		}
-		boolean actualValidationResult = false;
+		boolean result = GameplayController.isSelectionValid(id);
+		if(expectedValidationResultString.contains("success"))
+			assertTrue(result);
+		else
+			assertFalse(result);
 
-		// TODO call here the guard function from the statemachine and store the result
-		// actualValidationResult = gameplay.isSelectionValid();
-
-		// Check the precondition prescribed by the scenario
-		assertEquals(expectedValidationResult, actualValidationResult);
 	}
 
 	/* Scenario Outline: Complete first turn of domino selection */
 
 	@Then("a new draft shall be available, face down")
 	public void a_new_draft_shall_be_available_face_down() {
-
+		assertEquals(DraftStatus.FaceDown,KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft().getDraftStatus());
 	}
 
 ///////////////////////////////////////
@@ -285,5 +333,64 @@ public class SelectingFirstDominoStepDefinitions {
 		}
 		System.out.println("Could not find player with color: "+color);
 		return null;
+	}
+
+	private static void addUsersAndPlayers(String[] userNames, Game game) {
+		if(userNames.length == 3 || userNames.length == 4) {
+			for (int i = 0; i < userNames.length; i++) {
+				List<User> users = game.getKingdomino().getUsers();
+				User curUser = null;
+				for(User user: users) {
+					if(user.getName().equals(userNames[i])) {
+						curUser = user;
+						break;
+					}
+				}
+				if(curUser != null) {
+					Player player = new Player(game);
+					player.setUser(curUser);
+					player.setColor(Player.PlayerColor.values()[i]);
+					Kingdom kingdom = new Kingdom(player);
+					new Castle(0, 0, kingdom, player);
+				}
+			}
+		} else {
+			for (int i = 0; i < 2; i++) {
+				List<User> users = game.getKingdomino().getUsers();
+				User curUser = null;
+				for(User user: users) {
+					if(user.getName().equals(userNames[i])) {
+						curUser = user;
+						break;
+					}
+				}
+				if(curUser != null) {
+					Player player1 = new Player(game);
+					player1.setUser(curUser);
+					player1.setColor(Player.PlayerColor.values()[2*i]);
+					Kingdom kingdom = new Kingdom(player1);
+					new Castle(0, 0, kingdom, player1);
+					Player player2 = new Player(game);
+					player2.setUser(curUser);
+					player2.setColor(Player.PlayerColor.values()[2*i]);
+					Kingdom kingdom2 = new Kingdom(player2);
+					new Castle(0, 0, kingdom2, player2);
+				}
+
+			}
+		}
+
+	}
+	private Player.PlayerColor getPlayerColor(String color) {
+		switch (color) {
+			case "pink":
+				return Player.PlayerColor.Pink;
+			case "green":
+				return Player.PlayerColor.Green;
+			case "yellow":
+				return Player.PlayerColor.Yellow;
+			default:
+				return Player.PlayerColor.Blue;
+		}
 	}
 }

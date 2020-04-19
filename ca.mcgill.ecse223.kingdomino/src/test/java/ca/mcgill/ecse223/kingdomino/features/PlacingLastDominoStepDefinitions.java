@@ -52,13 +52,15 @@ public class PlacingLastDominoStepDefinitions {
         game.setNextPlayer(game.getPlayer(0));
         CurrentPlayer=game.getNextPlayer();
         KingdominoApplication.setKingdomino(kingdomino);
-        String player0Name = (game.getPlayer(0).getUser().getName());
-        GameController.setGrid(player0Name, new Square[81]);
-        GameController.setSet(player0Name, new DisjointSet(81));
-        Square[] grid = GameController.getGrid(player0Name);
-        for (int i = 4; i >= -4; i--)
-            for (int j = -4; j <= 4; j++)
-                grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+		for(int k = 0; k<4;k++){
+			String player0Name = (game.getPlayer(k).getUser().getName());
+			GameController.setGrid(player0Name, new Square[81]);
+			GameController.setSet(player0Name, new DisjointSet(81));
+			Square[] grid = GameController.getGrid(player0Name);
+			for (int i = 4; i >= -4; i--)
+				for (int j = -4; j <= 4; j++)
+					grid[Square.convertPositionToInt(i, j)] = new Square(i, j);
+		}
         Draft newCurrentDraft = new Draft(DraftStatus.FaceUp, game);
 		game.setCurrentDraft(newCurrentDraft);
 		newCurrentDraft.addIdSortedDomino(getdominoByID(1));

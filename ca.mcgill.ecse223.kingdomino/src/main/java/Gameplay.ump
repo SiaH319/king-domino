@@ -16,9 +16,13 @@ class Gameplay {
                 draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
             }
             SelectingFirstDomino {
-                makeSelection(int id) [!isCurrentPlayerTheLastInTurn()]-> 
+            	makeSelection(int id) [!isSelectionValid(id)] -> /{} Initializing.SelectingFirstDomino;
+                makeSelection(int id) [isSelectionValid(id)&&!isCurrentPlayerTheLastInTurn()]-> 
                 /{currentPlayerSelectDomino(id);switchCurrentPlayer();} Initializing.SelectingFirstDomino;
-                makeSelection(int id) [isCurrentPlayerTheLastInTurn()] ->/ {switchCurrentPlayer();} InGame.PreplacingDomino;
+                makeSelection(int id) [isSelectionValid(id)&&isCurrentPlayerTheLastInTurn()] ->/ {switchCurrentPlayer();} Initializing.RevealDraft;
+            }
+            RevealDraft{
+            	proceed ->/{revealNextDraft();} InGame.PreplacingDomino;
             }
         }
         InGame {
@@ -37,7 +41,7 @@ class Gameplay {
                 
             }
             SelectingNextDomino {
-                makeSelection(int id) -> /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
+                makeSelection(int id) [isSelectionValid(id)]-> /{currentPlayerSelectDomino(id);} InGame.ProceedingToNextPlayerOrNextTurn;
             }
             ProceedingToNextPlayerOrNextTurn {
                 proceed [!isCurrentPlayerTheLastInTurn()] -> /{switchCurrentPlayer();} InGame.PreplacingDomino;
@@ -78,7 +82,10 @@ class Gameplay {
        	case "SettingUp":
        		gamestatus = Gamestatus.SettingUp;
        		break;
-
+		case "SelectingNextDomino":
+            gamestatus = Gamestatus.InGame;
+            gamestatusInGame = GamestatusInGame.SelectingNextDomino;
+            break;
        	// TODO add further cases here to set desired state
        	default:
        	    throw new RuntimeException("Invalid Game Status string was provided: " + status);
@@ -112,6 +119,10 @@ class Gameplay {
 
     public boolean impossibleToPlaceDomino() {
         return GameplayController.impossibleToPlaceDomino();
+    }
+    
+    public boolean isSelectionValid(int id){
+    	return GameplayController.isSelectionValid(id);
     }
     // You may need to add more guards here
         

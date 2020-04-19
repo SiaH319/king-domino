@@ -145,17 +145,19 @@ public class DominoController {
      * @author Violet Wei
      */
     public static boolean chooseNextDomino(Game game,int dominoId) {
-
         Draft cDraft = game.getNextDraft();
+        if(GameplayController.statemachine.getGamestatus() == Gameplay.Gamestatus.Initializing)
+            cDraft = game.getCurrentDraft();
         for(DominoSelection dominoSelection: cDraft.getSelections()){
             if(dominoSelection.getDomino().getId() == dominoId)
                 return false;
         }
         Player p = game.getNextPlayer();
+        if(p.getDominoSelection()!=null){
+            p.getDominoSelection().delete();
+        }
+
         Domino domino = getDominobyId(dominoId);
-        //Set Player's Ranking of next Turn
-        p.setCurrentRanking(cDraft.indexOfIdSortedDomino(domino));
-        //Create selection object
         new DominoSelection(p, domino, cDraft);
         return true;
     }
