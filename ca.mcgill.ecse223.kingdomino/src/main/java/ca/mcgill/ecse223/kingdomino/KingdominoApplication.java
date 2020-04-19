@@ -29,4 +29,8 @@ public class KingdominoApplication {
 	public static void setKingdomino(Kingdomino kd) {
 		kingdomino = kd;
 	}
+	
+	public static void setStateMachine(Gameplay gp) {
+		statemachine = gp;
+	}
 }
