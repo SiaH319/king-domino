@@ -20,8 +20,8 @@ public class KingdominoApplication {
 		GameplayController.triggerCreateNewUser("calvin");
 		GameplayController.triggerCreateNewUser("dante");
 		System.out.println("After creating users:\n the user size is "+kingdomino.getUsers().size());
-		String[] userNamesForTheNewGame = new String[]{"alice","basolo","calvin","dante"};
-		GameplayController.triggerStartNewGameInSM(4,false,true,userNamesForTheNewGame);
+		String[] userNamesForTheNewGame = new String[]{"alice","basolo","calvin"};
+		GameplayController.triggerStartNewGameInSM(3,false,true,userNamesForTheNewGame);
 		System.out.print("After triggering start a new game: the current game");
 		System.out.println("The current game's user size: "+kingdomino.getCurrentGame().numberOfPlayers());
 		System.out.println("The current game's bonus option size: "+kingdomino.getCurrentGame().getSelectedBonusOptions().size());

@@ -79,7 +79,7 @@ public class DraftController {
     /**
      * Feature 9
      * Method that orders the dominoes in the nextDraft by sorting the dominoes in the draft
-     * @author Mohamad
+     * @author Mohamad, Cecilia Jiang
      *
      */
     public static void orderNewDraftInitiated() {
@@ -99,8 +99,14 @@ public class DraftController {
         for(Integer id : listIDs) {
             newIdSorted.add(getdominoByID(id));
         }
-        nextDraft.setIdSortedDominos(newIdSorted.get(0),newIdSorted.get(1),newIdSorted.get(2),newIdSorted.get(3));// add them back to the next draft 
-        nextDraft.setDraftStatus(Draft.DraftStatus.Sorted);														  //in the right order
+        if(game.getNumberOfPlayers() == 3){
+            nextDraft.setIdSortedDominos(newIdSorted.get(0),newIdSorted.get(1),newIdSorted.get(2));
+        }else{
+            //add them back to the next draft
+            //in the right order
+            nextDraft.setIdSortedDominos(newIdSorted.get(0),newIdSorted.get(1),newIdSorted.get(2),newIdSorted.get(3));
+        }
+        nextDraft.setDraftStatus(Draft.DraftStatus.Sorted);
         //game.setNextDraft(nextDraft);
     }
 

@@ -197,11 +197,35 @@ public class CalculationController {
     /**Feature 23+24
      * @author Mohamad
      * Given if there is a tie or not, we know which method to call
-     * @param boolean noTie, tells if there is a tie or not
+     * @param noTie noTie, tells if there is a tie or not
      * @param ScoreList, stores all players'scores 
      */
-    public static void calculateRanking(Boolean noTie,ArrayList<Integer> ScoreList) {
-       
+    public static void calculateRanking(boolean noTie,ArrayList<Integer> ScoreList) {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        if(ScoreList.size()==0) {// if the list of scores does not contain anything
+            for( Player p :game.getPlayers()) { // populating the player's kingdom and calculating his score.
+                String player0Name = (p.getUser().getName());
+                Square[] grid = GameController.getGrid(player0Name);
+                DisjointSet s = GameController.getSet(player0Name);
+                CalculationController.identifyPropertoes(s, grid, p.getKingdom());
+                CalculationController.calculatePropertyScore(p.getKingdom().getProperties(),p);
+                CalculationController.CalculateBonusScore(game, p);
+                ScoreList.add((p.getBonusScore()+p.getPropertyScore())); // adding all player scores to the scorelist
+
+            }
+        }
+        noTie=true;
+        for(Player p1 : game.getPlayers()) {
+            for(Player p2:game.getPlayers()) {
+                if(p1.getColor()!=p2.getColor()) {
+                    if((p2.getBonusScore()+p2.getPropertyScore())==(p1.getBonusScore()+p1.getPropertyScore())) {// if we catch any pair of different
+                        //players with the same score then there is a tie
+                        noTie=false;
+                    }
+                }
+
+            }
+        }
         if(noTie) {
         	RankingNoTie(ScoreList);
         }
