@@ -441,7 +441,7 @@ public class GameplayController {
 			addUsersAndPlayers(userNames,game);
 			createAllDominoes(game);
 			for(int k = 0; k < numOfPlayer; k++) {
-				String playerName = (game.getPlayer(k).getUser().getName());
+				String playerName = (game.getPlayer(k).getColor().toString());
 				GameController.setGrid(playerName, new Square[81]);
 				GameController.setSet(playerName, new DisjointSet(81));
 				Square[] grid = GameController.getGrid(playerName);
@@ -458,7 +458,7 @@ public class GameplayController {
 			addUsersAndPlayers(userNames,game);
 			createAllDominoes(game);
 			for(int k = 0; k < numOfPlayer; k++) {
-				String playerName = (game.getPlayer(k).getUser().getName());
+				String playerName = (game.getPlayer(k).getColor().toString());
 				GameController.setGrid(playerName, new Square[81]);
 				GameController.setSet(playerName, new DisjointSet(81));
 				Square[] grid = GameController.getGrid(playerName);
@@ -486,7 +486,7 @@ public class GameplayController {
 			addUsersAndPlayers(userNames,game);
 			createAllDominoes(game);
 			for(int k = 0 ;k < 2; k++) {
-				String playerName = userNames[k];
+				String playerName = (game.getPlayer(2*k).getColor().toString());
 				GameController.setGrid(playerName, new Square[81]);
 				GameController.setSet(playerName, new DisjointSet(81));
 				Square[] grid = GameController.getGrid(playerName);
@@ -692,12 +692,13 @@ public class GameplayController {
 						break;
 					}
 				}
-				if(curUser != null) {
+
 					Player player = new Player(game);
-					player.setUser(curUser);
 					player.setColor(PlayerColor.values()[i]);
 					Kingdom kingdom = new Kingdom(player);
 					new Castle(0, 0, kingdom, player);
+				if(curUser != null) {
+					player.setUser(curUser);
 				}
 			}
 		} else {
@@ -710,7 +711,7 @@ public class GameplayController {
 						break;
 					}
 				}
-				if(curUser != null) {
+
 					Player player1 = new Player(game);
 					player1.setUser(curUser);
 					player1.setColor(PlayerColor.values()[2*i]);
@@ -721,6 +722,9 @@ public class GameplayController {
 					player2.setColor(PlayerColor.values()[2*i]);
 					Kingdom kingdom2 = new Kingdom(player2);
 					new Castle(0, 0, kingdom2, player2);
+				if(curUser != null) {
+					player1.setUser(curUser);
+					player2.setUser(curUser);
 				}
 				
 			}

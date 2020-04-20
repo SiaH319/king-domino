@@ -26,6 +26,9 @@ public class CreateUserPage extends JFrame {
     private String[] userTableColumnNames = {"Name", "PlayedGames", "WonGames"};
     private static final int HEIGHT_OVERVIEW_TABLE = 200;
 
+
+    //Back to main menu button
+    private JButton backButton;
     private HashMap<Integer, TOUser> existingUsers;
 
     public CreateUserPage(){
@@ -52,6 +55,10 @@ public class CreateUserPage extends JFrame {
         createUserButton.setFont(font);
         errorMessage = new JLabel();
         errorMessage.setForeground(Color.red);
+        backButton = new JButton();
+        backButton.setText("Back");
+        backButton.setFont(font);
+
         userTable = new JTable() {
             private static final long serialVersionUID = 1L;
 
@@ -89,6 +96,12 @@ public class CreateUserPage extends JFrame {
             }
         });
 
+        backButton.addActionListener(new java.awt.event.ActionListener(){
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backToMainPage();
+            }
+        });
+
         //Layout
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -99,7 +112,8 @@ public class CreateUserPage extends JFrame {
                                 addComponent(newUserName).
                                 addComponent(createUserButton)).
                         addComponent(errorMessage).
-                        addComponent(userTableScrollPane)
+                        addComponent(userTableScrollPane).
+                        addComponent(backButton)
         );
         layout.linkSize(SwingConstants.HORIZONTAL, createUserButton, createUserText);
         layout.setHorizontalGroup(
@@ -109,7 +123,7 @@ public class CreateUserPage extends JFrame {
                                 addComponent(createUserText).
                                 addComponent(newUserName).
                                 addComponent(createUserButton)).
-                addComponent(errorMessage));
+                addComponent(errorMessage).addComponent(backButton));
 
         refreshUserTable();
 //        pack();
@@ -146,5 +160,10 @@ public class CreateUserPage extends JFrame {
         errorMessage.setText(GameplayController.getError());
         GameplayController.setError("");
         refresh();
+    }
+
+    private void backToMainPage(){
+        this.setVisible(false);
+        new MainMenuPage().setVisible(true);
     }
 }

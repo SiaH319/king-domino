@@ -56,10 +56,17 @@ public class MainMenuPage extends JFrame {
         setSize(1600, 900);
 
         //Add Action Listeners
-        // listeners for create a user
+        // listeners for create new user button
         createNewUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 initCreateUserPage(evt);
+            }
+        });
+
+        //Listener for create new game button
+        startAGame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                initCreateNewGamePage(evt);
             }
         });
 
@@ -103,6 +110,9 @@ public class MainMenuPage extends JFrame {
         new CreateUserPage().setVisible(true);
     }
 
-
+    private void initCreateNewGamePage(ActionEvent evt) {
+        this.setVisible(false);
+        new CreateNewGamePage().setVisible(true);
+    }
 
 }
