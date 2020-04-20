@@ -23,14 +23,15 @@ import ca.mcgill.ecse223.kingdomino.controller.DominoController;
  * & Dicard Domino button
  * & Choose Next Domino button
  */
-public class GameGridGUI {
+public class GameGridGUI extends JFrame {
+	private static final long serialVersionUID = 1L;
 
 	private JFrame frame;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -41,7 +42,7 @@ public class GameGridGUI {
 				}
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Create the application.
