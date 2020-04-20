@@ -23,8 +23,8 @@ import ca.mcgill.ecse223.kingdomino.controller.DominoController;
  * & Dicard Domino button
  * & Choose Next Domino button
  */
-public class GameGridGUI {
-
+public class GameGridGUI extends JFrame {
+	private static final long serialVersionUID = 1L;
 	private JFrame frame;
 
 	/**
