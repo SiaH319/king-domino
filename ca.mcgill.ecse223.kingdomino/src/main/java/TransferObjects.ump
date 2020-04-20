@@ -1,0 +1,7 @@
+namespace ca.mcgill.ecse223.kingdomino.controller;
+
+class TOUser{
+	name;
+	int playedGames;
+	int wonGames;
+}

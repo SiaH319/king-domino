@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.BonusOption;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
@@ -45,43 +46,20 @@ public class KingdominoController {
 
     }
 
-    public void createBonusOption() {
+    /**
+     * Retrieve a list of TOUser from kingdomino's complete list of users
+     * @author Cecilia Jiang
+     * @return A list of TOUser
+     */
+    public static List<TOUser> getAllTOUsers(){
+        List<TOUser> TOUsers = new ArrayList<>();
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 
-    }
-
-    public void createUser(String name, Kingdomino kingdomino) {
-
-    }
-
-    public void createGame() {
-
-    }
-
-    public void createPlayer() {
-
-    }
-
-    public void createDomino() {
-
-    }
-    public void createDraft() {
-
-    }
-
-    public void createDominoKingdom() {
-
-    }
-
-    public void createCastle() {
-
-    }
-
-    public void createProperty() {
-
-    }
-
-    public void createDominoSelection() {
-
+        for(User user: kingdomino.getUsers()){
+            TOUser TOUsertmp = new TOUser(user.getName(),user.getPlayedGames(),user.getWonGames());
+            TOUsers.add(TOUsertmp);
+        }
+        return TOUsers;
     }
 
 }

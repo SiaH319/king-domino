@@ -3,6 +3,8 @@ package ca.mcgill.ecse223.kingdomino;
 import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
+import ca.mcgill.ecse223.kingdomino.view.CreateUserPage;
+import ca.mcgill.ecse223.kingdomino.view.MainMenuPage;
 
 public class KingdominoApplication {
 
@@ -26,6 +28,13 @@ public class KingdominoApplication {
 		System.out.println("The current game's user size: "+kingdomino.getCurrentGame().numberOfPlayers());
 		System.out.println("The current game's bonus option size: "+kingdomino.getCurrentGame().getSelectedBonusOptions().size());
 		System.out.println("The current statemachine game status is "+statemachine.getGamestatus());
+		GameplayController.setStateMachineState("SettingUp");
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				new CreateUserPage().setVisible(true);
+				//new MainMenuPage().setVisible(true);
+			}
+		});
 	}
 
 	public static Kingdomino getKingdomino() {
