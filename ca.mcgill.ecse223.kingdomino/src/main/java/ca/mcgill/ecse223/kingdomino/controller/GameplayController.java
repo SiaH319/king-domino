@@ -86,6 +86,14 @@ public class GameplayController {
 		statemachine.discard();
 	}
 	
+	/**
+	 * Trigger place action in statemachine
+	 * @author Violet
+	 */
+	public static void triggerPlaceDominoInSM() {
+		statemachine.place();
+	}
+	
 	public static void triggerSaveInSM(String filename) {
 		statemachine.save(filename);
 	}
