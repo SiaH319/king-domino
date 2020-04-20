@@ -74,14 +74,23 @@ public class KingdominoController<priavte> {
     }
 
     public static TOPlayer getASelectedDominosPlayer(int id){
-        Domino domino = KingdominoApplication.getKingdomino().getCurrentGame().getAllDomino(id);
+        Domino domino = getdominoByID(id);
         DominoSelection dominoSelection = domino.getDominoSelection();
         if(dominoSelection!=null){
             Player player = dominoSelection.getPlayer();
-
+            TOPlayer player1 = new TOPlayer(getStringFromPlayerColor(player),player.getCurrentRanking(),player.getBonusScore(),player.getPropertyScore());
+            return player1;
         }
         return null;
     }
+
+    public static TOPlayer getTOPlyerFromCurrentPlayer(){
+        Player p = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+        String color = getStringFromPlayerColor(p);
+        TOPlayer toPlayer = new TOPlayer(color,p.getCurrentRanking(),p.getBonusScore(),p.getPropertyScore());
+        return toPlayer;
+    }
+
 
     private static String getStringFromTerrainType(TerrainType terrainType){
         String result;
@@ -111,4 +120,32 @@ public class KingdominoController<priavte> {
         return result;
     }
 
+    private static String getStringFromPlayerColor(Player p){
+        String result = "";
+        switch(p.getColor()){
+            case Blue:
+                result = "Blue";
+                break;
+            case Green:
+                result = "Green";
+                break;
+            case Pink:
+                result = "Pink";
+                break;
+            case Yellow:
+                result = "Yellow";
+                break;
+        }
+        return result;
+    }
+
+    private static Domino getdominoByID(int id) {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        for (Domino domino : game.getAllDominos()) {
+            if (domino.getId() == id) {
+                return domino;
+            }
+        }
+        throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
+    }
 }

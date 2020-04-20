@@ -1,11 +1,16 @@
 package ca.mcgill.ecse223.kingdomino.view;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.controller.TODomino;                   
+import ca.mcgill.ecse223.kingdomino.controller.TODomino;
+import ca.mcgill.ecse223.kingdomino.controller.TOPlayer;
+import ca.mcgill.ecse223.kingdomino.model.Gameplay;
+import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,14 +19,12 @@ public class SelectDominoPage extends JFrame {
     //UI Elements
     //Player Info
     private JLabel curPlayerColorLabel;
-    private JPanel curPlayerColor;
+    private JLabel curPlayerColor;
+    private JLabel rightSpace;
     //Available Dominos For Selection
     //Domino Visualization
     private List<DominoVisualizer> dominoVisualizers;
-    //Nav Bar
-    //Save Button
-    //Browse Domino Button
-    //Turn Number
+    private DominoQueueVisualizer dominoQueueVisualizer;
 
     //Buttons
     private JButton makeSelection;
@@ -29,6 +32,7 @@ public class SelectDominoPage extends JFrame {
     private HashMap<Integer,Integer> dominoIDList;
     private HashMap<Integer,Integer> dominoPlayerSelectionList;
 
+    private JLabel errorMessage;
     public SelectDominoPage(){
         init();
     }
@@ -41,41 +45,76 @@ public class SelectDominoPage extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setFont(font);
 
-        curPlayerColor = new JPanel();
+        curPlayerColor = new JLabel();
+        TOPlayer curPlayer = KingdominoController.getTOPlyerFromCurrentPlayer();
+        curPlayerColor.setText(curPlayer.getColor());
         curPlayerColorLabel = new JLabel();
         curPlayerColorLabel.setText("Current Player's color");
 
+        rightSpace = new JLabel();
+        rightSpace.setText("                     ");
         dominoVisualizers = new ArrayList<>();
 
-        int playerNum =KingdominoApplication.getKingdomino().getCurrentGame().getNumberOfPlayers();
-        int yStart = 50;
-        for(int i = 0 ; i < ((playerNum%2 == 0)?4:3);i++){
-            TODomino domino =KingdominoController.getAllTODominoInCurrentDraft().get(i);
-            System.out.println("In Select Domino Page first domino's id: "+domino.getId());
-            DominoVisualizer dominoVisualizer = new DominoVisualizer(domino,700,yStart);
-            dominoVisualizers.add(dominoVisualizer);
-            yStart+=0;
-        }
+        dominoQueueVisualizer = new DominoQueueVisualizer(KingdominoController.getAllTODominoInCurrentDraft());
         makeSelection = new JButton();
         makeSelection.setText("Select");
+
+    errorMessage = new JLabel();
+        //Action Listeners
+        makeSelection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                makeSelectionActionPerformed(evt);
+            }
+        });
 
         // layout
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
-        GroupLayout.SequentialGroup groupDomino = layout.createSequentialGroup();
-        for(DominoVisualizer dominoVisualizer: this.dominoVisualizers){
-            groupDomino.addComponent(dominoVisualizer);
-        }
+        JSeparator horizontalLineBottom = new JSeparator();
 
-        GroupLayout.ParallelGroup groupDomino2 = layout.createParallelGroup();
-        for(DominoVisualizer dominoVisualizer: this.dominoVisualizers){
-            groupDomino2.addComponent(dominoVisualizer);
-        }
-        layout.setHorizontalGroup(layout.createSequentialGroup().
-                addGroup(groupDomino2).
-                addComponent(makeSelection));
-        layout.setVerticalGroup(groupDomino.addComponent(makeSelection));
+        layout.setVerticalGroup(
+                layout.createSequentialGroup().
+                        addGroup(layout.createParallelGroup().
+                                addGroup(layout.createSequentialGroup().
+                                        addComponent(curPlayerColorLabel).
+                                        addComponent(curPlayerColor)).
+                                addComponent(dominoQueueVisualizer,600,600,1150)).
+                        addComponent(makeSelection));
+
+        layout.setHorizontalGroup(
+                layout.createSequentialGroup().
+
+                        addGroup(layout.createParallelGroup().
+                                addComponent(curPlayerColorLabel,10,10,200).
+                                addComponent(curPlayerColor,10,10,200)).
+                        addComponent(dominoQueueVisualizer).
+                        addComponent(makeSelection));
     }
+
+    public void refresh(){
+        TOPlayer curPlayer = KingdominoController.getTOPlyerFromCurrentPlayer();
+        curPlayerColor.setText(curPlayer.getColor());
+
+        //dominoQueueVisualizer = new DominoQueueVisualizer(KingdominoController.getAllTODominoInCurrentDraft());
+        dominoQueueVisualizer.repaint();
+    }
+
+    public void makeSelectionActionPerformed(ActionEvent evt){
+        int id = dominoQueueVisualizer.getCurDominoId();
+        System.out.println("id in make selection"+id);
+        System.out.println("Current player's rank:"+KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getCurrentRanking());
+        if(id == -1) {
+            errorMessage.setText("No Domino Selected");
+            return;
+        }else{
+            GameplayController.triggerMakeSelectionInSM(id);}
+
+        refresh();
+        if(GameplayController.statemachine.getGamestatusInitializing()!= Gameplay.GamestatusInitializing.SelectingFirstDomino){
+            this.setVisible(false);
+        }
+    }
+
 }

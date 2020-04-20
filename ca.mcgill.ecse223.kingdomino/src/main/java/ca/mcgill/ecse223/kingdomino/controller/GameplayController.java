@@ -596,14 +596,14 @@ public class GameplayController {
 		int playerNumber = currentGame.getNumberOfPlayers();
 		List<Integer> ranks = new ArrayList<>();
 		if(playerNumber % 2 ==0) {
+			ranks.add(0);
 			ranks.add(1);
 			ranks.add(2);
 			ranks.add(3);
-			ranks.add(4);
 		}else {
+			ranks.add(0);
 			ranks.add(1);
 			ranks.add(2);
-			ranks.add(3);
 		}
 		Collections.shuffle(ranks);
 		List<Player> players = currentGame.getPlayers();
@@ -614,7 +614,7 @@ public class GameplayController {
 		int i = 0;
 		int indexMin = 0;
 		for(Player player: players) {
-			if(player.getCurrentRanking() == 1) {
+			if(player.getCurrentRanking() == 0) {
 				indexMin = i;
 			}
 			i++;

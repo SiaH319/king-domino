@@ -1,6 +1,8 @@
 package ca.mcgill.ecse223.kingdomino.view;
 
+import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.controller.TODomino;
+import ca.mcgill.ecse223.kingdomino.controller.TOPlayer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -64,7 +66,7 @@ public class DominoVisualizer extends JPanel {
         setImage();
     }
 
-    private void doDrawing(Graphics g) {
+    public void doDrawing(Graphics g) {
         System.out.println("Entered doDrawing");
         if (domino != null) {
             System.out.println("Entered doDrawing");
@@ -76,11 +78,22 @@ public class DominoVisualizer extends JPanel {
             Rectangle2D rectangle1 = new Rectangle2D.Double(posx - SQUARE_HEIGHT/2.0, posy - SQUARE_HEIGHT / 2.0, SQUARE_HEIGHT, SQUARE_HEIGHT);
             g2d.drawImage(imageLeft,(int)rectangle1.getX(),(int)rectangle1.getY(),this);
             squares.add(rectangle1);
+
+
             //TODO: Adjust accordign to direction
             Rectangle2D rectangle2;
             rectangle2 = new Rectangle2D.Double(posx + SQUARE_HEIGHT/2.0, posy - SQUARE_HEIGHT / 2.0, SQUARE_HEIGHT, SQUARE_HEIGHT);
             squares.add(rectangle2);
             g2d.drawImage(imageRight,(int)rectangle2.getX(),(int)rectangle2.getY(),this);
+
+            //Set Selected by which player String
+            TOPlayer player = KingdominoController.getASelectedDominosPlayer(this.id);
+            String selectedStr = "Selected by: ";
+            if(player!=null)
+                selectedStr += player.getColor();
+            else
+                selectedStr += "None";
+            g2d.drawString(selectedStr,(int)(posx + 1.5 * SQUARE_HEIGHT), posy);
 
 
             //Set border
@@ -160,6 +173,13 @@ public class DominoVisualizer extends JPanel {
 
     }
 
+    public int getId(){
+        return this.id;
+    }
+
+    public void setIsSelected(boolean isSelected){
+        this.isPressedByUser = isSelected;
+    }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
