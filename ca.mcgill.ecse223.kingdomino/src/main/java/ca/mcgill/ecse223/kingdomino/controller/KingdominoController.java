@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import ca.mcgill.ecse223.kingdomino.model.BonusOption;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
@@ -39,49 +40,112 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
  * 
  * @author Violet Wei & Cecilia Jiang
  */
-public class KingdominoController {
+public class KingdominoController<priavte> {
 
     public KingdominoController() {
 
     }
 
-    public void createBonusOption() {
+    /**
+     * Retrieve a list of TOUser from kingdomino's complete list of users
+     * @author Cecilia Jiang
+     * @return A list of TOUser
+     */
+    public static List<TOUser> getAllTOUsers(){
+        List<TOUser> TOUsers = new ArrayList<>();
+        Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 
+        for(User user: kingdomino.getUsers()){
+            TOUser TOUsertmp = new TOUser(user.getName(),user.getPlayedGames(),user.getWonGames());
+            TOUsers.add(TOUsertmp);
+        }
+        return TOUsers;
     }
 
-    public void createUser(String name, Kingdomino kingdomino) {
-
+    public static List<TODomino> getAllTODominoInCurrentDraft(){
+        Draft draft = KingdominoApplication.getKingdomino().getCurrentGame().getCurrentDraft();
+        List<TODomino> TODominos = new ArrayList<>();
+        for(Domino domino: draft.getIdSortedDominos()){
+            TODomino TODominotmp = new TODomino(domino.getId(),getStringFromTerrainType(domino.getLeftTile())
+                    ,getStringFromTerrainType(domino.getRightTile()),domino.getLeftCrown(),domino.getRightCrown());
+            TODominos.add(TODominotmp);
+        }
+        return TODominos;
     }
 
-    public void createGame() {
-
+    public static TOPlayer getASelectedDominosPlayer(int id){
+        Domino domino = getdominoByID(id);
+        DominoSelection dominoSelection = domino.getDominoSelection();
+        if(dominoSelection!=null){
+            Player player = dominoSelection.getPlayer();
+            TOPlayer player1 = new TOPlayer(getStringFromPlayerColor(player),player.getCurrentRanking(),player.getBonusScore(),player.getPropertyScore());
+            return player1;
+        }
+        return null;
     }
 
-    public void createPlayer() {
-
+    public static TOPlayer getTOPlyerFromCurrentPlayer(){
+        Player p = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+        String color = getStringFromPlayerColor(p);
+        TOPlayer toPlayer = new TOPlayer(color,p.getCurrentRanking(),p.getBonusScore(),p.getPropertyScore());
+        return toPlayer;
     }
 
-    public void createDomino() {
 
+    private static String getStringFromTerrainType(TerrainType terrainType){
+        String result;
+        switch(terrainType){
+            case WheatField:
+                result = "Wheat";
+                break;
+            case Mountain:
+                result = "Mountain";
+                break;
+            case Lake:
+                result = "Lake";
+                break;
+            case Forest:
+                result = "Forest";
+                break;
+            case Grass:
+                result = "Grass";
+                break;
+            case Swamp:
+                result = "Swamp";
+                break;
+            default:
+                result = "/";
+                break;
+        }
+        return result;
     }
-    public void createDraft() {
 
+    private static String getStringFromPlayerColor(Player p){
+        String result = "";
+        switch(p.getColor()){
+            case Blue:
+                result = "Blue";
+                break;
+            case Green:
+                result = "Green";
+                break;
+            case Pink:
+                result = "Pink";
+                break;
+            case Yellow:
+                result = "Yellow";
+                break;
+        }
+        return result;
     }
 
-    public void createDominoKingdom() {
-
+    private static Domino getdominoByID(int id) {
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        for (Domino domino : game.getAllDominos()) {
+            if (domino.getId() == id) {
+                return domino;
+            }
+        }
+        throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
     }
-
-    public void createCastle() {
-
-    }
-
-    public void createProperty() {
-
-    }
-
-    public void createDominoSelection() {
-
-    }
-
 }

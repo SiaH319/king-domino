@@ -40,9 +40,7 @@ public class DraftController {
     public static void createNewDraftIsInitiated() {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         int curDraftSize = game.getAllDrafts().size();
-        if(curDraftSize == 1 && game.getNextDraft() == null){
-            game.setNextDraft(game.getAllDraft(0));
-        }else{
+
             Domino tmp = game.getTopDominoInPile();
             Draft formerNextDraft = game.getNextDraft();
             game.setCurrentDraft(formerNextDraft);
@@ -52,6 +50,7 @@ public class DraftController {
                     player.setCurrentRanking(formerNextDraft.indexOfIdSortedDomino(domino));
                 }
             }
+            //Add dominos into next draft according the player number
             int step;
             if(game.getNumberOfPlayers() % 2== 0){
                 step =4;
@@ -72,7 +71,7 @@ public class DraftController {
                 game.setNextDraft(null);
             }
 
-        }
+
 
     }
 

@@ -133,7 +133,7 @@ public class GameplayController {
 	 * @author Cecilia Jiang
 	 * @param dir, direction of movement
 	 */
-	public void triggerMoveDominoInSM(String dir) {
+	public static void triggerMoveDominoInSM(String dir) {
 		statemachine.moveCurrentDomino(dir);
 	}
 
@@ -142,7 +142,7 @@ public class GameplayController {
 	 * @author Cecilia Jiang
 	 * @param dir, 1 clockwise or 0 counterwise
 	 */
-	public void triggerRotateDominoInSM(int dir) {
+	public static void triggerRotateDominoInSM(int dir) {
 		statemachine.rotateCurrentDomino(dir);
 	}
 
@@ -441,7 +441,7 @@ public class GameplayController {
 			addUsersAndPlayers(userNames,game);
 			createAllDominoes(game);
 			for(int k = 0; k < numOfPlayer; k++) {
-				String playerName = (game.getPlayer(k).getUser().getName());
+				String playerName = (game.getPlayer(k).getColor().toString());
 				GameController.setGrid(playerName, new Square[81]);
 				GameController.setSet(playerName, new DisjointSet(81));
 				Square[] grid = GameController.getGrid(playerName);
@@ -458,7 +458,7 @@ public class GameplayController {
 			addUsersAndPlayers(userNames,game);
 			createAllDominoes(game);
 			for(int k = 0; k < numOfPlayer; k++) {
-				String playerName = (game.getPlayer(k).getUser().getName());
+				String playerName = (game.getPlayer(k).getColor().toString());
 				GameController.setGrid(playerName, new Square[81]);
 				GameController.setSet(playerName, new DisjointSet(81));
 				Square[] grid = GameController.getGrid(playerName);
@@ -486,7 +486,7 @@ public class GameplayController {
 			addUsersAndPlayers(userNames,game);
 			createAllDominoes(game);
 			for(int k = 0 ;k < 2; k++) {
-				String playerName = userNames[k];
+				String playerName = (game.getPlayer(2*k).getColor().toString());
 				GameController.setGrid(playerName, new Square[81]);
 				GameController.setSet(playerName, new DisjointSet(81));
 				Square[] grid = GameController.getGrid(playerName);
@@ -596,14 +596,14 @@ public class GameplayController {
 		int playerNumber = currentGame.getNumberOfPlayers();
 		List<Integer> ranks = new ArrayList<>();
 		if(playerNumber % 2 ==0) {
+			ranks.add(0);
 			ranks.add(1);
 			ranks.add(2);
 			ranks.add(3);
-			ranks.add(4);
 		}else {
+			ranks.add(0);
 			ranks.add(1);
 			ranks.add(2);
-			ranks.add(3);
 		}
 		Collections.shuffle(ranks);
 		List<Player> players = currentGame.getPlayers();
@@ -614,7 +614,7 @@ public class GameplayController {
 		int i = 0;
 		int indexMin = 0;
 		for(Player player: players) {
-			if(player.getCurrentRanking() == 1) {
+			if(player.getCurrentRanking() == 0) {
 				indexMin = i;
 			}
 			i++;
@@ -692,12 +692,13 @@ public class GameplayController {
 						break;
 					}
 				}
-				if(curUser != null) {
+
 					Player player = new Player(game);
-					player.setUser(curUser);
 					player.setColor(PlayerColor.values()[i]);
 					Kingdom kingdom = new Kingdom(player);
 					new Castle(0, 0, kingdom, player);
+				if(curUser != null) {
+					player.setUser(curUser);
 				}
 			}
 		} else {
@@ -710,17 +711,22 @@ public class GameplayController {
 						break;
 					}
 				}
-				if(curUser != null) {
+
 					Player player1 = new Player(game);
-					player1.setUser(curUser);
 					player1.setColor(PlayerColor.values()[2*i]);
-					Kingdom kingdom = new Kingdom(player1);
-					new Castle(0, 0, kingdom, player1);
+
 					Player player2 = new Player(game);
+					player2.setColor(PlayerColor.values()[2*i+1]);
+					if(i==0){
+						Kingdom kingdom = new Kingdom(player1);
+						new Castle(0, 0, kingdom, player1);
+						Kingdom kingdom2 = new Kingdom(player2);
+						new Castle(0, 0, kingdom2, player2);
+					}
+
+				if(curUser != null) {
+					player1.setUser(curUser);
 					player2.setUser(curUser);
-					player2.setColor(PlayerColor.values()[2*i]);
-					Kingdom kingdom2 = new Kingdom(player2);
-					new Castle(0, 0, kingdom2, player2);
 				}
 				
 			}

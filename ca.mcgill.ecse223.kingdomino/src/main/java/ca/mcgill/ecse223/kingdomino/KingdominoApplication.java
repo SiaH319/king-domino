@@ -3,6 +3,8 @@ package ca.mcgill.ecse223.kingdomino;
 import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
+import ca.mcgill.ecse223.kingdomino.view.*;
+
 
 public class KingdominoApplication {
 
@@ -15,17 +17,11 @@ public class KingdominoApplication {
 		getStateMachine();
 		GameplayController.initStatemachine();
 		GameplayController.setStateMachineState("SettingUp");
-		GameplayController.triggerCreateNewUser("alice");
-		GameplayController.triggerCreateNewUser("basolo");
-		GameplayController.triggerCreateNewUser("calvin");
-		GameplayController.triggerCreateNewUser("dante");
-		System.out.println("After creating users:\n the user size is "+kingdomino.getUsers().size());
-		String[] userNamesForTheNewGame = new String[]{"alice","basolo","calvin"};
-		GameplayController.triggerStartNewGameInSM(3,false,true,userNamesForTheNewGame);
-		System.out.print("After triggering start a new game: the current game");
-		System.out.println("The current game's user size: "+kingdomino.getCurrentGame().numberOfPlayers());
-		System.out.println("The current game's bonus option size: "+kingdomino.getCurrentGame().getSelectedBonusOptions().size());
-		System.out.println("The current statemachine game status is "+statemachine.getGamestatus());
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				new MainMenuPage().setVisible(true);
+			}
+		});
 	}
 
 	public static Kingdomino getKingdomino() {

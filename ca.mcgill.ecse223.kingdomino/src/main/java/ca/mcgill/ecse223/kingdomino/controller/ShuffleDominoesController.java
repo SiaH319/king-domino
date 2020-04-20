@@ -138,7 +138,7 @@ public class ShuffleDominoesController {
             domino1.setStatus(DominoStatus.InCurrentDraft);
         }
         game.addAllDraft(firstDraft);
-
+        game.setNextDraft(firstDraft);
     }
 
 

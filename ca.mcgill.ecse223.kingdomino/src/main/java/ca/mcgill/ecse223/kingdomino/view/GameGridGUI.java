@@ -21,7 +21,8 @@ import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.controller.TODomino;
 import ca.mcgill.ecse223.kingdomino.controller.TOPlayer;
-import ca.mcgill.ecse223.kingdomino.model.Gameplay;
+import ca.mcgill.ecse223.kingdomino.model.Domino;
+import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 
 /**
@@ -187,6 +188,7 @@ public class GameGridGUI extends JFrame {
 	    		// Add controller - Rotate domino
 			// DominoController.rotateExistingDomino(Castle castle, Square[] grid, List<KingdomTerritory> territories,
                         //                    DominoInKingdom dominoInKingdom, int rotationDir)
+			rotateDominoActionPerformed(e);
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton_2);
@@ -248,8 +250,25 @@ public class GameGridGUI extends JFrame {
 	}
 	
 	public void moveDominoActionPerformed(ActionEvent e){
-		String movement = "";
-		GameplayController.triggerMoveDominoInSM(movement);
+		int id = dominoQueueVisualizer.getCurDominoId();
+		String dir = "";
+		GameplayController.triggerMoveDominoInSM(dir);
 	}
+	
+	public void rotateDominoActionPerformed(ActionEvent e){
+		int id = dominoQueueVisualizer.getCurDominoId();
+		int dir = 1;
+		GameplayController.triggerRotateDominoInSM(dir);
+	}
+	
+	private static Domino getdominoByID(int id) {
+            Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+            for (Domino domino : game.getAllDominos()) {
+                if (domino.getId() == id) {
+                    return domino;
+                }
+            }
+            throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
+        }
 
 }

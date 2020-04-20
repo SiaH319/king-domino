@@ -1,0 +1,22 @@
+namespace ca.mcgill.ecse223.kingdomino.controller;
+
+class TOUser{
+	name;
+	int playedGames;
+	int wonGames;
+}
+
+class TODomino{
+	int id;
+	String leftTileType;
+	String rightTileType;
+	int numLeftTileCrown;
+	int numRightTileCrown;
+}
+
+class TOPlayer{
+	String color;
+	int currentRanking;
+	int bonusScore;
+	int propertyScore;
+}
