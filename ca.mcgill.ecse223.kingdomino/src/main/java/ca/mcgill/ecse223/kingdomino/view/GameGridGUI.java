@@ -11,7 +11,18 @@ import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import ca.mcgill.ecse223.kingdomino.controller.DominoController;
+import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
+import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
+import ca.mcgill.ecse223.kingdomino.controller.TODomino;
+import ca.mcgill.ecse223.kingdomino.controller.TOPlayer;
+import ca.mcgill.ecse223.kingdomino.model.Gameplay;
+import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 
 /**
  * @author Violet 
@@ -26,6 +37,14 @@ import ca.mcgill.ecse223.kingdomino.controller.DominoController;
 public class GameGridGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JFrame frame;
+	
+	//Domino Visualization
+        private List<DominoVisualizer> dominoVisualizers;
+        private DominoQueueVisualizer dominoQueueVisualizer;
+	
+	//Data Elements
+        private HashMap<Integer,Integer> dominoIDList;
+        private HashMap<Integer,Integer> dominoPlayerSelectionList;
 
 	/**
 	 * Launch the application.
@@ -143,6 +162,7 @@ public class GameGridGUI extends JFrame {
 			// DominoController.placeDomino(Player player, int id)
 	    		// Add controller - Place domino
 		        // Feature 13
+			placeDominoActionPerformed(e);
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton);
@@ -154,6 +174,7 @@ public class GameGridGUI extends JFrame {
 			// Feature 11: Move Current Domino
 	    		// Add controller - Move domino
 			// DominoController.initialMoveDominoToKingdom(Player player, int dominoId)
+			moveDominoActionPerformed(e);
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton_1);
@@ -220,6 +241,15 @@ public class GameGridGUI extends JFrame {
 		btnNewButtonNext.setBounds(134, 65, 93, 23);
 		frame.getContentPane().add(btnNewButtonPlace, BorderLayout.NORTH);
 		*/
+	}
+	
+	public void placeDominoActionPerformed(ActionEvent e){
+		GameplayController.acceptPlaceDominoFromSM();
+	}
+	
+	public void moveDominoActionPerformed(ActionEvent e){
+		String movement = "";
+		GameplayController.triggerMoveDominoInSM(movement);
 	}
 
 }
