@@ -36,8 +36,8 @@ public class KingdominoApplication {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				//new CreateUserPage().setVisible(true);
-				//new MainMenuPage().setVisible(true);
-				new CreateNewGamePage().setVisible(true);
+				new MainMenuPage().setVisible(true);
+				//new CreateNewGamePage().setVisible(true);
 				//new GameGridGUI();
 				//new SelectDominoPage().setVisible(true);
 			}
