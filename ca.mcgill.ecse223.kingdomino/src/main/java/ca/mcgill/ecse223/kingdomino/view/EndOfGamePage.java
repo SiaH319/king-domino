@@ -136,13 +136,13 @@ public class EndOfGamePage extends JFrame {
 		numPlayers = players.size();
 		
 		for(TOPlayer p : players) {
-			int rank = p.getRank();
+			int rank = p.getCurrentRanking();
 			//using [rank-1] as row number orders table from rank 1-4
 			data[rank - 1][0] = rank; //col 0: rank
-			data[rank - 1][1] = p.getName(); //col 1: user
-			data[rank - 1][2] = p.getBonusScore(); //col 2: property score
+			data[rank - 1][1] = "Name"; //col 1: user
+			data[rank - 1][2] = p.getPropertyScore(); //col 2: property score
 			data[rank - 1][3] = p.getBonusScore(); //col 3: bonus score
-			data[rank - 1][4] = p.getTotalScore(); //col 4: total score
+			data[rank - 1][4] = p.getBonusScore() +p.getPropertyScore(); //col 4: total score
 		}
 	}
 }

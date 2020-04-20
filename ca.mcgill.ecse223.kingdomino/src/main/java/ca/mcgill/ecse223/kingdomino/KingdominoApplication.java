@@ -3,9 +3,11 @@ package ca.mcgill.ecse223.kingdomino;
 import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
-import ca.mcgill.ecse223.kingdomino.view.CreateNewGamePage;
-import ca.mcgill.ecse223.kingdomino.view.CreateUserPage;
-import ca.mcgill.ecse223.kingdomino.view.MainMenuPage;
+import ca.mcgill.ecse223.kingdomino.view.*;
+
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
 public class KingdominoApplication {
 
@@ -29,12 +31,15 @@ public class KingdominoApplication {
 		System.out.println("The current game's user size: "+kingdomino.getCurrentGame().numberOfPlayers());
 		System.out.println("The current game's bonus option size: "+kingdomino.getCurrentGame().getSelectedBonusOptions().size());
 		System.out.println("The current statemachine game status is "+statemachine.getGamestatus());
+		System.out.println();
 		GameplayController.setStateMachineState("SettingUp");
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				//new CreateUserPage().setVisible(true);
-				new MainMenuPage().setVisible(true);
-				//new CreateNewGamePage().setVisible(true);
+				//new MainMenuPage().setVisible(true);
+				new CreateNewGamePage().setVisible(true);
+				//new GameGridGUI();
+				//new SelectDominoPage().setVisible(true);
 			}
 		});
 	}

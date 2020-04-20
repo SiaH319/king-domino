@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import javax.swing.*;
 
+import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.GameplayController;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.controller.TOUser;
@@ -154,7 +155,6 @@ public class CreateNewGamePage extends JFrame {
     }
 
     private void doneButtonActionPerformed(ActionEvent evt) {
-    	//TODO:
 		boolean mkActivated = middleKingdom.isSelected();
 		boolean harmonyActivated = harmony.isSelected();
 		int selectedPlayerNumIndex = this.playerNumberBox.getSelectedIndex();
@@ -166,6 +166,17 @@ public class CreateNewGamePage extends JFrame {
 			i++;
 		}
 		GameplayController.triggerStartNewGameInSM(selectedPlayerNumberInGame,mkActivated,harmonyActivated,(userNameArr));
+
+		System.out.println("The current game has "+ KingdominoApplication.getKingdomino().getCurrentGame().getAllDrafts().size()+" draft generated");
+		System.out.println("The current game has "+KingdominoApplication.getKingdomino().getCurrentGame().getAllDominos().size()+"dominos in total");
+		System.out.println("The first domino in current draft is: "
+                +KingdominoApplication.getKingdomino().getCurrentGame().getCurrentDraft().getIdSortedDomino(0).getId());
+        System.out.println("The second domino in current draft is: "
+                +KingdominoApplication.getKingdomino().getCurrentGame().getCurrentDraft().getIdSortedDomino(1).getId());
+        System.out.println("The third domino in current draft is: "
+                +KingdominoApplication.getKingdomino().getCurrentGame().getCurrentDraft().getIdSortedDomino(2).getId());
+
+        new SelectDominoPage().setVisible(true);
 
     }
 
@@ -186,13 +197,14 @@ public class CreateNewGamePage extends JFrame {
     }
 
     private void refreshData() {
-        // TODO Auto-generated method stub
 		int selectedPlayerNumIndex = this.playerNumberBox.getSelectedIndex();
 		int selectedPlayerNumberInGame = this.playerNumList.get(selectedPlayerNumIndex);
 		if(this.selectedUserNames.size() == selectedPlayerNumberInGame){
 			joinButton.setEnabled(false);
 		}
-
+		if(joinButton.isEnabled()){
+			playerColor.setBackground(color[this.selectedUserNames.size()]);
+		}
 		this.playerSelection.setSelectedIndex(-1);
 
 

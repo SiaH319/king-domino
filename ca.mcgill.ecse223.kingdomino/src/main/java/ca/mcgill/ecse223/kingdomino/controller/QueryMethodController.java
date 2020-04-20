@@ -26,7 +26,7 @@ public class QueryMethodController {
 		ArrayList<TOPlayer> list = new ArrayList<TOPlayer>();
 		Game game=KingdominoApplication.getKingdomino().getCurrentGame();
 		for(Player p:game.getPlayers()) {
-			list.add(new TOPlayer(p));
+			list.add(new TOPlayer(p.getColor().toString(),p.getCurrentRanking(),p.getBonusScore(),p.getPropertyScore()));
 		}
 		return list;
 		

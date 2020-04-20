@@ -40,7 +40,7 @@ import ca.mcgill.ecse223.kingdomino.model.Kingdom;
  * 
  * @author Violet Wei & Cecilia Jiang
  */
-public class KingdominoController {
+public class KingdominoController<priavte> {
 
     public KingdominoController() {
 
@@ -60,6 +60,55 @@ public class KingdominoController {
             TOUsers.add(TOUsertmp);
         }
         return TOUsers;
+    }
+
+    public static List<TODomino> getAllTODominoInCurrentDraft(){
+        Draft draft = KingdominoApplication.getKingdomino().getCurrentGame().getCurrentDraft();
+        List<TODomino> TODominos = new ArrayList<>();
+        for(Domino domino: draft.getIdSortedDominos()){
+            TODomino TODominotmp = new TODomino(domino.getId(),getStringFromTerrainType(domino.getLeftTile())
+                    ,getStringFromTerrainType(domino.getRightTile()),domino.getLeftCrown(),domino.getRightCrown());
+            TODominos.add(TODominotmp);
+        }
+        return TODominos;
+    }
+
+    public static TOPlayer getASelectedDominosPlayer(int id){
+        Domino domino = KingdominoApplication.getKingdomino().getCurrentGame().getAllDomino(id);
+        DominoSelection dominoSelection = domino.getDominoSelection();
+        if(dominoSelection!=null){
+            Player player = dominoSelection.getPlayer();
+
+        }
+        return null;
+    }
+
+    private static String getStringFromTerrainType(TerrainType terrainType){
+        String result;
+        switch(terrainType){
+            case WheatField:
+                result = "Wheat";
+                break;
+            case Mountain:
+                result = "Mountain";
+                break;
+            case Lake:
+                result = "Lake";
+                break;
+            case Forest:
+                result = "Forest";
+                break;
+            case Grass:
+                result = "Grass";
+                break;
+            case Swamp:
+                result = "Swamp";
+                break;
+            default:
+                result = "/";
+                break;
+        }
+        return result;
     }
 
 }
