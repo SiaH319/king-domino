@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +56,6 @@ public class DominoQueueVisualizer extends JPanel {
     }
 
     private void doDrawing(Graphics g) {
-        System.out.println("Entered doDrawing in dominoQueue");
         for(DominoVisualizer dominoVisualizer : dominoVisualizers){
             dominoVisualizer.doDrawing(g);
         }

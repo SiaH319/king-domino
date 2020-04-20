@@ -138,7 +138,6 @@ public class DominoVisualizer extends JPanel {
                 leftTilePicPath = "src/main/java/ca/mcgill/ecse223/kingdomino/view/Wheat.PNG";
                 break;
         }
-        System.out.println(leftTilePicPath);
         String rightTilePicPath = "";
         switch(this.rightTileType){
             case "Forest":
