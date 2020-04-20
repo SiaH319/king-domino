@@ -166,6 +166,7 @@ public class GameGridGUI extends JFrame {
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton);
+		
 	    
 	    JButton btnNewButton_1 = new JButton("Move");
 	    btnNewButton_1.setBackground(Color.PINK);
@@ -178,6 +179,7 @@ public class GameGridGUI extends JFrame {
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton_1);
+		
 	    
 	    JButton btnNewButton_2 = new JButton("Rotate");
 	    btnNewButton_2.setBackground(Color.CYAN);
@@ -191,6 +193,7 @@ public class GameGridGUI extends JFrame {
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton_2);
+		
 	    
 	    JButton btnNewButton_3 = new JButton("Discard");
 	    btnNewButton_3.setBackground(Color.MAGENTA);
@@ -199,9 +202,11 @@ public class GameGridGUI extends JFrame {
 			// Feature 18 : Discard Domino
 	    		// Add controller - Discard
 			// DominoController.attemptDiscardSelectedDomino(DominoInKingdom dominoInKingdom)
+			discardDominoActionPerformed(e);
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton_3);
+		
 	    
 	    JButton btnNewButton_4 = new JButton("Next");
 	    btnNewButton_4.setBackground(Color.GRAY);
@@ -245,7 +250,7 @@ public class GameGridGUI extends JFrame {
 	}
 	
 	public void placeDominoActionPerformed(ActionEvent e){
-		GameplayController.acceptPlaceDominoFromSM();
+		GameplayController.triggerPlaceDominoInSM();
 	}
 	
 	public void moveDominoActionPerformed(ActionEvent e){
@@ -258,6 +263,10 @@ public class GameGridGUI extends JFrame {
 		int id = dominoQueueVisualizer.getCurDominoId();
 		int dir = 1;
 		GameplayController.triggerRotateDominoInSM(dir);
+	}
+	
+	public void discardDominoActionPerformed(ActionEvent e){
+		GameplayController.triggerDiscardDominoInSM();
 	}
 	
 	private static Domino getdominoByID(int id) {
