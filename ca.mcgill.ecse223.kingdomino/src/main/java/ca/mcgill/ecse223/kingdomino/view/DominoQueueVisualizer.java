@@ -19,7 +19,7 @@ public class DominoQueueVisualizer extends JPanel {
         curDominoId = -1;
         dominoVisualizers = new ArrayList<>();
         for(TODomino domino: list){
-            DominoVisualizer dominoVisualizer = new DominoVisualizer(domino,600,yStart);
+            DominoVisualizer dominoVisualizer = new DominoVisualizer(domino,500,yStart);
             this.dominoVisualizers.add(dominoVisualizer);
             yStart += 200+SPACING;
         }

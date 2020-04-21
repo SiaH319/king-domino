@@ -661,7 +661,14 @@ public class GameplayController {
 					Player player = new Player(game);
 					player.setColor(PlayerColor.values()[i]);
 					Kingdom kingdom = new Kingdom(player);
-					new Castle(0, 0, kingdom, player);
+
+				String player0Name =  getStringFromPlayerColor(player);
+				GameController.setGrid(player0Name, new Square[81]);
+				GameController.setSet(player0Name, new DisjointSet(81));
+				Square[] grid = GameController.getGrid(player0Name);
+				for (int i2 = 4; i2 >= -4; i2--)
+					for (int j2 = -4; j2 <= 4; j2++)
+						grid[Square.convertPositionToInt(i2, j2)] = new Square(i2, j2);
 				if(curUser != null) {
 					player.setUser(curUser);
 				}
@@ -682,12 +689,19 @@ public class GameplayController {
 
 					Player player2 = new Player(game);
 					player2.setColor(PlayerColor.values()[2*i+1]);
-					if(i==0){
-						Kingdom kingdom = new Kingdom(player1);
-						new Castle(0, 0, kingdom, player1);
-						Kingdom kingdom2 = new Kingdom(player2);
-						new Castle(0, 0, kingdom2, player2);
-					}
+					Kingdom kingdom = new Kingdom(player1);		//Create kindom for player blue and pink
+					new Castle(0, 0, kingdom, player1);
+
+					String player0Name =  getStringFromPlayerColor(player1);
+					String player1Name = getStringFromPlayerColor(player2);
+					GameController.setGrid(player0Name, new Square[81]);
+					GameController.setSet(player0Name, new DisjointSet(81));
+					Square[] grid = GameController.getGrid(player0Name);
+					for (int i2 = 4; i2>= -4; i2--)
+						for (int j2 = -4; j2 <= 4; j2++)
+							grid[Square.convertPositionToInt(i2, j2)] = new Square(i2, j2);
+					GameController.setGrid(player1Name,grid);
+					GameController.setSet(player1Name,GameController.getSet(player0Name));
 
 				if(curUser != null) {
 					player1.setUser(curUser);
