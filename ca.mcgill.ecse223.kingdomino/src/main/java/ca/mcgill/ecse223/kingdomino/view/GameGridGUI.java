@@ -203,7 +203,7 @@ public class GameGridGUI extends JFrame {
 			// Feature 18 : Discard Domino
 	    		// Add controller - Discard
 			// DominoController.attemptDiscardSelectedDomino(DominoInKingdom dominoInKingdom)
-			//discardDominoActionPerformed(e);
+			discardDominoActionPerformed(e);
 	    	}
 	    });
 	    frame.getContentPane().add(btnNewButton_3);
@@ -252,6 +252,10 @@ public class GameGridGUI extends JFrame {
 	
 	public void placeDominoActionPerformed(ActionEvent e){
 		GameplayController.triggerPlaceDominoInSM();
+	}
+	
+	public void discardDominoActionPerformed(ActionEvent e){
+		GameplayController.triggerDiscardDominoInSM();
 	}
 	
 	public void moveDominoActionPerformed(ActionEvent e){
