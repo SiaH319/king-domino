@@ -174,38 +174,6 @@ public class GameplayController {
 		if(game.getNumberOfPlayers() %2 == 0)
 			return rank == 3;
 		return rank == 2;
-//		if (game.getNextDraft() != null) {
-//
-//			for (Domino d : game.getNextDraft().getIdSortedDominos()) {
-//				if (d.hasDominoSelection()) {
-//					dominoesInNextDraftSelected++;
-//				}
-//			}
-//		} else {
-//			boolean foundBigger = false;
-//			for (Domino d : game.getCurrentDraft().getIdSortedDominos()) {
-//				if (d.getId() > game.getNextPlayer().getDominoSelection().getDomino().getId()) {
-//					foundBigger = true; // if found an id bigger than that of current player
-//					break;
-//				}
-//			}
-//			return !foundBigger; // if no bigger, return true
-//		}
-//		if ((dominoesInNextDraftSelected == 3) && (game.getNumberOfPlayers() == 2 || game.getNumberOfPlayers() == 4)) {// if
-//																														// almost
-//																														// all
-//																														// dominoes
-//																														// in
-//																														// next
-//																														// draft
-//			return true;
-//		}
-//		if ((dominoesInNextDraftSelected == 2) && game.getNumberOfPlayers() == 3) { // if almost all dominoes in next
-//																					// draft // are selected
-//
-//			return true;
-//		}
-//		return false;
 	}
 
 	/**
@@ -239,18 +207,6 @@ public class GameplayController {
 	public static boolean isSelectionValid(int id){
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Domino domino = getdominoByID(id);
-//		if(statemachine.getGamestatus() == Gamestatus.Initializing && domino.getStatus()!=DominoStatus.InCurrentDraft)
-//			return false;
-//		if(statemachine.getGamestatus() == Gamestatus.InGame && domino.getStatus()!=DominoStatus.InNextDraft)
-//			return false
-//			;
-//		Player curPlayer = game.getNextPlayer();
-//		for(Player p:game.getPlayers()){
-//			if(p.getDominoSelection()!=null &&p.getDominoSelection().getDomino()==domino&& p!=curPlayer){
-//				System.out.println(p.getColor().toString());
-//				return false;
-//			}
-//		}
 		return !domino.hasDominoSelection();
 
     }
@@ -280,7 +236,7 @@ public class GameplayController {
 	 * Guard In StateMachine.
 	 * Check if loading a string filename is successful
 	 * @author Cecilia Jiang
-	 * @param filename
+	 * @param filename, input filename
 	 * @return true if succeeded
 	 */
 	public static boolean isLoadedGameValid(String filename) {
@@ -405,7 +361,8 @@ public class GameplayController {
 	
 	/**
 	 * Accept saveGame call from SM
-	 * @param filename
+	 * @author Cecilia Jiang
+	 * @param filename, filename as string
 	 * @return true if succeeded, false otherwise
 	 */
 	public static boolean acceptSaveGameCallFromSM(String filename) {

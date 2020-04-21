@@ -176,6 +176,7 @@ public class CreateNewGamePage extends JFrame {
         System.out.println("The third domino in current draft is: "
                 +KingdominoApplication.getKingdomino().getCurrentGame().getCurrentDraft().getIdSortedDomino(2).getId());
 
+        this.setVisible(false);
         new DraftReadyPage().setVisible(true);
 
     }

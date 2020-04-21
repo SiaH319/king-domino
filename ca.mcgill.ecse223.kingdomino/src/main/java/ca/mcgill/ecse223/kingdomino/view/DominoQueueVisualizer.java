@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DominoQueueVisualizer extends JPanel {
     private List<DominoVisualizer> dominoVisualizers;
-    private int yStart = 150;
+    private int yStart = 100;
     private int SPACING = 2;
     private int curDominoId;
 
@@ -19,7 +19,7 @@ public class DominoQueueVisualizer extends JPanel {
         curDominoId = -1;
         dominoVisualizers = new ArrayList<>();
         for(TODomino domino: list){
-            DominoVisualizer dominoVisualizer = new DominoVisualizer(domino,700,yStart);
+            DominoVisualizer dominoVisualizer = new DominoVisualizer(domino,600,yStart);
             this.dominoVisualizers.add(dominoVisualizer);
             yStart += 200+SPACING;
         }

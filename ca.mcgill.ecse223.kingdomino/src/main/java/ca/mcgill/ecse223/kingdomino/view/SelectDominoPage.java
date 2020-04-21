@@ -48,14 +48,17 @@ public class SelectDominoPage extends JFrame {
         curPlayerColor = new JLabel();
         TOPlayer curPlayer = KingdominoController.getTOPlyerFromCurrentPlayer();
         curPlayerColor.setText(curPlayer.getColor());
+        curPlayerColor.setSize(200,100);
         curPlayerColorLabel = new JLabel();
         curPlayerColorLabel.setText("Current Player's color");
+        curPlayerColorLabel.setSize(200,100);
 
         rightSpace = new JLabel();
         rightSpace.setText("                     ");
         dominoVisualizers = new ArrayList<>();
 
         dominoQueueVisualizer = new DominoQueueVisualizer(KingdominoController.getAllTODominoInCurrentDraft());
+        dominoQueueVisualizer.setSize(1200,800);
         makeSelection = new JButton();
         makeSelection.setText("Select");
 
@@ -70,25 +73,24 @@ public class SelectDominoPage extends JFrame {
         // layout
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
+        layout.setAutoCreateGaps(false);
+        layout.setAutoCreateContainerGaps(false);
         JSeparator horizontalLineBottom = new JSeparator();
 
         layout.setVerticalGroup(
                 layout.createSequentialGroup().
-                        addGroup(layout.createParallelGroup().
+                        addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).
                                 addGroup(layout.createSequentialGroup().
                                         addComponent(curPlayerColorLabel).
                                         addComponent(curPlayerColor)).
-                                addComponent(dominoQueueVisualizer,600,600,1150)).
+                                addComponent(dominoQueueVisualizer)).
                         addComponent(makeSelection));
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup().
-
                         addGroup(layout.createParallelGroup().
-                                addComponent(curPlayerColorLabel,10,10,200).
-                                addComponent(curPlayerColor,10,10,200)).
+                                addComponent(curPlayerColorLabel).
+                                addComponent(curPlayerColor)).
                         addComponent(dominoQueueVisualizer).
                         addComponent(makeSelection));
     }
