@@ -41,7 +41,7 @@ public class IdentifyPropertyStepDefinition {
         createAllDominoes(game);
         game.setNextPlayer(game.getPlayer(0));
         KingdominoApplication.setKingdomino(kingdomino);
-        String player0Name = (game.getPlayer(0).getUser().getName());
+        String player0Name =  getStringFromPlayerColor(game.getPlayer(0));
         GameController.setGrid(player0Name, new Square[81]);
         GameController.setSet(player0Name, new DisjointSet(81));
         Square[] grid = GameController.getGrid(player0Name);
@@ -70,7 +70,7 @@ public class IdentifyPropertyStepDefinition {
             DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
             domInKingdom.setDirection(dir);
             dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
-            String player0Name = (game.getPlayer(0).getUser().getName());
+            String player0Name = getStringFromPlayerColor(game.getPlayer(0));
             Square[] grid = GameController.getGrid(player0Name);
             int[] pos = Square.splitPlacedDomino(domInKingdom, grid);
             DisjointSet s = GameController.getSet(player0Name);
@@ -83,7 +83,7 @@ public class IdentifyPropertyStepDefinition {
                     VerificationController.getAdjacentSquareIndexesRight(castle, grid, domInKingdom), s);
         }
     //    Print Grid
-        String player0Name = (game.getPlayer(0).getUser().getName());
+        String player0Name =  getStringFromPlayerColor(game.getPlayer(0));
         Square[] grid = GameController.getGrid(player0Name);
         for(int i = 4; i >=-4; i-- ){
             for(int j = -4 ; j <= 4; j++){
@@ -102,7 +102,7 @@ public class IdentifyPropertyStepDefinition {
         Kingdomino kingdomino = KingdominoApplication.getKingdomino();
         Game game = kingdomino.getCurrentGame();
         Player player = game.getNextPlayer();
-        String player0Name = (player.getUser().getName());
+        String player0Name = getStringFromPlayerColor(player);
         DisjointSet s =GameController.getSet(player0Name);
         Square[] grid = GameController.getGrid(player0Name);
         CalculationController.identifyPropertoes(s , grid, player.getKingdom());
@@ -297,5 +297,24 @@ public class IdentifyPropertyStepDefinition {
                 return (Castle)territory;
         }
         return null;
+    }
+
+    private static String getStringFromPlayerColor(Player p){
+        String result = "";
+        switch(p.getColor()){
+            case Blue:
+                result = "Blue";
+                break;
+            case Green:
+                result = "Green";
+                break;
+            case Pink:
+                result = "Pink";
+                break;
+            case Yellow:
+                result = "Yellow";
+                break;
+        }
+        return result;
     }
 }

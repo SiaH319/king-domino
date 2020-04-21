@@ -39,7 +39,7 @@ public class PlaceDominoStepDefinition{
             game.setNextPlayer(game.getPlayer(0));
             KingdominoApplication.setKingdomino(kingdomino);
             for(int index = 0; index< game.getNumberOfPlayers(); index++) {
-                String player0Name = (game.getPlayer(index).getUser().getName());
+                String player0Name = getStringFromPlayerColor(game.getPlayer(index));
                 GameController.setGrid(player0Name, new Square[81]);
                 GameController.setSet(player0Name, new DisjointSet(81));
                 Square[] grid = GameController.getGrid(player0Name);
@@ -90,7 +90,7 @@ public class PlaceDominoStepDefinition{
                 DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
                 domInKingdom.setDirection(dir);
                 dominoToPlace.setStatus(Domino.DominoStatus.PlacedInKingdom);
-                String player0Name = p.getUser().getName();
+                String player0Name = getStringFromPlayerColor(p);
                 Square[] grid = GameController.getGrid(player0Name);
                 int[] pos = Square.splitPlacedDomino (domInKingdom, grid);
                 DisjointSet s = GameController.getSet(player0Name);
@@ -354,5 +354,24 @@ public class PlaceDominoStepDefinition{
                 return (Castle)territory;
         }
         return null;
+    }
+
+    private static String getStringFromPlayerColor(Player p){
+        String result = "";
+        switch(p.getColor()){
+            case Blue:
+                result = "Blue";
+                break;
+            case Green:
+                result = "Green";
+                break;
+            case Pink:
+                result = "Pink";
+                break;
+            case Yellow:
+                result = "Yellow";
+                break;
+        }
+        return result;
     }
 }

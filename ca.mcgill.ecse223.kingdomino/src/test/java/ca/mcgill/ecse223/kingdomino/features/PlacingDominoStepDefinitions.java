@@ -47,7 +47,7 @@ public class PlacingDominoStepDefinitions {
         CurrentPlayer=game.getNextPlayer();
         KingdominoApplication.setKingdomino(kingdomino);
         for(int k = 0; k<4;k++){
-			String player0Name = (game.getPlayer(k).getUser().getName());
+			String player0Name =  getStringFromPlayerColor(game.getPlayer(k));
 			GameController.setGrid(player0Name, new Square[81]);
 			GameController.setSet(player0Name, new DisjointSet(81));
 			Square[] grid = GameController.getGrid(player0Name);
@@ -163,4 +163,22 @@ public class PlacingDominoStepDefinitions {
 		}
 	}
 
+	private static String getStringFromPlayerColor(Player p){
+		String result = "";
+		switch(p.getColor()){
+			case Blue:
+				result = "Blue";
+				break;
+			case Green:
+				result = "Green";
+				break;
+			case Pink:
+				result = "Pink";
+				break;
+			case Yellow:
+				result = "Yellow";
+				break;
+		}
+		return result;
+	}
 }

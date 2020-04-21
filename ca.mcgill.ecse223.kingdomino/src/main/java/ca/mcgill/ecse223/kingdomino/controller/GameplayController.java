@@ -260,7 +260,7 @@ public class GameplayController {
 		Player currentPl = game.getPlayer(0);
 		Kingdom kingdom = currentPl.getKingdom();
 		Castle castle = getCastle(kingdom);
-		Square[] grid = GameController.getGrid(currentPl.getUser().getName());
+		Square[] grid = GameController.getGrid( getStringFromPlayerColor(currentPl));
 		DominoInKingdom dominoInKingdom = (DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size() - 1);
 		ArrayList<DominoInKingdom.DirectionKind> directions = new ArrayList<DominoInKingdom.DirectionKind>();
 		directions.add(DominoInKingdom.DirectionKind.Down);
@@ -765,6 +765,24 @@ public class GameplayController {
 
 	}
 
+	private static String getStringFromPlayerColor(Player p){
+		String result = "";
+		switch(p.getColor()){
+			case Blue:
+				result = "Blue";
+				break;
+			case Green:
+				result = "Green";
+				break;
+			case Pink:
+				result = "Pink";
+				break;
+			case Yellow:
+				result = "Yellow";
+				break;
+		}
+		return result;
+	}
 	public static String getError() {
 		return error;
 	}

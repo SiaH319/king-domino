@@ -49,9 +49,11 @@ public class SelectDominoPage extends JFrame {
         TOPlayer curPlayer = KingdominoController.getTOPlyerFromCurrentPlayer();
         curPlayerColor.setText(curPlayer.getColor());
         curPlayerColor.setSize(200,100);
+        curPlayerColor.setFont(font);
         curPlayerColorLabel = new JLabel();
         curPlayerColorLabel.setText("Current Player's color");
         curPlayerColorLabel.setSize(200,100);
+        curPlayerColorLabel.setFont(font);
 
         rightSpace = new JLabel();
         rightSpace.setText("                     ");

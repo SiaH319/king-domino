@@ -55,7 +55,7 @@ public class CalculatingPlayerScoreStepDefinitions {
 		createAllDominoes(game);
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
-		String player0Name = (game.getPlayer(0).getUser().getName());
+		String player0Name =  getStringFromPlayerColor(game.getPlayer(0));
 		GameController.setGrid(player0Name, new Square[81]);
 		GameController.setSet(player0Name, new DisjointSet(81));
 		Square[] grid = GameController.getGrid(player0Name);
@@ -227,6 +227,26 @@ public class CalculatingPlayerScoreStepDefinitions {
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
 		}
+	}
+
+
+	private static String getStringFromPlayerColor(Player p){
+		String result = "";
+		switch(p.getColor()){
+			case Blue:
+				result = "Blue";
+				break;
+			case Green:
+				result = "Green";
+				break;
+			case Pink:
+				result = "Pink";
+				break;
+			case Yellow:
+				result = "Yellow";
+				break;
+		}
+		return result;
 	}
 
 }

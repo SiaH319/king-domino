@@ -228,7 +228,7 @@ public class DominoController {
             
             dik.setX(newx); dik.setY(newy);
             Castle castle = KingdomController.getCastle(kingdom);
-            Square[] grid = GameController.getGrid(player.getUser().getName());
+            Square[] grid = GameController.getGrid(getStringFromPlayerColor(player));
             if(domino.getStatus() == DominoStatus.InCurrentDraft || VerificationController.verifyGridSize(kingdom.getTerritories())){
                 if(VerificationController.verifyNoOverlapping(castle, grid, dik) &&
                         (VerificationController.verifyNeighborAdjacency(castle,grid,dik) || VerificationController.verifyCastleAdjacency(castle,dik)))
@@ -298,10 +298,10 @@ public class DominoController {
     		kingdom = game.getNextPlayer().getKingdom();
             domino.setStatus(DominoStatus.PlacedInKingdom);
             dominoInKingdom=(DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size()-1);
-            String player0Name = (game.getPlayer(0).getUser().getName());
+            String player0Name = getStringFromPlayerColor(game.getNextPlayer());
             Square[] grid = GameController.getGrid(player0Name);
             int[] pos = Square.splitPlacedDomino(dominoInKingdom, grid);
-            DisjointSet s = GameController.getSet(player0Name);
+            DisjointSet s = GameController.getSet(getStringFromPlayerColor(game.getNextPlayer()));
             Castle castle = getCastle(kingdom);
             if (grid[pos[0]].getTerrain() == grid[pos[1]].getTerrain())
                 s.union(pos[0], pos[1]);
@@ -329,7 +329,7 @@ public class DominoController {
      * Feature 18 : Discard Domino
      * Checks if a Domino can be placed in the player's kingdoms
      * @author Mohamad Dimassi.
-     * @param DominoInKingdom that we want to see if it can be discarded.
+     * @param dominoInKingdom that we want to see if it can be discarded.
      * @return true if the domino can be placed correctly placed in the kingdom, false otherwise.
      */
     public static boolean attemptDiscardSelectedDomino(DominoInKingdom dominoInKingdom) throws java.lang.IllegalArgumentException{
@@ -340,7 +340,7 @@ public class DominoController {
         	throw new java.lang.IllegalArgumentException("DominoInKingdom is not created");
         }
         Castle castle = getCastle(kingdom);        
-        Square[] grid = GameController.getGrid(currentPl.getUser().getName());
+        Square[] grid = GameController.getGrid(getStringFromPlayerColor(currentPl));
         ArrayList<DominoInKingdom.DirectionKind> directions =new ArrayList<DominoInKingdom.DirectionKind>();
         directions.add(DominoInKingdom.DirectionKind.Down);
         directions.add(DominoInKingdom.DirectionKind.Left);
@@ -431,6 +431,24 @@ public class DominoController {
         return mov;
     }
 
+    private static String getStringFromPlayerColor(Player p){
+        String result = "";
+        switch(p.getColor()){
+            case Blue:
+                result = "Blue";
+                break;
+            case Green:
+                result = "Green";
+                break;
+            case Pink:
+                result = "Pink";
+                break;
+            case Yellow:
+                result = "Yellow";
+                break;
+        }
+        return result;
+    }
     private static DominoInKingdom.DirectionKind findDirAfterRotation(int rotationDir, DominoInKingdom.DirectionKind oldDir){
         DominoInKingdom.DirectionKind dir = DominoInKingdom.DirectionKind.Up;
         switch(oldDir){

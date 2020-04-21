@@ -182,7 +182,7 @@ public class CalculationController {
     	System.out.println("enterred the calculation");
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Player p= game.getNextPlayer();
-        String player0Name = (p.getUser().getName());
+        String player0Name = getStringFromPlayerColor(game.getPlayer(0));
         Square[] grid = GameController.getGrid(player0Name);
         DisjointSet s = GameController.getSet(player0Name);
         identifyPropertoes(s, grid, p.getKingdom());
@@ -204,7 +204,7 @@ public class CalculationController {
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         if(ScoreList.size()==0) {// if the list of scores does not contain anything
             for( Player p :game.getPlayers()) { // populating the player's kingdom and calculating his score.
-                String player0Name = (p.getUser().getName());
+                String player0Name =  getStringFromPlayerColor(p);
                 Square[] grid = GameController.getGrid(player0Name);
                 DisjointSet s = GameController.getSet(player0Name);
                 CalculationController.identifyPropertoes(s, grid, p.getKingdom());
@@ -559,6 +559,24 @@ public class CalculationController {
         return pIndex;
     }
 
+    private static String getStringFromPlayerColor(Player p){
+        String result = "";
+        switch(p.getColor()){
+            case Blue:
+                result = "Blue";
+                break;
+            case Green:
+                result = "Green";
+                break;
+            case Pink:
+                result = "Pink";
+                break;
+            case Yellow:
+                result = "Yellow";
+                break;
+        }
+        return result;
+    }
     // Quicksort routine
     private static void quicksort(Player[] a ,int start, int end)
     {

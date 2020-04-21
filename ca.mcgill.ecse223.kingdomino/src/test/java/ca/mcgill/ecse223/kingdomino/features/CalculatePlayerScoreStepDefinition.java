@@ -55,7 +55,7 @@ public class CalculatePlayerScoreStepDefinition {
 		createAllDominoes(game);
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
-		String player0Name = (game.getPlayer(0).getUser().getName());
+		String player0Name =  getStringFromPlayerColor(game.getPlayer(0));
 		GameController.setGrid(player0Name, new Square[81]);
 		GameController.setSet(player0Name, new DisjointSet(81));
 		Square[] grid = GameController.getGrid(player0Name);
@@ -78,7 +78,7 @@ public class CalculatePlayerScoreStepDefinition {
 		Game game = kingdomino.getCurrentGame();
 		Player player = game.getNextPlayer();
 		Kingdom kingdom = player.getKingdom();
-		String player0Name = (player.getUser().getName());
+		String player0Name =  getStringFromPlayerColor(game.getPlayer(0));
 		DisjointSet s = GameController.getSet(player0Name);
 		Square[] grid = GameController.getGrid(player0Name);
 		CalculationController.identifyPropertoes(s, grid, player.getKingdom());
@@ -207,4 +207,22 @@ public class CalculatePlayerScoreStepDefinition {
 		}
 	}
 
+	private static String getStringFromPlayerColor(Player p){
+		String result = "";
+		switch(p.getColor()){
+			case Blue:
+				result = "Blue";
+				break;
+			case Green:
+				result = "Green";
+				break;
+			case Pink:
+				result = "Pink";
+				break;
+			case Yellow:
+				result = "Yellow";
+				break;
+		}
+		return result;
+	}
 }
