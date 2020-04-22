@@ -74,6 +74,14 @@ public class GameGridGUI extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		//Global Setting
+        Font font = new Font("Helvetica Neue", Font.PLAIN, 24);
+        setSize(1600, 900);
+        setTitle("Kingdomino Application");
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setFont(font);
+		
 		frame = new JFrame();
 		frame.setBounds(600, 600, 650, 700);
 		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
