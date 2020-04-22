@@ -62,6 +62,15 @@ public class GameGridGUI extends JFrame {
 			}
 		});
 	}*/
+        
+        private JButton btnNewButton;
+        private JButton btnNewButton_1;
+        private JButton btnNewButton_2;
+        private JButton btnNewButton_3;
+        
+        private JPanel leftPanel;
+        private JPanel rightPanel;
+        private JPanel upPanel;
 
 	/**
 	 * Create the application.
@@ -74,6 +83,12 @@ public class GameGridGUI extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		leftPanel = new JPanel();
+        leftPanel.setPreferredSize(new Dimension(40, 50));
+        rightPanel = new JPanel();
+        rightPanel.setPreferredSize(new Dimension(40, 50));
+        upPanel = new JPanel();
+        upPanel.setPreferredSize(new Dimension(40, 10));
 		
 		//Global Setting
         Font font = new Font("Helvetica Neue", Font.PLAIN, 24);
@@ -81,90 +96,9 @@ public class GameGridGUI extends JFrame {
         setTitle("Kingdomino Application");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setFont(font);
-		
-		frame = new JFrame();
-		frame.setBounds(600, 600, 650, 700);
-		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		JButton b1=new JButton();  
-		
-	    JButton b2=new JButton();
-	    
-	    JButton b3=new JButton();  
-	    
-	    JButton b4=new JButton();  
-	    
-	    JButton b5=new JButton();  
-	    
-	    JButton b6=new JButton();  
-	   
-	    JButton b7=new JButton();  
-	    
-	    JButton b8=new JButton();  
-	    
-	    JButton b9=new JButton();  
-	    
-	    JButton b10=new JButton();  
-		
-	    JButton b11=new JButton();  
-	    
-	    JButton b12=new JButton();  
-	    
-	    JButton b13=new JButton();  
-	    
-	    JButton b14=new JButton();  
-	    
-	    JButton b15=new JButton();  
-	    
-	    JButton b16=new JButton();  
-	    
-	    JButton b17=new JButton();  
-	    
-	    JButton b18=new JButton();  
-	    
-	    JButton b19=new JButton();  
-	   
-	    JButton b20=new JButton(); 
-	    JButton b21=new JButton();  
-	    
-	    JButton b22=new JButton();  
-	    
-	    JButton b23=new JButton();  
-	    
-	    JButton b24=new JButton(); 
-	    
-	    JButton b25=new JButton();
-	    frame.getContentPane().setLayout(new GridLayout(0, 5, 0, 0));
 
 	    
-	          
-	    frame.getContentPane().add(b1);
-	    frame.getContentPane().add(b2);
-	    frame.getContentPane().add(b3);
-	    frame.getContentPane().add(b4);
-	    frame.getContentPane().add(b5);  
-	    frame.getContentPane().add(b6);
-	    frame.getContentPane().add(b7);
-	    frame.getContentPane().add(b8);
-	    frame.getContentPane().add(b9);
-	    frame.getContentPane().add(b10);
-	    frame.getContentPane().add(b11);
-	    frame.getContentPane().add(b12);
-	    frame.getContentPane().add(b13);
-	    frame.getContentPane().add(b14);  
-	    frame.getContentPane().add(b15);
-	    frame.getContentPane().add(b16);
-	    frame.getContentPane().add(b17);
-	    frame.getContentPane().add(b18);
-	    frame.getContentPane().add(b19);
-	    frame.getContentPane().add(b20);
-	    frame.getContentPane().add(b21);  
-	    frame.getContentPane().add(b22);
-	    frame.getContentPane().add(b23);
-	    frame.getContentPane().add(b24);
-	    frame.getContentPane().add(b25);
-	    
-	    JButton btnNewButton = new JButton("Place Domino");
+	    btnNewButton = new JButton("Place Domino");
 	    btnNewButton.setBackground(Color.ORANGE);
 	    btnNewButton.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
@@ -174,10 +108,9 @@ public class GameGridGUI extends JFrame {
 			placeDominoActionPerformed(e);
 	    	}
 	    });
-	    frame.getContentPane().add(btnNewButton);
 		
 	    
-	    JButton btnNewButton_1 = new JButton("Move");
+	    btnNewButton_1 = new JButton("Move");
 	    btnNewButton_1.setBackground(Color.PINK);
 	    btnNewButton_1.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
@@ -187,10 +120,10 @@ public class GameGridGUI extends JFrame {
 			moveDominoActionPerformed(e);
 	    	}
 	    });
-	    frame.getContentPane().add(btnNewButton_1);
+	    
 		
 	    
-	    JButton btnNewButton_2 = new JButton("Rotate");
+	    btnNewButton_2 = new JButton("Rotate");
 	    btnNewButton_2.setBackground(Color.CYAN);
 	    btnNewButton_2.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
@@ -201,10 +134,10 @@ public class GameGridGUI extends JFrame {
 			rotateDominoActionPerformed(e);
 	    	}
 	    });
-	    frame.getContentPane().add(btnNewButton_2);
+	    
 		
 	    
-	    JButton btnNewButton_3 = new JButton("Discard");
+	    btnNewButton_3 = new JButton("Discard");
 	    btnNewButton_3.setBackground(Color.MAGENTA);
 	    btnNewButton_3.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
@@ -214,7 +147,7 @@ public class GameGridGUI extends JFrame {
 			discardDominoActionPerformed(e);
 	    	}
 	    });
-	    frame.getContentPane().add(btnNewButton_3);
+	    
 		
 	    
 	    JButton btnNewButton_4 = new JButton("Next");
@@ -226,56 +159,73 @@ public class GameGridGUI extends JFrame {
 			// DominoController.chooseNextDomino(Game game,int dominoId)
 	    	}
 	    });
-	    frame.getContentPane().add(btnNewButton_4);
+	    
 	    
 	   
-	    
+	  //SetLayOut
+        GroupLayout layout = new GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+        
+        layout.setVerticalGroup(
+                layout.createSequentialGroup()
+                        .addComponent(upPanel)
+                        .addGroup(layout.createParallelGroup()
+                                .addComponent(leftPanel)
+                                .addGroup(layout.createSequentialGroup().
+                                        addComponent(btnNewButton).
+                                        addComponent(btnNewButton_1).
+                                        addComponent(btnNewButton_2).
+                                        addComponent(btnNewButton_3))
+                                .addComponent(rightPanel))
+
+
+        );
+        
+        layout.setHorizontalGroup(
+                layout.createSequentialGroup().
+                        addGroup(layout.createParallelGroup()
+                                .addComponent(upPanel)
+                                .addComponent(leftPanel)).
+                        addGroup(layout.createParallelGroup().
+                                addComponent(btnNewButton).
+                                addComponent(btnNewButton_1).
+                                addComponent(btnNewButton_2).
+                                addComponent(btnNewButton_3))
+                .addComponent(rightPanel)
+
+        );
 	 
 	    
-	    frame.setSize(500,500);  
-	    frame.setVisible(true);  
-		
-		
-		/*JButton btnNewButtonNext = new JButton("Next");
-		btnNewButtonNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// todo link to the controller 
-			}
-			
-		});
-		btnNewButtonNext.setBounds(134, 65, 93, 23);
-		frame.getContentPane().add(btnNewButtonNext, BorderLayout.SOUTH);
-		
-		JButton btnNewButtonPlace = new JButton("Place");
-		btnNewButtonPlace.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// todo link to the controller - place domino
-			}
-			
-		});
-		btnNewButtonNext.setBounds(134, 65, 93, 23);
-		frame.getContentPane().add(btnNewButtonPlace, BorderLayout.NORTH);
-		*/
 	}
 	
 	public void placeDominoActionPerformed(ActionEvent e){
 		GameplayController.triggerPlaceDominoInSM();
+		this.setVisible(false);
+        new PlaceDominoPage().setVisible(true);
 	}
 	
 	public void discardDominoActionPerformed(ActionEvent e){
 		GameplayController.triggerDiscardDominoInSM();
+		this.setVisible(false);
+        new DiscardDominoPage().setVisible(true);
 	}
 	
 	public void moveDominoActionPerformed(ActionEvent e){
 		int id = dominoQueueVisualizer.getCurDominoId();
 		String dir = "";
 		GameplayController.triggerMoveDominoInSM(dir);
+		this.setVisible(false);
+        new MoveDominoPage().setVisible(true);
 	}
 	
 	public void rotateDominoActionPerformed(ActionEvent e){
 		int id = dominoQueueVisualizer.getCurDominoId();
 		int dir = 1;
 		GameplayController.triggerRotateDominoInSM(dir);
+		this.setVisible(false);
+        new RotateDominoPage().setVisible(true);
 	}
 	
 	private static Domino getdominoByID(int id) {
