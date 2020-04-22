@@ -202,30 +202,25 @@ public class GameGridGUI extends JFrame {
 	
 	public void placeDominoActionPerformed(ActionEvent e){
 		GameplayController.triggerPlaceDominoInSM();
-		this.setVisible(false);
-        new PlaceDominoPage().setVisible(true);
 	}
 	
 	public void discardDominoActionPerformed(ActionEvent e){
 		GameplayController.triggerDiscardDominoInSM();
-		this.setVisible(false);
-        new DiscardDominoPage().setVisible(true);
+		
 	}
 	
 	public void moveDominoActionPerformed(ActionEvent e){
 		int id = dominoQueueVisualizer.getCurDominoId();
 		String dir = "";
 		GameplayController.triggerMoveDominoInSM(dir);
-		this.setVisible(false);
-        new MoveDominoPage().setVisible(true);
+		
 	}
 	
 	public void rotateDominoActionPerformed(ActionEvent e){
 		int id = dominoQueueVisualizer.getCurDominoId();
 		int dir = 1;
 		GameplayController.triggerRotateDominoInSM(dir);
-		this.setVisible(false);
-        new RotateDominoPage().setVisible(true);
+		
 	}
 	
 	private static Domino getdominoByID(int id) {
