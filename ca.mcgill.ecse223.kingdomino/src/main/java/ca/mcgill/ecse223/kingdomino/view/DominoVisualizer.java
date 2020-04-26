@@ -67,9 +67,7 @@ public class DominoVisualizer extends JPanel {
     }
 
     public void doDrawing(Graphics g) {
-        System.out.println("Entered doDrawing");
         if (domino != null) {
-            System.out.println("Entered doDrawing");
             Graphics2D g2d = (Graphics2D) g.create();
 
             BasicStroke thinStroke = new BasicStroke(3);

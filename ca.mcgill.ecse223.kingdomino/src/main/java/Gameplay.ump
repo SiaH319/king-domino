@@ -19,10 +19,10 @@ class Gameplay {
             	makeSelection(int id) [!isSelectionValid(id)] -> /{} Initializing.SelectingFirstDomino;
                 makeSelection(int id) [isSelectionValid(id)&&!isCurrentPlayerTheLastInTurn()]-> 
                 /{currentPlayerSelectDomino(id);switchCurrentPlayer();} Initializing.SelectingFirstDomino;
-                makeSelection(int id) [isSelectionValid(id)&&isCurrentPlayerTheLastInTurn()] ->/ {switchCurrentPlayer();} Initializing.RevealDraft;
+                makeSelection(int id) [isSelectionValid(id)&&isCurrentPlayerTheLastInTurn()] ->/ {currentPlayerSelectDomino(id);} Initializing.RevealDraft;
             }
             RevealDraft{
-            	proceed ->/{revealNextDraft();} InGame.PreplacingDomino;
+            	proceed ->/{revealNextDraft();switchCurrentPlayer();} InGame.PreplacingDomino;
             }
         }
         InGame {
@@ -45,13 +45,10 @@ class Gameplay {
             }
             ProceedingToNextPlayerOrNextTurn {
                 proceed [!isCurrentPlayerTheLastInTurn()] -> /{switchCurrentPlayer();} InGame.PreplacingDomino;
-                proceed [isCurrentPlayerTheLastInTurn()] -> /{createNextDraft();} InGame.OrderingNextDraft;
+                proceed [isCurrentPlayerTheLastInTurn()] -> /{createNextDraft();} InGame.OrderingRevealingNextDraft;
             }
-            OrderingNextDraft {
-                order [areAllDominoesInCurrentDraftSelected()]-> /{orderNextDraft();} InGame.RevealingNextDraft;
-            }
-            RevealingNextDraft {
-                reveal -> /{revealNextDraft();switchCurrentPlayer();} InGame.PreplacingDomino;
+            OrderingRevealingNextDraft {
+                order [areAllDominoesInCurrentDraftSelected()]-> /{orderNextDraft();revealNextDraft();switchCurrentPlayer();} InGame.PreplacingDomino;
             }
             saveGame(String filename) -> /{save(filename);} SettingUp;
         }

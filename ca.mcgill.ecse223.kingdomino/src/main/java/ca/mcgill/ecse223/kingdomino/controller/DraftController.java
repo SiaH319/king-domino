@@ -115,8 +115,18 @@ public class DraftController {
      * @author Mohamad
      */
     public static void revealDominoesInitiated() {
-        if(KingdominoApplication.getStateMachine().getGamestatusInitializing()== Gameplay.GamestatusInitializing.CreatingFirstDraft)
-            return;
+        if(KingdominoApplication.getStateMachine().getGamestatusInitializing()== Gameplay.GamestatusInitializing.CreatingFirstDraft) {
+        	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        	Draft currentDraft = game.getCurrentDraft();
+        	for(Player player:game.getPlayers()){
+                if(player.getDominoSelection()!=null && player.getDominoSelection().getDraft()==currentDraft){
+                    Domino domino = player.getDominoSelection().getDomino();
+                    player.setCurrentRanking(currentDraft.indexOfIdSortedDomino(domino));
+                }
+            }
+        	return;
+        }
+           
         Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();
         nextDraft.setDraftStatus(Draft.DraftStatus.FaceUp);// flip up the dominoes

@@ -91,9 +91,14 @@ public class KingdominoController<priavte> {
         return toPlayer;
     }
 
+    public static String getSquareTerrainTypeInString(Square square){
+        return getStringFromTerrainType(square.getTerrain());
+    }
+
 
     private static String getStringFromTerrainType(TerrainType terrainType){
         String result;
+        if(terrainType == null) return "/";
         switch(terrainType){
             case WheatField:
                 result = "Wheat";

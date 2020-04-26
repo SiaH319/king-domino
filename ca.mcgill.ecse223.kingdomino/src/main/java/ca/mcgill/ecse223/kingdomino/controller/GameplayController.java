@@ -66,9 +66,6 @@ public class GameplayController {
 		case "order":
 			statemachine.order();
 			break;
-		case "reveal":
-			statemachine.reveal();
-			break;
 		case "draftReady":
 			statemachine.draftReady();
 			break;
@@ -613,6 +610,7 @@ public class GameplayController {
 		DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(domino.getId(), kingdom);
         if(dik == null){
             dik = new DominoInKingdom(0,0,kingdom,domino);
+            return;
         }
 		DominoController.moveCurrentDomino(p, p.getDominoSelection().getDomino().getId(), dir);
 	}
@@ -661,7 +659,7 @@ public class GameplayController {
 					Player player = new Player(game);
 					player.setColor(PlayerColor.values()[i]);
 					Kingdom kingdom = new Kingdom(player);
-
+				new Castle(0, 0, kingdom, player);
 				String player0Name =  getStringFromPlayerColor(player);
 				GameController.setGrid(player0Name, new Square[81]);
 				GameController.setSet(player0Name, new DisjointSet(81));

@@ -100,15 +100,13 @@ public class SelectDominoPage extends JFrame {
     public void refresh(){
         TOPlayer curPlayer = KingdominoController.getTOPlyerFromCurrentPlayer();
         curPlayerColor.setText(curPlayer.getColor());
-
-        //dominoQueueVisualizer = new DominoQueueVisualizer(KingdominoController.getAllTODominoInCurrentDraft());
         dominoQueueVisualizer.repaint();
     }
 
     public void makeSelectionActionPerformed(ActionEvent evt){
         int id = dominoQueueVisualizer.getCurDominoId();
-        System.out.println("id in make selection"+id);
-        System.out.println("Current player's rank:"+KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getCurrentRanking());
+//        System.out.println("id in make selection"+id);
+//        System.out.println("Current player's rank:"+KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getCurrentRanking());
         if(id == -1) {
             errorMessage.setText("No Domino Selected");
             return;
@@ -117,7 +115,9 @@ public class SelectDominoPage extends JFrame {
 
         refresh();
         if(GameplayController.statemachine.getGamestatusInitializing()!= Gameplay.GamestatusInitializing.SelectingFirstDomino){
+            GameplayController.triggerEventsInSM("proceed");
             this.setVisible(false);
+            new PlaceDominoPage().setVisible(true);
         }
     }
 
