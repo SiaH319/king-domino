@@ -14,17 +14,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GridVisualizer extends JPanel {
-    private int posx = 50;
+    private int posx = 0;
     private int posy = 50;
     private int SQUARE_HEIGHT = 150;
     private int y_max = 2;
     private int y_min = -2;
     private int x_max = 2;
     private int x_min = -2;
-
+    private int SMALL_SQUARE_SIZE = 50;
+    private double currentPosRectX = posx+2.5*150- SMALL_SQUARE_SIZE/2;
+    private double currentPosRectY = posy+2.5*150- SMALL_SQUARE_SIZE/2;
 
     private HashMap<Integer,String> squareTerrainTypes = new HashMap<>();
     private ArrayList<Rectangle2D> squareList = new ArrayList<>();
+    private Rectangle2D currentPosRect;
 
     public GridVisualizer(Square[] grid){
         for(int y = 2; y >= -2; y--)
@@ -32,7 +35,16 @@ public class GridVisualizer extends JPanel {
                 int index = Square.convertPositionToInt(x,y);
                 squareTerrainTypes.put(index, KingdominoController.getSquareTerrainTypeInString(grid[index]));
             }
+        currentPosRect = new Rectangle2D.Double(currentPosRectX, currentPosRectY, SMALL_SQUARE_SIZE, SMALL_SQUARE_SIZE);
         //this.setBounds(0,0,0,0);
+    }
+
+    public void setGrid(Square[] grid){
+        for(int y = 2; y >= -2; y--)
+            for(int x = -2; x <= 2; x++){
+                int index = Square.convertPositionToInt(x,y);
+                squareTerrainTypes.put(index, KingdominoController.getSquareTerrainTypeInString(grid[index]));
+            }
     }
 
     public void init(){
@@ -106,8 +118,39 @@ public class GridVisualizer extends JPanel {
         return true;
     }
 
+    public boolean moveUpCursor(){
+        if(this.y_max == 4) return false;
+        this.currentPosRectY -= 150;
+        repaint();
+        return true;
+    }
+
+    public boolean moveDownCursor(){
+        if(this.y_min == -4) return false;
+        this.currentPosRectY += 150;
+        repaint();
+        return true;
+    }
+
+    public boolean moveLeftCursor(){
+        if(this.x_min == -4) return false;
+        this.currentPosRectX -= 150;
+        repaint();
+        return true;
+    }
+
+    public boolean moveRightCursor(){
+        if(this.x_max == 4) return false;
+        this.currentPosRectX += 150;
+        repaint();
+        return true;
+    }
+
+
     private void doDrawing(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
+
+        g2d.setColor(Color.BLACK);
         for(int y = y_max; y >= y_min;y--)
         for(int x = x_min; x <= x_max;x++){
             String path = squareTerrainTypes.get(Square.convertPositionToInt(x,y));
@@ -123,6 +166,8 @@ public class GridVisualizer extends JPanel {
             }
 
         }
+        g2d.setColor(Color.red);
+        g2d.fillRect((int)currentPosRectX,(int)currentPosRectY,SMALL_SQUARE_SIZE,SMALL_SQUARE_SIZE);
     }
 
     @Override

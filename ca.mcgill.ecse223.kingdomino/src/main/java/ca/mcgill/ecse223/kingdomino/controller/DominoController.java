@@ -202,7 +202,7 @@ public class DominoController {
         int mov = convertMovementStringToInt(movement);
         Domino domino;
         if(dik != null){
-            domino = dik.getDomino();
+            domino = player.getDominoSelection().getDomino();
             switch(mov){
             	case -1:
             		newx=oldx;
@@ -225,16 +225,19 @@ public class DominoController {
                     newy = oldy;
                     break;
             }
-            
+            System.out.println("In move domino"+newx+newy);
             dik.setX(newx); dik.setY(newy);
             Castle castle = KingdomController.getCastle(kingdom);
             Square[] grid = GameController.getGrid(getStringFromPlayerColor(player));
-            if(domino.getStatus() == DominoStatus.InCurrentDraft || VerificationController.verifyGridSize(kingdom.getTerritories())){
-                if(VerificationController.verifyNoOverlapping(castle, grid, dik) &&
-                        (VerificationController.verifyNeighborAdjacency(castle,grid,dik) || VerificationController.verifyCastleAdjacency(castle,dik)))
+            if(domino.getStatus() == DominoStatus.InCurrentDraft || VerificationController.verifyGridSize(kingdom.getTerritories())) {
+                if (VerificationController.verifyNoOverlapping(castle, grid, dik) &&
+                        (VerificationController.verifyNeighborAdjacency(castle, grid, dik) || VerificationController.verifyCastleAdjacency(castle, dik))){
                     domino.setStatus(DominoStatus.CorrectlyPreplaced);
-                else
+                    System.out.println("Current domino status is Correctly Preplaced");
+                }else{
+                    System.out.println("Current domino status is Erroneously Preplaced");
                     domino.setStatus(DominoStatus.ErroneouslyPreplaced);
+                }
             }else{
                 dik.setX(oldx); dik.setY(oldy);
                 return false;
@@ -263,9 +266,10 @@ public class DominoController {
         if(VerificationController.verifyGridSize(territories) || dominoInKingdom.getDomino().getStatus() == DominoStatus.InCurrentDraft){
             if(VerificationController.verifyNoOverlapping(castle,grid,dominoInKingdom) &&
                     (VerificationController.verifyCastleAdjacency(castle,dominoInKingdom) ||
-                            VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom)))
+                            VerificationController.verifyNeighborAdjacency(castle,grid,dominoInKingdom))) {
+                System.out.println("Successfully rotate domino");
                 dominoInKingdom.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
-            else
+            }else
                 dominoInKingdom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
         } else{
             dominoInKingdom.setDirection(oldDir);
@@ -320,9 +324,10 @@ public class DominoController {
             }
             System.out.println("Disjoint Set");
             System.out.println(GameController.getSet(player0Name).toString(grid));
-        } else
+        } else{
             throw new java.lang.IllegalArgumentException("The current domino placement does not respect the " +
                     "adjacency rules");
+        }
     }
 
     /**

@@ -29,7 +29,7 @@ public class DominoVisualizer extends JPanel {
     private TODomino domino;
 
     // UI elements
-    private int SQUARE_HEIGHT = 200;
+    private int SQUARE_HEIGHT = 150;
     public int posx;
     public int posy;
     private String dir; //up,right,down,left

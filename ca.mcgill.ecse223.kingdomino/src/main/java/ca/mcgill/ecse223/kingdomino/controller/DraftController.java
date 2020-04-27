@@ -116,18 +116,23 @@ public class DraftController {
      */
     public static void revealDominoesInitiated() {
         if(KingdominoApplication.getStateMachine().getGamestatusInitializing()== Gameplay.GamestatusInitializing.CreatingFirstDraft) {
-        	Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        	Draft currentDraft = game.getCurrentDraft();
-        	for(Player player:game.getPlayers()){
+        	return;
+        }
+
+        System.out.println("Entered printing Player color: ");
+//        if(GameplayController.statemachine.getGamestatusInitializing()== Gameplay.GamestatusInitializing.RevealDraft){
+            Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+            Draft currentDraft = game.getCurrentDraft();
+            for(Player player:game.getPlayers()){
                 if(player.getDominoSelection()!=null && player.getDominoSelection().getDraft()==currentDraft){
                     Domino domino = player.getDominoSelection().getDomino();
                     player.setCurrentRanking(currentDraft.indexOfIdSortedDomino(domino));
+                    System.out.println("Player color: "+player.getColor().toString()+" Player Rank: "+player.getCurrentRanking());
                 }
             }
-        	return;
-        }
+//        }
            
-        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+       // Game game = KingdominoApplication.getKingdomino().getCurrentGame();
         Draft nextDraft =game.getNextDraft();
         nextDraft.setDraftStatus(Draft.DraftStatus.FaceUp);// flip up the dominoes
     }

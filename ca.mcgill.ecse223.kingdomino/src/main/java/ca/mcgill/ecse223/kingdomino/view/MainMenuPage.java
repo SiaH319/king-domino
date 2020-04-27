@@ -53,7 +53,7 @@ public class MainMenuPage extends JFrame {
         //Set Default
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kingdomino Application");
-        setSize(1600, 900);
+        setSize(1600, 1000);
 
         //Add Action Listeners
         // listeners for create new user button

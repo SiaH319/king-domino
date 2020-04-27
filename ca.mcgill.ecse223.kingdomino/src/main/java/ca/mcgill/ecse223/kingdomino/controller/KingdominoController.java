@@ -62,6 +62,11 @@ public class KingdominoController<priavte> {
         return TOUsers;
     }
 
+    /**
+     * Retrieve a list of TODomino from current draft's dominos
+     * @author Cecilia Jiang
+     * @return A list of TOUser
+     */
     public static List<TODomino> getAllTODominoInCurrentDraft(){
         Draft draft = KingdominoApplication.getKingdomino().getCurrentGame().getCurrentDraft();
         List<TODomino> TODominos = new ArrayList<>();
@@ -71,6 +76,25 @@ public class KingdominoController<priavte> {
             TODominos.add(TODominotmp);
         }
         return TODominos;
+    }
+
+    public static List<TODomino> getAllTODominoInNextDraft(){
+        Draft draft = KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft();
+        List<TODomino> TODominos = new ArrayList<>();
+        for(Domino domino: draft.getIdSortedDominos()){
+            TODomino TODominotmp = new TODomino(domino.getId(),getStringFromTerrainType(domino.getLeftTile())
+                    ,getStringFromTerrainType(domino.getRightTile()),domino.getLeftCrown(),domino.getRightCrown());
+            TODominos.add(TODominotmp);
+        }
+        return TODominos;
+    }
+
+    public static TODomino getDominoSelectedByCurrentPlayer(){
+        Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+        Domino domino = player.getDominoSelection().getDomino();
+        TODomino TODominotmp = new TODomino(domino.getId(),getStringFromTerrainType(domino.getLeftTile())
+                ,getStringFromTerrainType(domino.getRightTile()),domino.getLeftCrown(),domino.getRightCrown());
+        return TODominotmp;
     }
 
     public static TOPlayer getASelectedDominosPlayer(int id){

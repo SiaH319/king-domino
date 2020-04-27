@@ -61,7 +61,6 @@ public class GameplayController {
 			statemachine.proceed();
 			break;
 		case "place":
-			statemachine.place();
 			break;
 		case "order":
 			statemachine.order();
@@ -72,6 +71,7 @@ public class GameplayController {
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid trigger event: " + methodName);
 		}
+
 
 	}
 
@@ -198,6 +198,7 @@ public class GameplayController {
 		Player currentPl = game.getNextPlayer();
 		Domino currentlyChosedDomino = currentPl.getDominoSelection().getDomino();
 		DominoStatus curDominoStatus = currentlyChosedDomino.getStatus();
+		if(curDominoStatus!=DominoStatus.CorrectlyPreplaced) GameplayController.setError("Not correctly preplaced");
 		return curDominoStatus == DominoStatus.CorrectlyPreplaced;
 	}
 
@@ -485,10 +486,16 @@ public class GameplayController {
 	 * Accept place domino call from state machine
 	 * @author Cecilia Jiang
 	 */
-	public static void acceptPlaceDominoFromSM() {
+	public static String acceptPlaceDominoFromSM() {
 		Player currentPlayer = kingdomino.getCurrentGame().getNextPlayer();
 		Domino domino = currentPlayer.getDominoSelection().getDomino();
-		DominoController.placeDomino(currentPlayer, domino.getId());
+		try{
+			DominoController.placeDomino(currentPlayer, domino.getId());
+			return "";
+		}catch(Exception e){
+			System.out.println("Message"+e.getMessage());
+			return e.getMessage();
+		}
 	}
 
 	public static void acceptDiscardDominoFromSM() {
@@ -505,30 +512,49 @@ public class GameplayController {
 	 */
 	private static void switchCurrentPlayerInitiated() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		if(statemachine.getGamestatus()==Gamestatus.Initializing) {
+		boolean zeroCondition = true;
+		for(Domino domino: game.getCurrentDraft().getIdSortedDominos()){
+			zeroCondition = (domino.getDominoSelection()==null);
+		}
+		if(zeroCondition) {
 			int curPlayerRanking = game.getNextPlayer().getCurrentRanking();
 			if(!isCurrentPlayerTheLastInTurn()) {
+				System.out.println("eNTERED ZERO CONDITION IN SWITCH PLAYER");
 				for(Player player: game.getPlayers()) {
 					if(player.getDominoSelection()==null&&player.getCurrentRanking()-1 == curPlayerRanking) {
 						game.setNextPlayer(player);
 						return;
 					}
 				}
-				return;
+
+			}
+			return;
+		}
+
+		boolean firstCondition = true;
+		for(Domino domino: game.getNextDraft().getIdSortedDominos()){
+			firstCondition = firstCondition &&(domino.getDominoSelection()==null);
+		}
+		if(firstCondition){
+			System.out.println("eNTERED FIRST CONDITION IN SWITCH PLAYER");
+			for(Player player: game.getPlayers()){
+				if(player.getCurrentRanking() == 0){
+					game.setNextPlayer(player);
+					break;
+				}
+			}
+			return;
+		}else{
+			Player p = game.getNextPlayer();
+			int mod = (game.getNumberOfPlayers()%2==0)? 4 : 3;
+			System.out.println("eNTERED SECOND CONDITION IN SWITCH PLAYER");
+			int rank = (p.getCurrentRanking()+1) % mod;
+			for(Player player: game.getPlayers()){
+				if(player.getCurrentRanking() == rank)
+					game.setNextPlayer(player);
 			}
 		}
 
-
-		int minIndex= 100;
-		int minVal= 100;
-		int counter = 0;
-		Player p = game.getNextPlayer();
-		int mod = (game.getNumberOfPlayers()%2==0)? 4 : 3;
-		int rank = (p.getCurrentRanking()+1) % mod;
-		for(Player player: game.getPlayers()){
-			if(player.getCurrentRanking() == rank)
-				game.setNextPlayer(player);
-		}
 
 	}
 
@@ -610,7 +636,6 @@ public class GameplayController {
 		DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(domino.getId(), kingdom);
         if(dik == null){
             dik = new DominoInKingdom(0,0,kingdom,domino);
-            return;
         }
 		DominoController.moveCurrentDomino(p, p.getDominoSelection().getDomino().getId(), dir);
 	}
@@ -626,9 +651,12 @@ public class GameplayController {
 		Game game = kd.getCurrentGame();
 		Player p = game.getNextPlayer();
 		Castle castle = KingdomController.getCastle(p.getKingdom());
-		Square[] grid = GameController.getGrid(p.getUser().getName());
+		Square[] grid = GameController.getGrid(getStringFromPlayerColor(p));
 		Domino domino = p.getDominoSelection().getDomino();
 		DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(domino.getId(), p.getKingdom());
+		if(dik == null){
+			return;
+		}
 		DominoController.rotateExistingDomino(castle, grid, p.getKingdom().getTerritories(), dik, dir);
 	}
 

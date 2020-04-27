@@ -70,7 +70,7 @@ class Gameplay {
             break;
        	case "OrderingNextDraft":
        		gamestatus = Gamestatus.InGame;
-       		gamestatusInGame = GamestatusInGame.OrderingNextDraft;
+       		gamestatusInGame = GamestatusInGame.OrderingRevealingNextDraft;
        		break;
        	case "PreplacingDomino":
        		gamestatus=Gamestatus.InGame;
@@ -180,7 +180,8 @@ class Gameplay {
     }
     
     public void placeDomino() {
-    	GameplayController.acceptPlaceDominoFromSM();
+    	String error = GameplayController.acceptPlaceDominoFromSM();
+    	GameplayController.setError(error);
     }
     
     public void discardDomino() {

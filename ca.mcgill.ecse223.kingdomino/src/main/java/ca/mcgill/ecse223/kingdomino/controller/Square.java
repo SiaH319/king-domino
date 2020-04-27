@@ -45,7 +45,7 @@ public class Square {
         int pos_left = convertPositionToInt(x_left, y_left);
         squares[pos_left] = new Square(x_left, y_left,domino.getDomino().getLeftCrown(),
                 domino.getDomino().getLeftTile(), domino.getDomino().getId());
-
+        System.out.println("Left Tile Pos: "+x_left+y_left);
         int x_right, y_right;
         DominoInKingdom.DirectionKind dir = domino.getDirection();
         int[] xy_right= DominoInKingdom.getRightTilePosition(x_left,y_left,dir);
@@ -54,6 +54,7 @@ public class Square {
         int pos_right = convertPositionToInt(x_right,y_right);
         squares[pos_right] = new Square(x_right, y_right,domino.getDomino().getRightCrown(),
                 domino.getDomino().getRightTile(), domino.getDomino().getId());
+        System.out.println("Right Tile Pos: "+x_right+y_right);
         return new int[]{pos_left,pos_right};
     }
 

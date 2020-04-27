@@ -57,7 +57,7 @@ public class CreateNewGamePage extends JFrame {
     private void initCompenents() {
         //Global Setting
         Font font = new Font("Helvetica Neue", Font.PLAIN, 24);
-        setSize(1600, 900);
+        setSize(1600, 1000);
         setTitle("Kingdomino Application");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setFont(font);

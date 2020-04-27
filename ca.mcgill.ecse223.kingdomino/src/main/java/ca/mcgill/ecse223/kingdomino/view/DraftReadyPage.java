@@ -16,7 +16,7 @@ public class DraftReadyPage extends JFrame {
     private void init(){
         //Global Setting
         Font font = new Font("Helvetica Neue", Font.PLAIN, 24);
-        setSize(1600, 900);
+        setSize(1600, 1000);
         setTitle("Kingdomino Application");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setFont(font);
@@ -27,7 +27,7 @@ public class DraftReadyPage extends JFrame {
         //Action Listeners
         revealFirstDraft.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                revealFirstDraftActionPerformed(evt);
+                revealFirstDraftActionPerformed();
             }
         });
 
@@ -40,8 +40,7 @@ public class DraftReadyPage extends JFrame {
         layout.setVerticalGroup(layout.createParallelGroup().addComponent(revealFirstDraft));
     }
 
-    private void revealFirstDraftActionPerformed(ActionEvent evt){
-
+    private void revealFirstDraftActionPerformed(){
         GameplayController.triggerEventsInSM("draftReady");
         this.setVisible(false);
         new SelectDominoPage().setVisible(true);

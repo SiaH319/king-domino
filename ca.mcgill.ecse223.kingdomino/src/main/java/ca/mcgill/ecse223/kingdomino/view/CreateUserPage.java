@@ -38,7 +38,7 @@ public class CreateUserPage extends JFrame {
     public void init(){
         //Global Settings
         Font font = new Font("Helvetica Neue", Font.PLAIN, 24);
-        this.setSize(1600, 900);
+        this.setSize(1600, 1000);
         setTitle("Kingdomino Application");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setFont(font);

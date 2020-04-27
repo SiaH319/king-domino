@@ -685,25 +685,26 @@ public class Gameplay
 
   // line 183 "../../../../../Gameplay.ump"
    public void placeDomino(){
-    GameplayController.acceptPlaceDominoFromSM();
+    String error = GameplayController.acceptPlaceDominoFromSM();
+    	GameplayController.setError(error);
   }
 
-  // line 187 "../../../../../Gameplay.ump"
+  // line 188 "../../../../../Gameplay.ump"
    public void discardDomino(){
     GameplayController.acceptDiscardDominoFromSM();
   }
 
-  // line 191 "../../../../../Gameplay.ump"
+  // line 192 "../../../../../Gameplay.ump"
    public void calculateCurrentPlayerScore(){
     GameplayController.acceptCallFromSM("calculateCurrentPlayerScore");
   }
 
-  // line 195 "../../../../../Gameplay.ump"
+  // line 196 "../../../../../Gameplay.ump"
    public void switchCurrentPlayer(){
     GameplayController.acceptCallFromSM("switchCurrentPlayer");
   }
 
-  // line 199 "../../../../../Gameplay.ump"
+  // line 200 "../../../../../Gameplay.ump"
    public void save(String filename){
     GameplayController.acceptSaveGameCallFromSM(filename);
   }
