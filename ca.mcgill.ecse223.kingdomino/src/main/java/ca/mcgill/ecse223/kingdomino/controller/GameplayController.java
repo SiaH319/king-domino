@@ -512,10 +512,10 @@ public class GameplayController {
 	 */
 	private static void switchCurrentPlayerInitiated() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		boolean zeroCondition = true;
-		for(Domino domino: game.getCurrentDraft().getIdSortedDominos()){
-			zeroCondition = (domino.getDominoSelection()==null);
-		}
+		boolean zeroCondition = game.getAllDrafts().size() == 2 && game.getNextDraft().getDraftStatus() == Draft.DraftStatus.Sorted;
+//		for(Domino domino: game.getCurrentDraft().getIdSortedDominos()){
+//			zeroCondition = zeroCondition || (domino.getDominoSelection()==null);
+//		}
 		if(zeroCondition) {
 			int curPlayerRanking = game.getNextPlayer().getCurrentRanking();
 			if(!isCurrentPlayerTheLastInTurn()) {
@@ -632,7 +632,16 @@ public class GameplayController {
 		Game game = kd.getCurrentGame();
 		Player p = game.getNextPlayer();
 		Domino domino = p.getDominoSelection().getDomino();
-		Kingdom kingdom = p.getKingdom();
+		Kingdom kingdom;
+		if(game.getNumberOfPlayers() == 2 && (p.getColor() == PlayerColor.Green|| p.getColor() == PlayerColor.Pink)){
+			System.out.println("Player: "+p.getColor().toString()+"Index: "+ game.indexOfPlayer(p)+"Accepted move domino action");
+			kingdom = game.getPlayer(game.indexOfPlayer(p)-1).getKingdom();
+			if(kingdom == null){
+				System.out.println("Kingdom is null");
+			}
+		}else{
+			kingdom = p.getKingdom();
+		}
 		DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(domino.getId(), kingdom);
         if(dik == null){
             dik = new DominoInKingdom(0,0,kingdom,domino);
@@ -712,20 +721,21 @@ public class GameplayController {
 
 					Player player1 = new Player(game);
 					player1.setColor(PlayerColor.values()[2*i]);
-
+					Kingdom kingdom = new Kingdom(player1);		//Create kingdom for blue and yellow
+					new  Castle(0, 0, kingdom, player1);
 					Player player2 = new Player(game);
 					player2.setColor(PlayerColor.values()[2*i+1]);
-					Kingdom kingdom = new Kingdom(player1);		//Create kindom for player blue and pink
-					new Castle(0, 0, kingdom, player1);
+
 
 					String player0Name =  getStringFromPlayerColor(player1);
 					String player1Name = getStringFromPlayerColor(player2);
-					GameController.setGrid(player0Name, new Square[81]);
+
 					GameController.setSet(player0Name, new DisjointSet(81));
-					Square[] grid = GameController.getGrid(player0Name);
+					Square[] grid = new Square[81];
 					for (int i2 = 4; i2>= -4; i2--)
 						for (int j2 = -4; j2 <= 4; j2++)
 							grid[Square.convertPositionToInt(i2, j2)] = new Square(i2, j2);
+					GameController.setGrid(player0Name,grid);
 					GameController.setGrid(player1Name,grid);
 					GameController.setSet(player1Name,GameController.getSet(player0Name));
 

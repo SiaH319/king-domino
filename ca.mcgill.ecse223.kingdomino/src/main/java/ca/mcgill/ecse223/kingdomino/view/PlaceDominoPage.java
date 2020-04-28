@@ -17,7 +17,7 @@ public class PlaceDominoPage extends JFrame {
     private DominoVisualizer dominoVisualizer;
     //Grid in Java 2d
     private GridVisualizer gridVisualizer;
-
+    private JScrollPane scroller;
     //Movement Buttons Visualizer in JAVA 2d
     private JButton moveUpButton;
     private JButton moveDownButton;
@@ -78,6 +78,7 @@ public class PlaceDominoPage extends JFrame {
 
         String color = curPlayer.getColor();
         gridVisualizer = new GridVisualizer(GameController.getGrid(color));
+        scroller = new JScrollPane(gridVisualizer);
 
         //Add Action Listeners
         moveUpButton.addActionListener(new java.awt.event.ActionListener() {
@@ -193,14 +194,14 @@ public class PlaceDominoPage extends JFrame {
         TOPlayer curPlayer = KingdominoController.getTOPlyerFromCurrentPlayer();
         String color = curPlayer.getColor();
         gridVisualizer.setGrid(GameController.getGrid(color));
-//        placeButton.setEnabled(false);
-//        discardButton.setEnabled(false);
-//        moveUpButton.setEnabled(false);
-//        moveDownButton.setEnabled(false);
-//        moveLeftButton.setEnabled(false);
-//        moveRightButton.setEnabled(false);
-//        rotateAntiClockwise.setEnabled(false);
-//        rotateClockwise.setEnabled(false);
+        placeButton.setEnabled(false);
+        discardButton.setEnabled(false);
+        moveUpButton.setEnabled(false);
+        moveDownButton.setEnabled(false);
+        moveLeftButton.setEnabled(false);
+        moveRightButton.setEnabled(false);
+        rotateAntiClockwise.setEnabled(false);
+        rotateClockwise.setEnabled(false);
         nextButton.setEnabled(true);
         refresh();
     }
@@ -215,6 +216,7 @@ public class PlaceDominoPage extends JFrame {
         moveRightButton.setEnabled(false);
         rotateAntiClockwise.setEnabled(false);
         rotateClockwise.setEnabled(false);
+        nextButton.setEnabled(true);
         refresh();
     }
 

@@ -138,7 +138,9 @@ public class CreateNewGamePage extends JFrame {
 						addComponent(playerColor,20,20,20).
 						addComponent(playerSelection).
 						addComponent(joinButton))
-				.addComponent(doneButton));
+				.addGroup(layout.createParallelGroup().
+                        addComponent(errorMessage).
+                        addComponent(doneButton)));
 
         layout.setHorizontalGroup(layout.createSequentialGroup().
 				addGroup(layout.createParallelGroup().
@@ -148,8 +150,11 @@ public class CreateNewGamePage extends JFrame {
 				).addComponent(playerColor,20,20,20).
 				addGroup(layout.createParallelGroup().
 						addComponent(playerNumberBox).
-						addGroup(layout.createSequentialGroup().addComponent(middleKingdom).addComponent(harmony)).
-						addComponent(playerSelection)).
+						addGroup(layout.createSequentialGroup().
+                                addComponent(middleKingdom).
+                                addComponent(harmony)).
+						addComponent(playerSelection).
+                        addComponent(errorMessage)).
 				addComponent(joinButton).
 				addComponent(doneButton));
     }

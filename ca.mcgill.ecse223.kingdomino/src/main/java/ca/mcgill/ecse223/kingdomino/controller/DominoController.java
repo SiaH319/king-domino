@@ -191,7 +191,18 @@ public class DominoController {
      * @return true if successful or false if fail
      */
     public static boolean moveCurrentDomino(Player player, int dominoId, String movement) {
-        Kingdom kingdom = player.getKingdom();
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        Kingdom kingdom;
+        if(game.getNumberOfPlayers() == 2 && (player.getColor() == PlayerColor.Green|| player.getColor() == PlayerColor.Pink)){
+            System.out.println("Player: "+player.getColor().toString()+"Index: "+ game.indexOfPlayer(player)+"Accepted move domino action");
+            kingdom = game.getPlayer(game.indexOfPlayer(player)-1).getKingdom();
+            if(kingdom != null){
+                System.out.println("Territories Size"+kingdom.getTerritories().size());
+            }
+        }else{
+            kingdom = player.getKingdom();
+        }
+        assert kingdom != null;
         DominoInKingdom dik = KingdomController.getDominoInKingdomByDominoId(dominoId, kingdom);
         int oldx =dik.getX();
         int oldy = dik.getY();
@@ -225,10 +236,10 @@ public class DominoController {
                     newy = oldy;
                     break;
             }
-            System.out.println("In move domino"+newx+newy);
             dik.setX(newx); dik.setY(newy);
             Castle castle = KingdomController.getCastle(kingdom);
             Square[] grid = GameController.getGrid(getStringFromPlayerColor(player));
+            System.out.println("Grid "+(grid[Square.convertPositionToInt(0,1)].getTerrain()==null?"Nothing":"Something here"));
             if(domino.getStatus() == DominoStatus.InCurrentDraft || VerificationController.verifyGridSize(kingdom.getTerritories())) {
                 if (VerificationController.verifyNoOverlapping(castle, grid, dik) &&
                         (VerificationController.verifyNeighborAdjacency(castle, grid, dik) || VerificationController.verifyCastleAdjacency(castle, dik))){
@@ -314,6 +325,18 @@ public class DominoController {
             GameController.unionCurrentSquare(pos[1],
                     VerificationController.getAdjacentSquareIndexesRight(castle, grid, dominoInKingdom), s);
             System.out.println("added the domino to the kingdom with id: "+id+" at position: "+dominoInKingdom.getX()+":"+dominoInKingdom.getY());
+            if(game.getNumberOfPlayers() == 2){
+                if(player0Name.equals("Blue")){
+                    GameController.setGrid("Green",grid);
+                }else if(player0Name.equals("Green")){
+                    GameController.setGrid("Blue",grid);
+                }else if(player0Name.equals("Pink")){
+                    GameController.setGrid("Yellow",grid);
+                }else if(player0Name.equals("Yellow")){
+                    GameController.setGrid("Pink",grid);
+                }
+            }
+
             for(int i = 4; i >=-4; i-- ){
                 for(int j = -4 ; j <= 4; j++){
                     int cur = Square.convertPositionToInt(j,i);
@@ -375,49 +398,6 @@ public class DominoController {
     /////////////////////////////        //////
     ///// ///Helper Methods/////        //////
     ///////////////////////////        //////
-    private int[] rightTilePositionAfterRotation(int x_right, int y_right, int rotationDir, DominoInKingdom.DirectionKind oldDir){
-        int[] pos = new int[2]; //x,y
-        switch(oldDir){
-            case Left:
-                if(rotationDir == 1){
-                    pos[0] = x_right + 1;
-                    pos[1] = y_right + 1;
-                }else if(rotationDir == -1){
-                    pos[0] = x_right + 1;
-                    pos[1] = y_right - 1;
-                }
-                break;
-            case Up:
-                if(rotationDir == 1){
-                    pos[0] = x_right + 1;
-                    pos[1] = y_right - 1;
-                }else if(rotationDir == -1){
-                    pos[0] = x_right - 1;
-                    pos[1] = y_right - 1;
-                }
-                break;
-            case Down:
-                if(rotationDir == 1){
-                    pos[0] = x_right - 1;
-                    pos[1] = y_right + 1;
-                }else if(rotationDir == -1){
-                    pos[0] = x_right + 1;
-                    pos[1] = y_right - 1;
-                }
-                break;
-            case Right:
-                if(rotationDir == 1){
-                    pos[0] = x_right - 1;
-                    pos[1] = y_right - 1;
-                }else if(rotationDir == -1){
-                    pos[0] = x_right - 1;
-                    pos[1] = y_right + 1;
-                }
-                break;
-        }
-        return pos;
-    }
-
     public static int convertMovementStringToInt(String movement){
         int mov = -1;
 

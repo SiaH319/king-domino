@@ -185,8 +185,15 @@ public class CalculationController {
         String player0Name = getStringFromPlayerColor(game.getPlayer(0));
         Square[] grid = GameController.getGrid(player0Name);
         DisjointSet s = GameController.getSet(player0Name);
-        identifyPropertoes(s, grid, p.getKingdom());
-        calculatePropertyScore(p.getKingdom().getProperties(),p);
+        Kingdom kingdom = null;
+        if(game.getNumberOfPlayers() == 2 && (p.getColor() == Player.PlayerColor.Green|| p.getColor() == Player.PlayerColor.Pink)){
+            System.out.println("Player: "+p.getColor().toString()+"Index: "+ game.indexOfPlayer(p)+"Accepted move domino action");
+            kingdom = game.getPlayer(game.indexOfPlayer(p)-1).getKingdom();
+        }else{
+            kingdom = p.getKingdom();
+        }
+        identifyPropertoes(s, grid, kingdom);
+        calculatePropertyScore(kingdom.getProperties(),p);
         CalculateBonusScore(game, p);
         if(s==null || grid==null) {
         	System.out.println("Something wrong here");

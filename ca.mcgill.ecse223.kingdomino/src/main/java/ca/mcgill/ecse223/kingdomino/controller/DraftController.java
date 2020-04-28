@@ -115,13 +115,18 @@ public class DraftController {
      * @author Mohamad
      */
     public static void revealDominoesInitiated() {
-        if(KingdominoApplication.getStateMachine().getGamestatusInitializing()== Gameplay.GamestatusInitializing.CreatingFirstDraft) {
+        boolean isCreatingFirstDraft = true;
+        Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+        for(Player player : game.getPlayers()){
+            isCreatingFirstDraft = isCreatingFirstDraft && player.getCurrentRanking()==1;
+        }
+        if(isCreatingFirstDraft) {
         	return;
         }
 
         System.out.println("Entered printing Player color: ");
 //        if(GameplayController.statemachine.getGamestatusInitializing()== Gameplay.GamestatusInitializing.RevealDraft){
-            Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+            ;
             Draft currentDraft = game.getCurrentDraft();
             for(Player player:game.getPlayers()){
                 if(player.getDominoSelection()!=null && player.getDominoSelection().getDraft()==currentDraft){
