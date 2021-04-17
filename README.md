@@ -13,7 +13,7 @@ Dominos are uniquely identified by their number (between 1 and 48) and their act
 The figure on the right presents all the dominos in an increasing order (i.e. top-left is 1, bottom-right is 48).
 For test files, these dominos will be represented textually.
 For example, 19:F+W(1) denotes domino #19 containing a wheat field with one crown and a
-forest without a crown (thus the default value of crowns is 0 if not indicated otherwise).
+forest without a crown (thus the default value of crowns is 0 if not indicated otherwise). This project is a part of ECSE223 course.
 
 ### Team Members
 
